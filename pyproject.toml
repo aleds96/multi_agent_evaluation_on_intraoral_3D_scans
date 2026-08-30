@@ -5,5 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
-    "pandas>=3.0.5",
+    "pandas",
+    "seaborn",
+    "matplotlib",
+    "scikit-learn", "ipykernel","open3d","pymeshlab"
 ]
