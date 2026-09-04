@@ -62,7 +62,7 @@ def apply_model_config_view(vis, width, height):
     front  = [0.0, 0.0, 1.0]
     up     = [-0.095852611932817064, 0.99539553785701518, 0.0]
     lookat = [1.2521453313041158, 1.8914098504878176, -101.39684191000001]
-    zoom   = 1
+    zoom   = 0.75
 
    
     corrected_zoom = zoom 
