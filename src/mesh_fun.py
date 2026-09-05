@@ -73,13 +73,13 @@ def visualize_landmarks(mesh_path: Path, coords, classes,landmark_palette):
     spheres = create_landmark_spheres(coords, classes, landmark_palette)
     o3d.visualization.draw_geometries([mesh] + spheres)
 
-def apply_model_config_view(vis, width, height):
+def apply_model_config_view(vis, width, height,zoom=0.75):
     vc = vis.get_view_control()
 
     front  = [0.0, 0.0, 1.0]
     up     = [-0.095852611932817064, 0.99539553785701518, 0.0]
     lookat = [1.2521453313041158, 1.8914098504878176, -101.39684191000001]
-    zoom   = 0.75
+    zoom   = zoom
 
    
     corrected_zoom = zoom 
@@ -90,7 +90,7 @@ def apply_model_config_view(vis, width, height):
     vc.set_zoom(corrected_zoom)
 
 
-def save_screenshot(mesh, spheres, out_path, view="front", width=1600, height=1600):
+def save_screenshot(mesh, spheres, out_path, view="front", width=1600, height=1600, zoom=0.75):
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -105,7 +105,7 @@ def save_screenshot(mesh, spheres, out_path, view="front", width=1600, height=16
     vis.update_renderer()
 
     #set_view(vis, view)
-    apply_model_config_view(vis,width=width, height=height)
+    apply_model_config_view(vis,width=width, height=height,zoom=zoom)
 
     # Second poll/update is REQUIRED for camera update
     vis.poll_events()
@@ -116,7 +116,7 @@ def save_screenshot(mesh, spheres, out_path, view="front", width=1600, height=16
 
     print(f"Screenshot salvato in: {out_path}")
 
-def visualize(mesh, spheres, view="front", width=1200, height=1200):
+def visualize(mesh, spheres, view="front", width=1200, height=1200, zoom=0.75):
     """
     Visualizza mesh + landmark in una finestra Open3D interattiva,
     impostando la vista desiderata.

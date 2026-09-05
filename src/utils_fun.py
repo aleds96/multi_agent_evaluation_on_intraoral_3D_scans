@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import pandas as pd
 def compute_quantile_table(values, quantiles=[0.1, 0.25, 0.5, 0.75, 0.9]):
     values = np.array(values)
     qvals = np.quantile(values, quantiles)

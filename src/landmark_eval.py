@@ -266,7 +266,6 @@ def evaluate_single_scan(gt_all, pred_all_map, scan_name, categories):
 
     return results_scan, mAP_scan, mAR_scan
 def evaluate_all_scans(gt_root, pred_csv, categories):
-    #Costruisci GT e predizioni
     gt_all = build_gt_all(gt_root, categories)
     pred_all_map = build_pred_all_map(pred_csv, categories)
 
@@ -276,39 +275,40 @@ def evaluate_all_scans(gt_root, pred_csv, categories):
         all_scans.update(pred_all_map[cat].keys())
     all_scans = sorted(list(all_scans))
 
-    #AP/AR per scan e categoria
     ap_per_scan = {cat: [] for cat in categories}
     ar_per_scan = {cat: [] for cat in categories}
+    gt_count_per_scan = {cat: [] for cat in categories}
 
-    #Liste globali (media su categorie)
     mAP_per_scan = []
     mAR_per_scan = []
 
     for scan_name in all_scans:
 
-        #Filtra GT e predizioni per questo scan
         gt_scan = {cat: {scan_name: gt_all[cat].get(scan_name, [])} for cat in categories}
         pred_scan = {cat: {scan_name: pred_all_map[cat].get(scan_name, [])} for cat in categories}
 
-        #Categorie valide (quelle che hanno almeno un GT)
         valid_categories = [cat for cat in categories if len(gt_scan[cat][scan_name]) > 0]
 
-        #Se nessuna categoria ha GT allora ignora lo scan
         if len(valid_categories) == 0:
             continue
 
-        #Calcola AP/AR SOLO sulle categorie valide
         metrics = score_(
             {cat: gt_scan[cat] for cat in valid_categories},
             {cat: pred_scan[cat] for cat in valid_categories}
         )
 
-        #Salva AP/AR per categoria
-        for cat in valid_categories:
-            ap_per_scan[cat].append(metrics["AP"][cat])
-            ar_per_scan[cat].append(metrics["AR"][cat])
+        for cat in categories:
+            # AP/AR = 0 se classe non valida
+            if cat in valid_categories:
+                ap_per_scan[cat].append(metrics["AP"][cat])
+                ar_per_scan[cat].append(metrics["AR"][cat])
+            else:
+                ap_per_scan[cat].append(0.0)
+                ar_per_scan[cat].append(0.0)
 
-        #Calcola mAP/mAR globali per questo scan
+            # Conta GT
+            gt_count_per_scan[cat].append(len(gt_scan[cat][scan_name]))
+
         mAP_scan = np.mean([metrics["AP"][cat] for cat in valid_categories])
         mAR_scan = np.mean([metrics["AR"][cat] for cat in valid_categories])
 
@@ -319,6 +319,7 @@ def evaluate_all_scans(gt_root, pred_csv, categories):
         "scans": all_scans,
         "ap_per_scan": ap_per_scan,
         "ar_per_scan": ar_per_scan,
+        "gt_count_per_scan": gt_count_per_scan,
         "mAP_per_scan": mAP_per_scan,
         "mAR_per_scan": mAR_per_scan
     }
