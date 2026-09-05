@@ -36,19 +36,36 @@ def color_mesh_by_labels(mesh, labels, FDI_palette):
     colors = np.array([FDI_palette.get(int(l), [255,255,255]) for l in labels]) / 255.0
     mesh.vertex_colors = o3d.utility.Vector3dVector(colors)
     return mesh
+def color_mesh_by_groups(mesh, labels, tooth_to_group, group_palette):
+    #mesh = mesh.clone()
 
-def create_landmark_spheres(coords, classes, landmark_palette):
+    colors = []
+    for lbl in labels:
+        group = tooth_to_group.get(int(lbl), "gingiva")
+        color = group_palette[group]
+        colors.append(color)
+
+    mesh.vertex_colors = o3d.utility.Vector3dVector(np.array(colors))
+    return mesh
+def create_landmark_spheres(coords, classes, landmark_palette, radius=0.45):
     spheres = []
     for coord, cls in zip(coords, classes):
-        sphere = o3d.geometry.TriangleMesh.create_sphere(radius=0.4)
+
+        # geometria più liscia
+        sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius, resolution=10)
         sphere.translate(coord)
 
-        #colore in base alla classe
-        color = landmark_palette.get(cls, [1.0, 1.0, 1.0])
-        sphere.paint_uniform_color(color)
+        # colore base (invariato)
+        color = np.array(landmark_palette.get(cls, [1.0, 1.0, 1.0]))
 
+        # leggero scurimento → effetto bordo percettivo
+        color = color * 0.9
+
+        sphere.paint_uniform_color(color)
         sphere.compute_vertex_normals()
+
         spheres.append(sphere)
+
     return spheres
 
 def visualize_landmarks(mesh_path: Path, coords, classes,landmark_palette):
