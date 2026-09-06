@@ -323,3 +323,107 @@ def evaluate_all_scans(gt_root, pred_csv, categories):
         "mAP_per_scan": mAP_per_scan,
         "mAR_per_scan": mAR_per_scan
     }
+def compute_quantile_table(values, quantiles=None):
+    if quantiles is None:
+        quantiles = np.arange(0, 1.05, 0.05)
+    return pd.DataFrame({
+        "quantile": quantiles,
+        "value": [np.quantile(values, q) for q in quantiles]
+    })
+
+def quality_from_map(map_value):
+    if map_value < 0.55:
+        return 1
+    elif map_value < 0.65:
+        return 2
+    elif map_value < 0.69:
+        return 3
+    elif map_value < 0.73:
+        return 4
+    else:
+        return 5
+def compute_all_statistics(GT_ROOT, PRED_CSV, categories):
+    results_global, mAP_global, mAR_global = evaluate_dataset(GT_ROOT, PRED_CSV, categories=categories)
+    results = evaluate_all_scans(GT_ROOT, PRED_CSV, categories=categories)
+
+    quantile_mAP = compute_quantile_table(results["mAP_per_scan"])
+
+    return {
+        "results": results,
+        "quantile_mAP_over_scan": quantile_mAP,
+        "global": {
+            "mAP": mAP_global,
+            "mAR": mAR_global,
+            "per_class": results_global
+        }
+    }
+def select_examples_by_quantile(results, quantile_table, quantiles, k=1, m=5):
+    """
+    Seleziona m scans attorno ai quantili specificati. Restituisce:
+      1)primary_examples: dizionario {quantile_label: [k scans]}
+      2)extra_examples:   dizionario {quantile_label: [m-k scans]}
+    """
+    scans = results["scans"]
+    mAP = results["mAP_per_scan"]
+
+    def closest_m_to(value, m):
+        ordered = sorted(zip(scans, mAP), key=lambda x: abs(x[1] - value))
+        return [s for s, _ in ordered[:m]]
+
+    primary_examples = {}
+    extra_examples = {}
+
+    for label, q in quantiles.items():
+        q_value = quantile_table.loc[quantile_table["quantile"] == q, "value"].item()
+        pool = closest_m_to(q_value, m)
+
+        primary_examples[label] = pool[:k]
+        extra_examples[label] = pool[k:]
+
+    return primary_examples, extra_examples
+def compute_profiles_for_scans(results, scans, categories):
+    
+    #Restituisce una lista di profili per le scans fornite.
+    return [
+        quality_profile_for_scan(results, categories, scan_name=scan)
+        for scan in scans
+    ]
+def quality_profile_for_scan(results, categories, scan_name):
+    scan_idx = results["scans"].index(scan_name)
+    #print('scan_idx', scan_idx,'scan_name', scan_name)
+    mAP_scan = results["mAP_per_scan"][scan_idx]
+    mAR_scan = results["mAR_per_scan"][scan_idx]
+
+    quality_global = quality_from_map(mAP_scan)
+
+    quality_per_class = {}
+    raw_per_class = {}
+    valid_class = {}
+
+    for cat in categories:
+        ap = results["ap_per_scan"][cat][scan_idx]
+        gt_count = results["gt_count_per_scan"][cat][scan_idx]
+
+        raw_per_class[cat] = f"{ap:.2f}"
+
+        if gt_count == 0:
+            quality_per_class[cat] = "N/A"
+            valid_class[cat] = False
+        else:
+            quality_per_class[cat] = quality_from_map(ap)
+            valid_class[cat] = True
+
+    valid_scores = {cat: quality_per_class[cat] for cat in categories if valid_class[cat]}
+    best_class = max(valid_scores, key=valid_scores.get)
+    worst_class = min(valid_scores, key=valid_scores.get)
+
+    return {
+        "scan": scan_name,
+        "mAP": f"{mAP_scan:.2f}",
+        "mAR": f"{mAR_scan:.2f}",
+        "quality_global": quality_global,
+        "quality_per_class": quality_per_class,
+        "raw_per_class": raw_per_class,
+        "best_class": best_class,
+        "worst_class": worst_class,
+    }
