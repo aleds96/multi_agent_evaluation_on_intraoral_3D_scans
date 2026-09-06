@@ -217,6 +217,9 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 #dataset 
-dataset/original_scans/
+dataset/3D*
+dataset/original_scans*
+dataset/screenshot_scans*
+dataset/toothinstances*
 
 
