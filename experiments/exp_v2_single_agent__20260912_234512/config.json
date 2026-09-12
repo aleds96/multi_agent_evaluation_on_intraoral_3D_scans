@@ -1,0 +1,15 @@
+{
+  "architecture": "v2_single_agent",
+  "model": "gemini-2.5-flash",
+  "primary_examples": {
+    "lvl1": [
+      "JXVWXY0L_upper"
+    ],
+    "lvl2": [
+      "TZRY3HIX_lower"
+    ],
+    "lvl5": [
+      "ZKJEPFDD_lower"
+    ]
+  }
+}

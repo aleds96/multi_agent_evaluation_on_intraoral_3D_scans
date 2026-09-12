@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import auc
 from pathlib import Path
-
+from src.pred_gt_viewer_viz import load_gt_landmarks, load_pred_landmarks
 #da 0 a==> 3 mm, step 0.1
 THRESHOLDS = np.arange(0.0, 3.0 + 0.1, 0.1)  
 
@@ -427,3 +427,44 @@ def quality_profile_for_scan(results, categories, scan_name):
         "best_class": best_class,
         "worst_class": worst_class,
     }
+def compute_class_counts_for_scan(PRED_CSV: Path, scan_name: str, CATEGORIES: list):
+    """
+    Restituisce un dizionario {classe -> count} per le 6 classi di landmark.
+    """
+    coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan_name)
+
+    counts = {cat: 0 for cat in CATEGORIES}
+
+    for cls in classes_pred:
+        if cls in counts:
+            counts[cls] += 1
+
+    return counts
+
+def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENSHOT_ROOT,CATEGORIES):
+    """
+    Costruisce dataset di input escludendo le scans specificate.
+    Le predizioni vengono caricate direttamente dal CSV.
+    """
+    input_scans = [s for s in results["scans"] if s not in exclude_scans]
+    dataset = []
+    for scan in input_scans:
+        profile = quality_profile_for_scan(results, CATEGORIES, scan)
+        #carica predizioni dal CSV
+        coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan)
+        count_per_class = compute_class_counts_for_scan(PRED_CSV, scan, CATEGORIES)
+        dataset.append({
+            "scan": scan,
+            "profile": profile,
+            #paths
+            "mesh": str(SCANS / f"{scan}.obj"),
+            "gt": str(GT_ROOT / f"{scan}__kpt.json"),
+            "seg": str(SCANS / f"{scan}_seg.json"),
+            "image_pred": str(SCREENSHOT_ROOT / f"{scan}/predicted.png"),
+            #predizioni dal CSV
+            "pred_coords": coords_pred,
+            "pred_classes": classes_pred,
+            "pred_count_per_class": count_per_class,
+        })
+
+    return dataset

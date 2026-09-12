@@ -8,5 +8,10 @@ dependencies = [
     "pandas",
     "seaborn",
     "matplotlib",
-    "scikit-learn", "ipykernel","open3d","pymeshlab"
+    "scikit-learn",
+    "ipykernel",
+    "open3d",
+    "pymeshlab",
+    "python-dotenv>=1.2.3",
 ]
+
