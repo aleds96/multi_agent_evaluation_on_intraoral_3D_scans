@@ -5,6 +5,7 @@ import pymeshlab
 import sys
 from pathlib import Path
 import os
+import pandas as pd 
 def load_unsorted_mesh(mesh_path: Path):
     mesh = o3d.io.read_triangle_mesh(str(mesh_path))
     mesh.compute_vertex_normals()
@@ -155,4 +156,79 @@ def check_alignment(mesh, labels):
         return False
     print("Mesh e JSON allineati.")
     return True
+def compute_group_class_counts_for_scan(
+    mesh_path: Path,
+    seg_path: Path,
+    PRED_CSV: Path,
+    scan_name: str,
+    CATEGORIES: list,
+    TOOTH_TO_GROUP: dict
+):
+    """
+    Restituisce:
+      - count_per_group_class: {gruppo -> {classe -> count}}
+      - count_per_group: {gruppo -> count totale landmark}
+    """
+
+    # 1. Carica mesh per KDTree
+    mesh = o3d.io.read_triangle_mesh(str(mesh_path))
+    vertices = np.asarray(mesh.vertices)
+    kdtree = o3d.geometry.KDTreeFlann(mesh)
+
+    coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan_name)
+
+    tooth_seg_labels = load_segmentation(seg_path)
+
+    groups = set(TOOTH_TO_GROUP.values())
+    count_per_group_class = {g: {cat: 0 for cat in CATEGORIES} for g in groups}
+    count_per_group = {g: 0 for g in groups}
+
+    for coord, cls in zip(coords_pred, classes_pred):
+
+        _, idx, _ = kdtree.search_knn_vector_3d(coord, 1)
+        v_idx = idx[0]
+
+        tooth_id = int(tooth_seg_labels[v_idx])
+        group = TOOTH_TO_GROUP.get(tooth_id, "gingiva")
+
+        if cls in CATEGORIES:
+            count_per_group_class[group][cls] += 1
+            count_per_group[group] += 1
+
+    return count_per_group_class, count_per_group
+def load_gt_landmarks(json_path: Path):
+    with open(json_path) as f:
+        data = json.load(f)
+    coords = np.array([obj["coord"] for obj in data["objects"]])
+    classes = [obj["class"] for obj in data["objects"]]
+    return coords, classes
+
+def load_pred_landmarks(csv_path: Path, scan_name: str):
+    df = pd.read_csv(csv_path, header=None,
+                     names=["scan", "x", "y", "z", "class", "conf"])
+    df = df[df["scan"] == scan_name]
+    coords = df[["x", "y", "z"]].values
+    classes = df["class"].tolist()
+    return coords, classes
+def visualize_pred_and_gt(mesh_path, pred_csv, gt_json, scan_name, out_dir,landmark_palette,seg_labels=None,tooth_to_group=None,tooth_group_palette=None):
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    mesh = load_mesh(mesh_path)
+    if seg_labels is not None:  
+        mesh = color_mesh_by_groups(mesh, seg_labels, tooth_to_group, tooth_group_palette)
+    pred_coords, pred_classes = load_pred_landmarks(pred_csv, scan_name)
+    spheres_pred = create_landmark_spheres(pred_coords, pred_classes, landmark_palette)
+
+    gt_coords, gt_classes = load_gt_landmarks(gt_json)
+    spheres_gt = create_landmark_spheres(gt_coords, gt_classes, landmark_palette)
+    zoom = 0.65
+    # Screenshot predizioni
+    save_screenshot(mesh, spheres_pred, out_dir / "predicted.png", zoom=zoom)
+
+    #Screenshot GT
+    save_screenshot(mesh, spheres_gt, out_dir / "ground_truth.png", zoom=zoom)
+
+    #Screenshot overlay
+    save_screenshot(mesh, spheres_pred + spheres_gt, out_dir / "overlay.png", zoom=zoom)
 

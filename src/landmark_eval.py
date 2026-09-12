@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import auc
 from pathlib import Path
-from src.pred_gt_viewer_viz import load_gt_landmarks, load_pred_landmarks
+from src.mesh_fun import load_gt_landmarks, load_pred_landmarks,compute_group_class_counts_for_scan
+from src.var_constants import TOOTH_GROUP_PALETTE,TOOTH_TO_GROUP
 #da 0 a==> 3 mm, step 0.1
 THRESHOLDS = np.arange(0.0, 3.0 + 0.1, 0.1)  
 
@@ -298,7 +299,7 @@ def evaluate_all_scans(gt_root, pred_csv, categories):
         )
 
         for cat in categories:
-            # AP/AR = 0 se classe non valida
+            #AP/AR = 0 se classe non valida
             if cat in valid_categories:
                 ap_per_scan[cat].append(metrics["AP"][cat])
                 ar_per_scan[cat].append(metrics["AR"][cat])
@@ -442,10 +443,7 @@ def compute_class_counts_for_scan(PRED_CSV: Path, scan_name: str, CATEGORIES: li
     return counts
 
 def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENSHOT_ROOT,CATEGORIES):
-    """
-    Costruisce dataset di input escludendo le scans specificate.
-    Le predizioni vengono caricate direttamente dal CSV.
-    """
+   
     input_scans = [s for s in results["scans"] if s not in exclude_scans]
     dataset = []
     for scan in input_scans:
@@ -453,6 +451,18 @@ def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENS
         #carica predizioni dal CSV
         coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan)
         count_per_class = compute_class_counts_for_scan(PRED_CSV, scan, CATEGORIES)
+        mesh_path = SCANS / f"{scan}.obj"
+        seg_path  = SCANS / f"{scan}_seg.json"
+
+        count_per_group_class, count_per_group = compute_group_class_counts_for_scan(
+            mesh_path,
+            seg_path,
+            PRED_CSV,
+            scan,
+            CATEGORIES,
+            TOOTH_TO_GROUP
+        )
+
         dataset.append({
             "scan": scan,
             "profile": profile,
@@ -465,6 +475,8 @@ def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENS
             "pred_coords": coords_pred,
             "pred_classes": classes_pred,
             "pred_count_per_class": count_per_class,
+            "pred_count_per_group_class": count_per_group_class,
+            "pred_count_per_group": count_per_group,
         })
 
     return dataset

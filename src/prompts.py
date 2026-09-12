@@ -9,6 +9,14 @@ def _format_profile(p):
         f"  Worst class: {p['worst_class']}\n"
         f"  Stabilità: {p.get('stability', 'N/A')}\n"
     )
+def format_group_counts(count_per_group_class):
+    out = []
+    for group, cls_counts in count_per_group_class.items():
+        out.append(f"{group}:")
+        for cls, c in cls_counts.items():
+            out.append(f"  - {cls}: {c}")
+        out.append("") 
+    return "\n".join(out)
 
 instruction_prompt = """
 Sei un agente specializzato nella valutazione della qualità dei landmark dentali su scansioni 3D intraorali. 
@@ -76,16 +84,16 @@ Restituisci un JSON con:
 Non descrivere le immagini degli esempi. Non proporre correzioni. Concentrati solo sull’immagine di input.
 """
 
-
-def build_user_request_for_scan(input_counts, examples):
+def build_user_request_for_scan(input_info, examples):
 
     lvl5_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl5"])
     lvl2_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl2"])
     lvl1_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl1"])
 
     pred_counts_global_str = "\n".join(
-        f"- {cls}: {input_counts[cls]}" for cls in input_counts
+        f"- {cls}: {input_info['pred_count_per_class'][cls]}" for cls in input_info['pred_count_per_class']
     )
+    group_counts_str = format_group_counts(input_info["pred_count_per_group_class"])
     return f"""
 ## Profili degli esempi
 
@@ -101,6 +109,8 @@ def build_user_request_for_scan(input_counts, examples):
 ## Statistiche quantitative sull'immagine di input da valutare
 ### Conteggio dei landmark per classe
 {pred_counts_global_str}
+### Statistiche per gruppo dentale
+{group_counts_str}
 ## Immagini fornite (in ordine)
 1. Esempio qualità 5
 2. Esempio qualità 2

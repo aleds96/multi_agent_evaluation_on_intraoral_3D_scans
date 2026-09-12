@@ -1,15 +1,7 @@
 import numpy as np
-
+#Calcola metriche di valutazione per il single agent.
 def evaluate_agent(outputs):
-    """
-    Calcola metriche di valutazione per il single agent.
-    outputs: lista di dict con:
-        - scan
-        - real_quality
-        - pred_quality
-        - motivation
-    """
-
+ 
     real = np.array([o["real_quality"] for o in outputs])
     pred = np.array([o["pred_quality"] for o in outputs])
 

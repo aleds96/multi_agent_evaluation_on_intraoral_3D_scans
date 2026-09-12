@@ -35,9 +35,8 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
 async def eval_single_scan(scan_item, example_items, runner, app_name):
     session_id = f"session_{scan_item['scan']}"
     await ensure_session(runner, app_name, session_id)
-    input_profile = scan_item["profile"] 
-    pred_input_count_per_class=scan_item["pred_count_per_class"]
-    prompt = build_user_request_for_scan(pred_input_count_per_class, example_items)
+   
+    prompt = build_user_request_for_scan(scan_item, example_items)
 
     #print(f"Prompt for scan {scan_item['scan']}:\n{prompt}")
 
@@ -106,14 +105,14 @@ async def run_single_agent(dataset_primary, dataset_examples):
     
     runner = InMemoryRunner(app=app)
 
-    semaphore = asyncio.Semaphore(10)
+    semaphore = asyncio.Semaphore(2)
     tasks = []
-
-    for item in dataset_primary:
+    for i, item in enumerate(dataset_primary):
         tasks.append(asyncio.create_task(
             eval_scan_task(item, dataset_examples, runner, app.name, semaphore)
         ))
-
+        if i % 5 == 0 and i > 0:
+            await asyncio.sleep(30)
     outputs = await asyncio.gather(*tasks)
     return outputs
 
@@ -178,7 +177,7 @@ async def main():
     evaluation = evaluate_agent(outputs)
 
     config = {
-        "architecture": "v2_single_agent",
+        "architecture": "v3_single_agent",
         "model": "gemini-2.5-flash",
         "primary_examples": primary_examples,
     }
