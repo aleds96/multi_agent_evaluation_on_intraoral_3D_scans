@@ -162,15 +162,23 @@ def compute_group_class_counts_for_scan(
     PRED_CSV: Path,
     scan_name: str,
     CATEGORIES: list,
-    TOOTH_TO_GROUP: dict
+    TOOTH_TO_GROUP: dict,
+    distance_threshold: float = 1.5,
+    min_group_landmarks: int = 3
 ):
     """
     Restituisce:
       - count_per_group_class: {gruppo -> {classe -> count}}
       - count_per_group: {gruppo -> count totale landmark}
+
+    Filtri applicati:
+      - Rimozione gengiva
+      - Soglia distanza landmark → mesh
+      - Ignora gruppi con pochi landmark
+      - Ignora cuspidi sugli incisivi/canini se borderline
+      - Ignora landmark fuori superficie
     """
 
-    # 1. Carica mesh per KDTree
     mesh = o3d.io.read_triangle_mesh(str(mesh_path))
     vertices = np.asarray(mesh.vertices)
     kdtree = o3d.geometry.KDTreeFlann(mesh)
@@ -179,23 +187,48 @@ def compute_group_class_counts_for_scan(
 
     tooth_seg_labels = load_segmentation(seg_path)
 
-    groups = set(TOOTH_TO_GROUP.values())
-    count_per_group_class = {g: {cat: 0 for cat in CATEGORIES} for g in groups}
-    count_per_group = {g: 0 for g in groups}
+    #Gruppi dentali validi (NO gengiva)
+    valid_groups = ["incisors", "canines", "premolars", "molars"]
+
+    count_per_group_class = {g: {cat: 0 for cat in CATEGORIES} for g in valid_groups}
+    count_per_group = {g: 0 for g in valid_groups}
 
     for coord, cls in zip(coords_pred, classes_pred):
 
         _, idx, _ = kdtree.search_knn_vector_3d(coord, 1)
         v_idx = idx[0]
 
+        dist = np.linalg.norm(coord - vertices[v_idx])
+        if dist > distance_threshold:
+            continue  
+
         tooth_id = int(tooth_seg_labels[v_idx])
-        group = TOOTH_TO_GROUP.get(tooth_id, "gingiva")
+        group = TOOTH_TO_GROUP.get(tooth_id, None)
+
+        #ignora gengiva o denti non mappati
+        if group not in valid_groups:
+            continue
+
+        #filtro cuspidi sugli incisivi/canini 
+        if cls == "Cusp" and group in ["incisors", "canines"]:
+            continue
 
         if cls in CATEGORIES:
             count_per_group_class[group][cls] += 1
             count_per_group[group] += 1
 
-    return count_per_group_class, count_per_group
+    #rrimuovi gruppi troppo piccoli (rumore)
+    filtered_group_class = {}
+    filtered_group_total = {}
+
+    for g in valid_groups:
+        if count_per_group[g] >= min_group_landmarks:
+            filtered_group_class[g] = count_per_group_class[g]
+            filtered_group_total[g] = count_per_group[g]
+
+    return filtered_group_class, filtered_group_total
+
+
 def load_gt_landmarks(json_path: Path):
     with open(json_path) as f:
         data = json.load(f)

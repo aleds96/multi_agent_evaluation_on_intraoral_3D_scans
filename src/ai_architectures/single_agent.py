@@ -111,7 +111,7 @@ async def run_single_agent(dataset_primary, dataset_examples):
         tasks.append(asyncio.create_task(
             eval_scan_task(item, dataset_examples, runner, app.name, semaphore)
         ))
-        if i % 5 == 0 and i > 0:
+        if i % 2 == 0 and i > 0:
             await asyncio.sleep(30)
     outputs = await asyncio.gather(*tasks)
     return outputs
@@ -177,7 +177,7 @@ async def main():
     evaluation = evaluate_agent(outputs)
 
     config = {
-        "architecture": "v3_single_agent",
+        "architecture": "v5_distthr_nocusp_single_agent",
         "model": "gemini-2.5-flash",
         "primary_examples": primary_examples,
     }

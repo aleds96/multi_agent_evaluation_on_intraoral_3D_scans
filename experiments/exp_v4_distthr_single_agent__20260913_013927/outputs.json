@@ -1,0 +1,362 @@
+[
+  {
+    "scan": "AKBDPB4C_upper",
+    "real_quality": 5,
+    "pred_quality": 2,
+    "motivation": "La presenza di landmark di tipo Cusp (blu) su incisivi e canini, dove anatomicamente non dovrebbero esserci, rappresenta un errore significativo. Sebbene altri landmark siano posizionati con discreta coerenza, questa violazione fondamentale abbassa notevolmente la qualit\u00e0 complessiva della scansione."
+  },
+  {
+    "scan": "ANLLPLV7_upper",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "L'immagine di input non presenta alcun landmark sui denti. La completa assenza di landmark rende impossibile qualsiasi valutazione di correttezza anatomica o coerenza, indicando la qualit\u00e0 pi\u00f9 bassa possibile."
+  },
+  {
+    "scan": "CK45DVLG_upper",
+    "real_quality": 5,
+    "pred_quality": 3,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark Cusp (blu) posizionati su incisivi e canini, che viola le regole anatomiche. Nonostante questo errore, gli altri landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint) sono posizionati correttamente, aderenti alla superficie e con una buona coerenza e simmetria generale."
+  },
+  {
+    "scan": "CLNVA9MZ_upper",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 limitata a causa della presenza errata di landmark Cusp su incisivi e canini, che sono anatomicamente assenti. Si evidenziano inoltre numerose assenze di landmark, in particolare OuterPoint e FacialPoint su diversi gruppi dentali, compromettendo la completezza e la simmetria dell'annotazione."
+  },
+  {
+    "scan": "CNUR69O9_upper",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti e per tutte le classi. Non si rilevano errori di posizionamento, duplicazioni o assenze. La distribuzione e la simmetria dei landmark sono ottime, indicando un'alta qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "CVTHSBS5_upper",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "Sono presenti landmark di tipo 'Cusp' su un canino, il che non \u00e8 anatomicamente corretto secondo le regole fornite. I 'FacialPoint' sono assenti sui molari e un 'InnerPoint' \u00e8 posizionato fuori dalla superficie del dente su un molare. Si osservano anche duplicazioni di alcuni landmark e inconsistenze nella loro distribuzione su diversi denti."
+  },
+  {
+    "scan": "DGUTSTAN_upper",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 significativamente compromessa dalla presenza errata di landmark di tipo Cusp (blu) sugli incisivi, una chiara violazione anatomica. Sebbene la maggior parte degli altri landmark appaia ben posizionata e coerente, questo errore specifico riduce la qualit\u00e0 complessiva della scan."
+  },
+  {
+    "scan": "DKZWON8N_upper",
+    "real_quality": 3,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark su canini, premolari e molari \u00e8 ben posizionata e segue l'anatomia. Tuttavia, \u00e8 presente un landmark di tipo 'Cusp' su un incisivo, il che rappresenta un errore anatomico significativo. Alcuni landmark sugli incisivi centrali appaiono inoltre meno precisi o leggermente sparsi."
+  },
+  {
+    "scan": "E0CUCLHY_upper",
+    "real_quality": 3,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 molto bassa a causa di gravi errori anatomici. Sono presenti landmark di tipo 'Cusp' (blu) sugli incisivi (grigi), i quali non dovrebbero averne. Questo errore fondamentale nella classificazione dei landmark \u00e8 diffuso su tutto il gruppo degli incisivi."
+  },
+  {
+    "scan": "E11NEPB6_upper",
+    "real_quality": 2,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta numerose anomalie nel posizionamento dei landmark. Molti landmark attesi sono mancanti, in particolare Distal, OuterPoint e FacialPoint sui denti posteriori. Inoltre, si notano evidenti errori di orientamento e punti fuori sede sui denti anteriori, compromettendo gravemente la coerenza anatomica complessiva."
+  },
+  {
+    "scan": "EJWZZZRF_upper",
+    "real_quality": 4,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 molto bassa a causa di diversi errori gravi. Sono presenti landmark di cuspide (blu) su incisivi e canini, il che \u00e8 anatomicamente scorretto. Numerosi landmark, inclusi Mesial, InnerPoint e Cusp, sono flottanti o posizionati fuori dalle superfici dentali. Si osservano anche errori di orientamento, con InnerPoint (giallo) presenti sulla superficie buccale."
+  },
+  {
+    "scan": "EK26QFUW_upper",
+    "real_quality": 3,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta gravi errori anatomici, inclusa la presenza di landmark di tipo Cusp su incisivi e canini, che sono morfologicamente assenti su questi denti. Inoltre, i FacialPoint sono spesso mal posizionati, trovandosi molto vicini al margine gengivale. Queste imprecisioni fondamentali indicano una qualit\u00e0 molto bassa."
+  },
+  {
+    "scan": "F92OKIOI_upper",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark di tipo 'Cusp' su incisivi e canini, che non dovrebbero averne anatomicamente. Si notano inoltre diversi FacialPoint e OuterPoint mancanti nei denti anteriori. Nonostante la buona distribuzione dei landmark su premolari e molari, gli errori nella regione anteriore abbassano significativamente la qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "GANLQSL1_upper",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "Molti landmark Cusp (blu) sono presenti su incisivi e canini, contravvenendo alla definizione anatomica. Sono inoltre assenti i FacialPoint (magenta) sui molari e canini, e gli OuterPoint (ciano) sui canini. Sebbene i landmark Mesial, Distal e InnerPoint siano ben posizionati, queste gravi anomalie e assenze ne riducono drasticamente la qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "GG5ARUVQ_upper",
+    "real_quality": 2,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti. Le cuspidi sono correttamente presenti solo su premolari e molari. La distribuzione dei punti Mesial, Distal, InnerPoint, OuterPoint e FacialPoint \u00e8 simmetrica e aderisce perfettamente alla morfologia dentale, senza errori evidenti di orientamento o posizionamento."
+  },
+  {
+    "scan": "GPADPK3N_upper",
+    "real_quality": 3,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 bassa a causa di diversi errori gravi. Si osserva un landmark Cusp su un incisivo, che \u00e8 anatomicamente errato. Inoltre, ci sono numerose assenze di landmark critici, in particolare molti mancano sui canini e sui molari, indicando una scarsa completezza del rilevamento."
+  },
+  {
+    "scan": "GSHA8E4C_upper",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "Sono presenti gravi errori anatomici: i landmark Cusp (blu) sono collocati anche su incisivi e canini, dove dovrebbero essere assenti. Inoltre, mancano i landmark InnerPoint (giallo) e FacialPoint (magenta) su tutti gli incisivi. Questi errori fondamentali compromettono significativamente l'accuratezza generale."
+  },
+  {
+    "scan": "H5EFRXCQ_upper",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La qualit\u00e0 \u00e8 intermedia. Sono presenti due landmark Cusp sugli incisivi, che rappresentano un errore anatomico significativo. Manca anche un landmark Distal su un incisivo laterale destro. Tuttavia, la distribuzione generale dei landmark \u00e8 coerente con la morfologia dentale e la maggior parte dei punti \u00e8 ben posizionata."
+  },
+  {
+    "scan": "HDVYC7UQ_upper",
+    "real_quality": 5,
+    "pred_quality": 1,
+    "motivation": "La presenza di landmark di tipo Cusp sui denti incisivi e canini, dove sono anatomicamente assenti, indica un errore fondamentale. Inoltre, l'analisi visiva mostra alcune discrepanze nella simmetria e nella distribuzione dei landmark, con alcuni punti potenzialmente mancanti o mal classificati."
+  },
+  {
+    "scan": "I3T81ZK8_upper",
+    "real_quality": 4,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta gravi violazioni delle regole anatomiche, con punti cuspali erroneamente posizionati su incisivi e canini. Molti landmark essenziali, come i punti distali sui premolari e un numero significativo di cuspidi sui molari, sono completamente assenti. Questi errori fondamentali compromettono gravemente la qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "J1A5FRQN_upper",
+    "real_quality": 5,
+    "pred_quality": 2,
+    "motivation": "Il problema principale \u00e8 la presenza di landmark di tipo Cusp (blu) sugli incisivi, il che \u00e8 anatomicamente scorretto. Inoltre, si notano alcune asimmetrie e potenziali landmark mancanti per InnerPoint, OuterPoint e FacialPoint nella regione anteriore. Nonostante i landmark sui denti posteriori siano generalmente ben posizionati, questi errori nella regione anteriore riducono significativamente la qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "K4BAII5F_upper",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark di tipo Cusp sugli incisivi, che non dovrebbero averne, indicando un errore anatomico significativo. Nonostante questo, la maggior parte degli altri landmark \u00e8 correttamente posizionata e rispetta la morfologia dentale."
+  },
+  {
+    "scan": "K4E9RKYU_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i gruppi dentali. La distribuzione dei punti rispetta la morfologia dei denti e la simmetria dell'arcata \u00e8 ben mantenuta. Non si osservano errori evidenti di posizionamento o coerenza visiva."
+  },
+  {
+    "scan": "K6LK1YRK_upper",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La scansione presenta una buona coerenza anatomica per i landmark Mesial, Distal, InnerPoint, OuterPoint e FacialPoint. Tuttavia, i landmark Cusp sono presenti in modo errato su incisivi e canini, violando le regole anatomiche. Questa grave imprecisione nella classe Cusp compromette significativamente la qualit\u00e0 complessiva, nonostante l'accuratezza degli altri landmark."
+  },
+  {
+    "scan": "K70NYZYE_upper",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta gravi errori anatomici, inclusa la presenza di landmark di tipo Cusp su incisivi e canini, e la quasi totale assenza di landmark Mesial, Distal, InnerPoint, OuterPoint e FacialPoint su numerosi denti. Molti landmark sono mancanti o posizionati in modo incoerente con l'anatomia, come Mesial e Distal sui punti vestibolari. La distribuzione dei landmark \u00e8 complessivamente errata e incompleta."
+  },
+  {
+    "scan": "LAFJJKAE_upper",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark di tipo 'Cusp' (blu) posizionati in modo errato sugli incisivi, denti che anatomamente non presentano cuspidi. Nonostante questo errore significativo, gli altri landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint) sono generalmente ben posizionati e distribuiti in modo plausibile sui restanti gruppi dentali."
+  },
+  {
+    "scan": "LE4E8YWJ_upper",
+    "real_quality": 4,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 bassa a causa della presenza di landmark 'Cusp' (blu) sugli incisivi e una distribuzione anomala sui canini, il che rappresenta un grave errore anatomico. Nonostante altri landmark siano discretamente posizionati, questo errore fondamentale compromette significativamente l'accuratezza complessiva."
+  },
+  {
+    "scan": "LHP32GAK_upper",
+    "real_quality": 4,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta numerosi errori anatomici gravi: sono presenti cuspidi sugli incisivi, che non dovrebbero averne, e il conteggio delle cuspidi \u00e8 errato per canini e premolari. Inoltre, mancano landmark fondamentali come InnerPoint, OuterPoint e FacialPoint sugli incisivi, e altri landmark sono assenti o in numero errato sui canini."
+  },
+  {
+    "scan": "LLJGPB8I_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati in modo estremamente accurato e coerente su tutti i denti, rispettando pienamente le regole anatomiche. Non si rilevano errori di posizionamento, duplicazioni o punti mancanti, e la distribuzione \u00e8 simmetrica e fedele alla morfologia dentale."
+  },
+  {
+    "scan": "LSMGKLAH_upper",
+    "real_quality": 4,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta gravi errori anatomici, inclusa la presenza di landmark 'Cusp' su incisivi e canini, dove non dovrebbero essere. Si riscontrano anche evidenti errori di orientamento, con lo scambio dei landmark 'InnerPoint' e 'OuterPoint' su pi\u00f9 incisivi. La coerenza anatomica generale e la distribuzione dei landmark sono gravemente compromesse."
+  },
+  {
+    "scan": "M7RTPNPC_upper",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa da landmark mancanti e non coerenti anatomicamente sui canini, inclusa l'assenza di punti Distal, InnerPoint e FacialPoint e la presenza errata di un Cusp. Gli incisivi mostrano punti Mesial/Distal e InnerPoint molto ravvicinati, indicando minore precisione nel posizionamento. Tuttavia, la distribuzione dei landmark sui molari e premolari \u00e8 generalmente coerente e plausibile."
+  },
+  {
+    "scan": "OO75RHX3_lower",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark Cusp su incisivi e canini, in violazione delle regole anatomiche. Questo errore significativo, sebbene altri landmark siano posizionati in modo pi\u00f9 plausibile, riduce l'accuratezza complessiva."
+  },
+  {
+    "scan": "P5NL90OZ_lower",
+    "real_quality": 5,
+    "pred_quality": 3,
+    "motivation": "Molti landmark sono posizionati correttamente sulle superfici dentali. Tuttavia, si notano diverse assenze di landmark Distal e InnerPoint, soprattutto sui denti posteriori. I landmark Cusp sui canini sono anatomicamente discutibili, e il loro posizionamento su premolari e molari risulta a tratti inconsistente o non sempre preciso sulla punta della cuspide."
+  },
+  {
+    "scan": "PY6M5YZ2_lower",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La scansione presenta buona consistenza e simmetria generale per la maggior parte dei landmark come Mesial, Distal, OuterPoint e FacialPoint. Tuttavia, \u00e8 presente un chiaro errore anatomico con i landmark Cusp sugli incisivi e canini, che non dovrebbero avere cuspidi secondo le regole. Questo problema sistematico su pi\u00f9 denti riduce la qualit\u00e0 complessiva, nonostante gli altri landmark siano generalmente ben posizionati."
+  },
+  {
+    "scan": "Q5GSR6N2_lower",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark sui premolari, molari e canini \u00e8 posizionata correttamente e con buona densit\u00e0. Tuttavia, la qualit\u00e0 dei landmark sugli incisivi \u00e8 inferiore, con punti mancanti (in particolare i Distal) e una notevole asimmetria nella loro distribuzione. Questo abbassa la qualit\u00e0 generale della scansione."
+  },
+  {
+    "scan": "QA27COSZ_lower",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 dei landmark \u00e8 bassa a causa della presenza errata di punti Cusp sugli incisivi, che per definizione non dovrebbero averne. Si osservano inoltre inconsistenza nel numero e posizionamento delle cuspidi su premolari e molari, influenzando la coerenza anatomica complessiva."
+  },
+  {
+    "scan": "QF3P9YRI_lower",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "La scan presenta numerose problematiche, tra cui un numero significativamente ridotto di landmark Cusp sui premolari e molari. Sono inoltre presenti landmark InnerPoint mal posizionati sui canini e un FacialPoint mancante su un molare, oltre a un Distal point assente su un canino e un Mesial point errato."
+  },
+  {
+    "scan": "QOCAWJXM_lower",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "La scansione presenta un errore anatomico significativo, con la presenza di landmark di tipo 'Cusp' (blu) posizionati sugli incisivi centrali, che per definizione non dovrebbero averne. Sebbene la maggior parte degli altri landmark siano ben distribuiti e coerenti con la morfologia dentale, questo errore fondamentale abbassa notevolmente la qualit\u00e0 complessiva. Alcuni 'InnerPoint' (gialli) sugli incisivi mostrano inoltre un leggero disallineamento."
+  },
+  {
+    "scan": "QPYE7NOP_lower",
+    "real_quality": 1,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark di tipo Cusp (blu) sugli incisivi, che sono anatomici errati per questo tipo di denti. Sebbene altri landmark e la distribuzione generale siano plausibili, questa grave incoerenza abbassa significativamente il punteggio complessivo. La simmetria appare discreta per gli altri gruppi dentali."
+  },
+  {
+    "scan": "QTDZUUZV_lower",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La presenza di landmark di tipo 'Cusp' su incisivi e canini rappresenta un errore anatomico significativo, violando le regole definite per questa classe. Sebbene gli altri landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint) appaiano ben posizionati e coerenti, l'errore sistematico nella classe Cusp abbassa notevolmente la qualit\u00e0 complessiva della scan."
+  },
+  {
+    "scan": "RUXSXSCL_lower",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 molto bassa a causa di gravi errori anatomici. Sono presenti landmark di tipo 'Cusp' (blu) sugli incisivi, dove non dovrebbero esserci. Inoltre, diversi landmark di tipo 'Cusp' sui molari posteriori sono visibilmente fluttuanti fuori dalla superficie del dente e mancano completamente i landmark 'OuterPoint' (ciano) sugli incisivi."
+  },
+  {
+    "scan": "S0AON6PZ_lower",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "La scan \u00e8 gravemente incompleta sul lato destro dell'arcata, risultando in numerosi landmark mancanti e altri che fluttuano nello spazio senza riferimento al dente. Molti landmark, inclusi i Cusp e Mesial, sono posizionati significativamente fuori dalla superficie del dente, indicando scarsa coerenza anatomica. Questo impatta negativamente la completezza e l'accuratezza del set di landmark."
+  },
+  {
+    "scan": "S8FFW0OP_lower",
+    "real_quality": 3,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 bassa a causa di gravi violazioni delle regole anatomiche. I landmark di classe Cusp (blu) sono erroneamente presenti su incisivi e canini, dove non dovrebbero esserci o sono in numero eccessivo. Si osservano anche posizionamenti incoerenti per i landmark OuterPoint e InnerPoint su alcuni denti anteriori, compromettendo la coerenza anatomica generale."
+  },
+  {
+    "scan": "SGIFTXFD_lower",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La presenza di landmark Cusp (blu) sugli incisivi viola le regole anatomiche fondamentali, indicando un errore di classificazione. Si notano anche inconsistenze nei landmark Mesial e Distal sui canini. Nonostante ci\u00f2, la distribuzione e la simmetria della maggior parte degli altri landmark, specialmente su premolari e molari, sono generalmente buone."
+  },
+  {
+    "scan": "SI19V0MY_lower",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla presenza di landmark Cusp (blu) sugli incisivi, dove non dovrebbero esserci. Inoltre, tutti i premolari non presentano alcun OuterPoint (ciano). Queste significative incoerenze anatomiche e omissioni abbassano notevolmente il livello di qualit\u00e0, nonostante la buona coerenza di altri landmark."
+  },
+  {
+    "scan": "UNKC1VVC_lower",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "Sono presenti cuspidi su incisivi, il che rappresenta un errore anatomico critico. Inoltre, numerosi landmark attesi come Distal, InnerPoint e FacialPoint risultano mancanti su diversi denti, indicando un rilevamento incompleto."
+  },
+  {
+    "scan": "VBUD4E5R_lower",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata accuratezza anatomica su tutte le superfici dentali. La distribuzione \u00e8 coerente e simmetrica, con i punti Mesial, Distal, InnerPoint, OuterPoint e FacialPoint correttamente collocati. Le cuspidi sono presenti solo su canini, premolari e molari, conformemente alle regole anatomiche. Non si rilevano errori come landmark mancanti, duplicati o posizionamenti incongruenti con la morfologia dentale."
+  },
+  {
+    "scan": "VCVHV931_lower",
+    "real_quality": 2,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata accuratezza anatomica, rispettando le posizioni attese per ogni classe e tipo di dente. Si osserva una buona coerenza e simmetria tra i denti omologhi, senza evidenti landmark duplicati, mancanti o fuori dalla superficie dentale. La distribuzione dei punti segue fedelmente la morfologia occlusale e vestibolare."
+  },
+  {
+    "scan": "X273URFW_lower",
+    "real_quality": 5,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 molto bassa a causa di gravi errori anatomici. Sono presenti landmark di tipo Cusp (blu) su incisivi e canini, denti che per definizione non dovrebbero averne. Inoltre, mancano numerosi landmark InnerPoint (giallo) e OuterPoint (ciano) su incisivi, canini e premolari, fondamentali per la corretta rappresentazione di queste superfici."
+  },
+  {
+    "scan": "X3EW8O0A_lower",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 limitata da gravi errori nei landmark Cusp, che sono presenti su incisivi (anatomically assenti) e notevolmente insufficienti sui molari. Un InnerPoint su un incisivo centrale \u00e8 inoltre posizionato in modo errato sulla superficie buccale."
+  },
+  {
+    "scan": "X9OQZ131_lower",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La scansione presenta un posizionamento dei landmark estremamente accurato e anatomicamente coerente. Tutti i punti sono ben distribuiti sulle rispettive superfici dentali, mostrando un'ottima simmetria tra i denti omologhi. Non si osservano errori evidenti come landmark mancanti, duplicati, fuori sede o posizionati in zone anatomiche improprie, riflettendo una qualit\u00e0 eccellente."
+  },
+  {
+    "scan": "X9QY6TGT_lower",
+    "real_quality": 3,
+    "pred_quality": 1,
+    "motivation": "La qualit\u00e0 \u00e8 bassa a causa di gravi errori anatomici e omissioni significative. Landmark di tipo Cusp sono erroneamente presenti su incisivi e canini, che non dovrebbero averli. Inoltre, mancano completamente i landmark OuterPoint sui canini e i FacialPoint sui premolari, indicando una scarsa accuratezza generale e coerenza anatomica."
+  },
+  {
+    "scan": "XGOF741N_lower",
+    "real_quality": 3,
+    "pred_quality": 1,
+    "motivation": "Molti landmark di tipo Cusp (blu) sono posizionati su incisivi e canini, denti che per definizione non presentano cuspidi; questo \u00e8 un errore anatomico grave. Sono presenti anche altre imprecisioni nel posizionamento dei landmark FacialPoint, Mesial e Distal sugli incisivi, riducendo ulteriormente la qualit\u00e0 generale. Alcuni landmark risultano mancanti o disallineati dalla morfologia del dente."
+  },
+  {
+    "scan": "XKTTBEE0_lower",
+    "real_quality": 5,
+    "pred_quality": 1,
+    "motivation": "La scansione presenta gravi incongruenze anatomiche, come la presenza di landmark di tipo Cusp sui denti incisivi e canini, contrariamente alla definizione. Inoltre, mancano completamente i landmark OuterPoint sui premolari. Questi errori sistematici e le violazioni delle regole anatomiche di base indicano una qualit\u00e0 molto bassa."
+  },
+  {
+    "scan": "XNNZTXK5_lower",
+    "real_quality": 5,
+    "pred_quality": 3,
+    "motivation": "Sono presenti cuspidi sui denti incisivi, che \u00e8 un errore anatomico. Si notano inoltre alcune mancate rilevazioni di landmark Mesial e Distal sui molari. Tuttavia, la maggior parte degli altri landmark \u00e8 posizionata correttamente sulla superficie del dente e segue la morfologia, evitando gravi errori di collocazione o assenza al di fuori dei casi specifici."
+  },
+  {
+    "scan": "Y48DURWV_lower",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La presenza di landmark di tipo 'Cusp' sugli incisivi rappresenta una chiara violazione delle regole anatomiche, riducendo significativamente la qualit\u00e0 complessiva. Sono presenti anche alcuni landmark meno precisi o potenzialmente duplicati sui molari. Nonostante una distribuzione e simmetria generalmente accettabili per altri landmark, l'errore fondamentale sulle cuspidi degli incisivi abbassa la valutazione."
+  },
+  {
+    "scan": "Y8BV16EI_lower",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark \u00e8 posizionata correttamente e segue la morfologia dentale. Tuttavia, si notano evidenti errori nei punti OuterPoint (ciano) sugli incisivi anteriori, che sono fuori superficie o eccessivamente bassi, compromettendo la qualit\u00e0 complessiva e la simmetria dell'arcata."
+  },
+  {
+    "scan": "YNKZHRP0_lower",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "L'immagine di input non presenta alcun landmark. Poich\u00e9 la valutazione si basa sulla correttezza e coerenza anatomica dei landmark, la loro totale assenza indica la qualit\u00e0 pi\u00f9 bassa possibile."
+  },
+  {
+    "scan": "ZGH1UT1Q_lower",
+    "real_quality": 4,
+    "pred_quality": 1,
+    "motivation": "La presenza di landmark di tipo Cusp sui denti incisivi e canini \u00e8 un errore anatomico fondamentale, poich\u00e9 queste classi di denti non presentano cuspidi. Inoltre, si notano assenze di landmark Mesial sugli incisivi. Questi errori basilari indicano una qualit\u00e0 molto bassa del posizionamento dei landmark."
+  },
+  {
+    "scan": "ameziani_upper",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 bassa a causa della presenza errata di landmark Cuspali (blu) sugli incisivi, che per definizione non presentano cuspidi. Questo errore anatomico significativo riduce notevolmente l'accuratezza. Tuttavia, la maggior parte degli altri landmark \u00e8 posizionata correttamente sulle superfici dentali."
+  }
+]
