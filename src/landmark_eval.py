@@ -307,7 +307,7 @@ def evaluate_all_scans(gt_root, pred_csv, categories):
                 ap_per_scan[cat].append(0.0)
                 ar_per_scan[cat].append(0.0)
 
-            # Conta GT
+            #Conta GT
             gt_count_per_scan[cat].append(len(gt_scan[cat][scan_name]))
 
         mAP_scan = np.mean([metrics["AP"][cat] for cat in valid_categories])
@@ -428,12 +428,11 @@ def quality_profile_for_scan(results, categories, scan_name):
         "best_class": best_class,
         "worst_class": worst_class,
     }
-def compute_class_counts_for_scan(PRED_CSV: Path, scan_name: str, CATEGORIES: list):
-    """
-    Restituisce un dizionario {classe -> count} per le 6 classi di landmark.
-    """
-    coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan_name)
+#Restituisce un dizionario {classe -> count} per le 6 classi di landmark.
 
+def compute_class_counts_for_scan(PRED_CSV: Path, scan_name: str, CATEGORIES: list):
+   
+    coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan_name)
     counts = {cat: 0 for cat in CATEGORIES}
 
     for cls in classes_pred:
@@ -448,7 +447,6 @@ def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENS
     dataset = []
     for scan in input_scans:
         profile = quality_profile_for_scan(results, CATEGORIES, scan)
-        #carica predizioni dal CSV
         coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan)
         count_per_class = compute_class_counts_for_scan(PRED_CSV, scan, CATEGORIES)
         mesh_path = SCANS / f"{scan}.obj"
@@ -466,12 +464,10 @@ def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENS
         dataset.append({
             "scan": scan,
             "profile": profile,
-            #paths
             "mesh": str(SCANS / f"{scan}.obj"),
             "gt": str(GT_ROOT / f"{scan}__kpt.json"),
             "seg": str(SCANS / f"{scan}_seg.json"),
             "image_pred": str(SCREENSHOT_ROOT / f"{scan}/predicted.png"),
-            #predizioni dal CSV
             "pred_coords": coords_pred,
             "pred_classes": classes_pred,
             "pred_count_per_class": count_per_class,

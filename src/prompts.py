@@ -87,18 +87,24 @@ Non descrivere le immagini degli esempi. Non proporre correzioni. Concentrati so
 def build_user_request_for_scan(input_info, examples):
 
     lvl5_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl5"])
+    lvl4_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl4"])
+    lvl3_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl3"])
     lvl2_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl2"])
     lvl1_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl1"])
 
     pred_counts_global_str = "\n".join(
         f"- {cls}: {input_info['pred_count_per_class'][cls]}" for cls in input_info['pred_count_per_class']
     )
-    group_counts_str = format_group_counts(input_info["pred_count_per_group_class"])
+    #group_counts_str = format_group_counts(input_info["pred_count_per_group_class"])
     return f"""
 ## Profili degli esempi
 
 ### Esempio qualità 5
 {lvl5_profiles}
+### Esempio qualità 4
+{lvl4_profiles}
+### Esempio qualità 3
+{lvl3_profiles}
 
 ### Esempio qualità 2
 {lvl2_profiles}
@@ -109,13 +115,13 @@ def build_user_request_for_scan(input_info, examples):
 ## Statistiche quantitative sull'immagine di input da valutare
 ### Conteggio dei landmark per classe
 {pred_counts_global_str}
-### Statistiche per gruppo dentale
-{group_counts_str}
 ## Immagini fornite (in ordine)
 1. Esempio qualità 5
-2. Esempio qualità 2
-3. Esempio qualità 1
-4. Immagine di input da valutare
+2. Esempio qualità 4
+3. Esempio qualità 3
+4. Esempio qualità 2
+5. Esempio qualità 1
+6. Immagine di input da valutare
 
-Valuta solo l’immagine di input (la quarta), confrontandola con gli esempi e con i loro profili.
+Valuta solo l’immagine di input (ultima fornita), confrontandola con gli esempi e con i loro profili.
 """

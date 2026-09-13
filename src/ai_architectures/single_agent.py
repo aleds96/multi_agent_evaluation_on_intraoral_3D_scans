@@ -7,7 +7,7 @@ from google.adk.agents.llm_agent import LlmAgent
 from google.adk.runners import InMemoryRunner
 
 from src.llm_utils_fun import (
-    run_multimodal,
+    safe_run_multimodal,
     ensure_session,
 )
 from src.prompts import build_user_request_for_scan,instruction_prompt
@@ -42,16 +42,19 @@ async def eval_single_scan(scan_item, example_items, runner, app_name):
 
     image_paths = (
         [item["image_pred"] for item in example_items["lvl5"]] +
+        [item["image_pred"] for item in example_items["lvl4"]] +
+        [item["image_pred"] for item in example_items["lvl3"]] +
         [item["image_pred"] for item in example_items["lvl2"]] +
         [item["image_pred"] for item in example_items["lvl1"]] +
         [scan_item["image_pred"]]
     )
 
-    final_event = await run_multimodal(
+    final_event = await safe_run_multimodal(
         runner,
         session_id,
         image_paths,
         prompt,
+        max_retries=10,
     )
     verdict = None
     if final_event.actions and "quality_verdict" in final_event.actions.state_delta:
@@ -105,14 +108,14 @@ async def run_single_agent(dataset_primary, dataset_examples):
     
     runner = InMemoryRunner(app=app)
 
-    semaphore = asyncio.Semaphore(2)
+    semaphore = asyncio.Semaphore(1)
     tasks = []
     for i, item in enumerate(dataset_primary):
         tasks.append(asyncio.create_task(
             eval_scan_task(item, dataset_examples, runner, app.name, semaphore)
         ))
-        if i % 2 == 0 and i > 0:
-            await asyncio.sleep(30)
+        if i % 10 == 0 and i > 0:
+            await asyncio.sleep(15)
     outputs = await asyncio.gather(*tasks)
     return outputs
 
@@ -129,7 +132,7 @@ async def main():
     stats_over_scan = stats["results"]
     quantile_mAP = stats["quantile_mAP_over_scan"]
 
-    quantiles = {"lvl1": 0.10, "lvl2": 0.25, "lvl5": 0.90}
+    quantiles = {"lvl1": 0.10, "lvl2": 0.25, "lvl3":0.5, "lvl4":0.75, "lvl5": 0.90}
 
     primary_examples, oracle_pool = select_examples_by_quantile(
         stats_over_scan,
@@ -177,7 +180,7 @@ async def main():
     evaluation = evaluate_agent(outputs)
 
     config = {
-        "architecture": "v5_distthr_nocusp_single_agent",
+        "architecture": "v9_walllv_single_agent",
         "model": "gemini-2.5-flash",
         "primary_examples": primary_examples,
     }
