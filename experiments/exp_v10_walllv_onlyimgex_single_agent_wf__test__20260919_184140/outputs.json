@@ -1,0 +1,20 @@
+[
+  {
+    "scan": "AKBDPB4C_upper",
+    "real_quality": 5,
+    "pred_quality": 3,
+    "motivation": "I landmark sono per lo pi\u00f9 ben posizionati e la simmetria generale \u00e8 rispettata. Tuttavia, alcuni punti mesiali e distali sui molari appaiono leggermente staccati o fluttuanti dalla superficie del dente. Questo indica una precisione non ottimale in alcune aree, portando a una valutazione intermedia."
+  },
+  {
+    "scan": "ANLLPLV7_upper",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "L'immagine di input non presenta alcun landmark. Di conseguenza, non \u00e8 possibile effettuare una valutazione della qualit\u00e0 del posizionamento dei landmark. La mancanza di landmark impedisce qualsiasi analisi secondo i criteri stabiliti, risultando nella qualit\u00e0 pi\u00f9 bassa."
+  },
+  {
+    "scan": "CK45DVLG_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione su tutti i denti, rispettando la morfologia e le regole anatomiche. Si osserva un'ottima simmetria e coerenza nella distribuzione dei punti. Non ci sono landmark mancanti, duplicati o posizionati erroneamente, indicando una qualit\u00e0 eccellente."
+  }
+]

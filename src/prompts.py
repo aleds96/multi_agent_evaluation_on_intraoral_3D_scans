@@ -84,7 +84,7 @@ Restituisci un JSON con:
 Non descrivere le immagini degli esempi. Non proporre correzioni. Concentrati solo sull’immagine di input.
 """
 
-def build_user_request_for_scan(input_info, examples):
+def build_user_request_for_scan(input_info, examples,use_profile=False,input_stat=True,goal=True):
 
     lvl5_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl5"])
     lvl4_profiles = "\n".join(_format_profile(p['profile']) for p in examples["lvl4"])
@@ -96,32 +96,50 @@ def build_user_request_for_scan(input_info, examples):
         f"- {cls}: {input_info['pred_count_per_class'][cls]}" for cls in input_info['pred_count_per_class']
     )
     #group_counts_str = format_group_counts(input_info["pred_count_per_group_class"])
-    return f"""
-## Profili degli esempi
+    profile_prompt = f""" 
+    ## Profili degli esempi
+    ### Esempio qualità 5
+    {lvl5_profiles}
+    ### Esempio qualità 4
+    {lvl4_profiles}
+    ### Esempio qualità 3
+    {lvl3_profiles}
 
-### Esempio qualità 5
-{lvl5_profiles}
-### Esempio qualità 4
-{lvl4_profiles}
-### Esempio qualità 3
-{lvl3_profiles}
+    ### Esempio qualità 2
+    {lvl2_profiles}
 
-### Esempio qualità 2
-{lvl2_profiles}
+    ### Esempio qualità 1
+    {lvl1_profiles}
+    
+    """
 
-### Esempio qualità 1
-{lvl1_profiles}
+    input_stat_prompt=f""" 
+    ## Statistiche quantitative sull'immagine di input da valutare
+        ### Conteggio dei landmark per classe
+        {pred_counts_global_str}
 
-## Statistiche quantitative sull'immagine di input da valutare
-### Conteggio dei landmark per classe
-{pred_counts_global_str}
-## Immagini fornite (in ordine)
-1. Esempio qualità 5
-2. Esempio qualità 4
-3. Esempio qualità 3
-4. Esempio qualità 2
-5. Esempio qualità 1
-6. Immagine di input da valutare
+    """
 
-Valuta solo l’immagine di input (ultima fornita), confrontandola con gli esempi e con i loro profili.
-"""
+    img_prompt ="""
+    ## Immagini fornite (in ordine)
+    1. Esempio qualità 5
+    2. Esempio qualità 4
+    3. Esempio qualità 3
+    4. Esempio qualità 2
+    5. Esempio qualità 1
+    6. Immagine di input da valutare
+    """ 
+    goal_prompt="""
+    Valuta solo l’immagine di input (ultima fornita), confrontandola con gli esempi e con i loro profili.
+    """
+    final_prompt = ''
+    if use_profile: 
+        final_prompt+=profile_prompt
+    if input_stat: 
+        final_prompt+=input_stat_prompt
+    final_prompt+=img_prompt
+    if goal: 
+        final_prompt+=goal_prompt
+    return final_prompt
+
+

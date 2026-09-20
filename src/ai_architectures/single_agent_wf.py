@@ -5,7 +5,9 @@ from pathlib import Path
 from google.adk.apps import App
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.runners import InMemoryRunner
-
+from google.adk import Workflow
+from google.adk import Context
+from google.adk.workflow import node
 from src.llm_utils_fun import (
     safe_run_multimodal,
     ensure_session,
@@ -29,7 +31,10 @@ cred_path = ROOT / os.getenv("SERVICE_ACCOUNT_KEY")
 os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GOOGLE_CLOUD_PROJECT")
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = os.getenv("GOOGLE_GENAI_USE_VERTEXAI")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
-
+EXAMPLE_ITEMS = None
+ORACLE_DATASET = None
+RUNNER = None
+APP_NAME = None
 
 
 async def eval_single_scan(scan_item, example_items, runner, app_name):
@@ -56,15 +61,8 @@ async def eval_single_scan(scan_item, example_items, runner, app_name):
         prompt,
         max_retries=10,
     )
-    verdict = None
-    if final_event.actions and "quality_verdict" in final_event.actions.state_delta:
-        verdict = final_event.actions.state_delta["quality_verdict"]
-
-    if verdict is None:
-        session = await runner.session_service.get_session(app_name, session_id)
-        verdict = session.state.get("quality_verdict")
-
-    #print(f"Final verdict for scan {scan_item['scan']}:\n{verdict}")
+    
+    verdict = final_event.output
     return verdict
 
 async def eval_scan_task(scan_item, example_items, runner, app_name, semaphore):
@@ -81,18 +79,35 @@ async def eval_scan_task(scan_item, example_items, runner, app_name, semaphore):
             "motivation": pred_motivation,
         }
 
+evaluation_agent = LlmAgent(
+    name="LandmarkQualityEvaluator",
+    model="gemini-2.5-flash",
+    output_schema=SingleAgentOutput,
+    instruction=instruction_prompt,
+    output_key="quality_verdict",
+)
+@node(rerun_on_resume=True)
+async def evaluation_workflow(
+    ctx: Context,
+    node_input,
+):
+    result = await ctx.run_node(
+        evaluation_agent,
+        node_input,
+    )
+
+    return result
+root_agent = Workflow(
+    name="landmark_quality_workflow",
+    edges=[
+        ("START", evaluation_workflow)
+    ],
+)
 
 
 async def run_single_agent(dataset_primary, dataset_examples):
 
-    evaluation_agent = LlmAgent(
-        name="LandmarkQualityEvaluator",
-        model="gemini-2.5-flash",
-        output_schema=SingleAgentOutput,
-        instruction=instruction_prompt,
-        output_key="quality_verdict",
-    )
-
+   
     from google.adk.plugins import LoggingPlugin
     from google.adk.plugins import DebugLoggingPlugin
     
@@ -102,7 +117,7 @@ async def run_single_agent(dataset_primary, dataset_examples):
     ]
     app = App(
         name="landmark_quality_app_v1",
-        root_agent=evaluation_agent,
+        root_agent=root_agent,
         plugins=plugins    
     )
     
@@ -180,7 +195,7 @@ async def main():
     evaluation = evaluate_agent(outputs)
 
     config = {
-        "architecture": "v10_walllv_onlyimgex_single_agent",
+        "architecture": "v13b_walllv_onlyinputstat_single_agent_wf",
         "model": "gemini-2.5-flash",
         "primary_examples": primary_examples,
     }

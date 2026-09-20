@@ -8,13 +8,26 @@ def part_from_image_path(path):
     mime = mimetypes.guess_type(path)[0] or "image/png"
     return types.Part.from_bytes(data=data, mime_type=mime)
 
+def build_multimodal_prompt(
+    text,
+    image_paths,
+):
 
-async def run_multimodal(runner, session_id, image_paths, prompt):
-    parts = [types.Part.from_text(text=prompt)]
+    parts = [
+        types.Part.from_text(text=text)
+    ]
+
     for img in image_paths:
-        parts.append(part_from_image_path(img))
+        parts.append(
+            part_from_image_path(img)
+        )
+    return types.Content(
+        role="user",
+        parts=parts,
+    )
+async def run_multimodal(runner, session_id, image_paths, prompt):
 
-    msg = types.Content(role="user", parts=parts)
+    msg =build_multimodal_prompt(text=prompt,image_paths=image_paths)
 
     last_event = None
     async for event in runner.run_async(
@@ -23,6 +36,8 @@ async def run_multimodal(runner, session_id, image_paths, prompt):
         new_message=msg,
     ):
         last_event = event
+    if last_event is None:
+        raise RuntimeError("No event returned from workflow.")
     return last_event
 
 

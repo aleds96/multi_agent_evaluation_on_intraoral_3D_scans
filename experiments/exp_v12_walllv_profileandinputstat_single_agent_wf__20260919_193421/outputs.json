@@ -1,0 +1,338 @@
+[
+  {
+    "scan": "AKBDPB4C_upper",
+    "real_quality": 5,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark \u00e8 posizionata correttamente sulle superfici dentali. Tuttavia, si notano imprecisioni nei FacialPoint, che risultano spesso troppo elevati o decentrati, specialmente sugli incisivi e sui canini. Anche i Cusp Point sui molari mostrano una certa dispersione, non essendo sempre perfettamente centrati sulle cuspidi."
+  },
+  {
+    "scan": "ANLLPLV7_upper",
+    "real_quality": 1,
+    "pred_quality": 5,
+    "motivation": "La scansione presenta un posizionamento dei landmark estremamente accurato e anatomicamente coerente. Tutti i tipi di landmark sono correttamente distribuiti sulla superficie dei denti, rispettando la morfologia e le regole anatomiche. Non si osservano errori evidenti di posizionamento, duplicazione o assenza di punti."
+  },
+  {
+    "scan": "CK45DVLG_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti. Non si rilevano errori di duplicazione, assenza o posizionamento fuori dalla superficie dentale. La distribuzione dei landmark segue fedelmente la morfologia di ciascun dente, mostrando un'ottima simmetria."
+  },
+  {
+    "scan": "CLNVA9MZ_upper",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark, inclusi Mesial, Distal, Cusp e FacialPoint, \u00e8 ben posizionata e rispetta l'anatomia dentale. Tuttavia, si evidenzia una significativa assenza dei landmark OuterPoint sugli incisivi e canini. Inoltre, alcuni InnerPoint sui denti anteriori mostrano un posizionamento meno preciso."
+  },
+  {
+    "scan": "CVTHSBS5_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La scansione presenta un posizionamento dei landmark estremamente accurato e coerente su tutti i denti e per tutte le classi. Non si rilevano errori evidenti di posizionamento, duplicazioni o landmark mancanti. La simmetria e la distribuzione anatomica sono eccellenti, indicando un'elevata precisione complessiva."
+  },
+  {
+    "scan": "DGUTSTAN_upper",
+    "real_quality": 3,
+    "pred_quality": 4,
+    "motivation": "La maggior parte dei landmark \u00e8 posizionata correttamente e rispetta l'anatomia dentale. Tuttavia, si notano leggere imprecisioni nel posizionamento delle cuspidi su alcuni molari e premolari, che non sono sempre perfettamente sul picco. Inoltre, i FacialPoint sugli incisivi centrali appaiono leggermente bassi. Nonostante queste piccole deviazioni, la coerenza generale e l'assenza di errori gravi la collocano in una fascia di alta qualit\u00e0."
+  },
+  {
+    "scan": "DKZWON8N_upper",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti. Non si rilevano errori di orientamento, duplicazioni o posizionamenti al di fuori delle superfici dentali. La distribuzione e la simmetria sono eccellenti, indicando un'ottima qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "E0CUCLHY_upper",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "La scansione mostra un posizionamento dei landmark estremamente accurato e coerente su tutti i tipi di dente. Tutte le classi di landmark sono correttamente identificate e posizionate secondo le regole anatomiche. Non si rilevano errori significativi, duplicazioni o assenze di landmark."
+  },
+  {
+    "scan": "E11NEPB6_upper",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 complessiva \u00e8 bassa a causa della quasi totale assenza dei landmark FacialPoint (magenta) e OuterPoint (ciano) sui molari. Inoltre, gli stessi landmark sono assenti o gravemente malposizionati sugli incisivi centrali. Questo denota una debolezza significativa e diffusa nel posizionamento di classi importanti di landmark, sebbene gli altri punti (Mesial, Distal, Cusp, InnerPoint) siano generalmente ben posizionati."
+  },
+  {
+    "scan": "EJWZZZRF_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La scan mostra un posizionamento eccellente dei landmark su tutti i denti dell'arcata inferiore. Tutti i tipi di landmark sono correttamente posizionati, inclusi Mesial, Distal, Cusp, InnerPoint, OuterPoint e FacialPoint. L'aderenza alle regole anatomiche \u00e8 impeccabile, senza errori evidenti di orientamento, duplicazioni o punti fuori dente."
+  },
+  {
+    "scan": "EK26QFUW_upper",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "La disposizione dei landmark \u00e8 eccellente, con un'ottima coerenza anatomica e simmetria su tutta l'arcata. Tutti i landmark sono posizionati correttamente sulle superfici dentali e rispecchiano le loro classi. Si osservano solo imperfezioni minime su alcuni FacialPoint degli incisivi."
+  },
+  {
+    "scan": "GANLQSL1_upper",
+    "real_quality": 4,
+    "pred_quality": 4,
+    "motivation": "La qualit\u00e0 dei landmark \u00e8 elevata, con la maggior parte dei punti posizionati correttamente e buona coerenza anatomica. Sono presenti tutti i landmark attesi, senza duplicazioni o assenze evidenti. Si osservano solo lievi imprecisioni nei punti mesiali, distali, linguali e buccali sui molari posteriori."
+  },
+  {
+    "scan": "GG5ARUVQ_upper",
+    "real_quality": 2,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark su incisivi, canini e premolari \u00e8 posizionata correttamente e con buona coerenza anatomica. Tuttavia, i molari posteriori mostrano errori significativi: i landmark Mesial, Distal e FacialPoint sono spesso situati sulla superficie occlusale anzich\u00e9 sulle rispettive facce anatomiche. Queste imprecisioni sui molari riducono la qualit\u00e0 complessiva, posizionandola intorno alla mediana."
+  },
+  {
+    "scan": "GPADPK3N_upper",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti e le rispettive superfici. Non si rilevano errori significativi come landmark fuori superficie, errata orientazione o assenze/duplicazioni evidenti. La distribuzione e la simmetria dei punti sono eccellenti, indicando un'accuratezza complessiva molto elevata."
+  },
+  {
+    "scan": "GSHA8E4C_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati correttamente e in modo coerente su tutte le classi e i gruppi dentali. La distribuzione \u00e8 anatomica e simmetrica, senza evidenti errori di orientamento o posizionamento fuori superficie. La qualit\u00e0 complessiva \u00e8 molto elevata."
+  },
+  {
+    "scan": "H5EFRXCQ_upper",
+    "real_quality": 2,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati in modo estremamente coerente e accurato su tutti i denti, rispettando le regole anatomiche. Non si osservano errori grossolani come punti mancanti, duplicati o posizionati al di fuori della superficie del dente. La distribuzione e la simmetria sono eccellenti, indicando una qualit\u00e0 di annotazione molto elevata."
+  },
+  {
+    "scan": "HDVYC7UQ_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La qualit\u00e0 complessiva \u00e8 eccellente, con tutti i landmark posizionati correttamente e in modo coerente con l'anatomia dentale. Non si osservano errori di posizionamento, duplicazioni o assenze. La simmetria e la distribuzione dei landmark sono ottimali."
+  },
+  {
+    "scan": "I3T81ZK8_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La qualit\u00e0 complessiva dei landmark \u00e8 eccellente, con una distribuzione molto consistente e una grande coerenza anatomica. Tutti i landmark sono posizionati accuratamente sulle superfici dentali appropriate e mostrano ottima simmetria. Non ci sono errori evidenti di posizionamento, duplicazioni o assenze significative."
+  },
+  {
+    "scan": "J1A5FRQN_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata accuratezza e consistenza su tutti i denti, dimostrando una coerenza anatomica eccellente. Non si rilevano errori significativi come landmark fuori sede, duplicati o mancanti. La simmetria e la distribuzione dei punti seguono fedelmente la morfologia dentale."
+  },
+  {
+    "scan": "K4E9RKYU_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata accuratezza e coerenza anatomica su tutti i denti dell'arcata. Non si osservano errori di orientamento, duplicazioni o punti fuori dente. La distribuzione dei landmark rispetta la morfologia dentale e la simmetria generale, indicando una qualit\u00e0 eccellente."
+  },
+  {
+    "scan": "K6LK1YRK_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti. La distribuzione dei punti, in particolare Mesial, Distal, InnerPoint, OuterPoint e Cusp, \u00e8 eccellente e segue fedelmente la morfologia dentale. Non si osservano errori come landmark duplicati, mancanti o fuori dalla superficie, n\u00e9 anomalie di orientamento."
+  },
+  {
+    "scan": "K70NYZYE_upper",
+    "real_quality": 1,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark \u00e8 posizionata correttamente, in particolare i Mesial, Distal e Cusp. Tuttavia, i FacialPoint sugli incisivi sono costantemente posizionati troppo in basso. Inoltre, un OuterPoint su un molare appare visibilmente fuori posto, riducendo la qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "LAFJJKAE_upper",
+    "real_quality": 2,
+    "pred_quality": 4,
+    "motivation": "I landmark sono quasi tutti ben posizionati, con buona coerenza anatomica e simmetria generale. I punti Mesial, Distal e Facial sono eccellenti. Tuttavia, alcune cuspidi e i punti Inner/Outer sui molari presentano una precisione leggermente inferiore, impedendo una qualit\u00e0 superiore."
+  },
+  {
+    "scan": "LE4E8YWJ_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La disposizione dei landmark \u00e8 eccellente e coerente su tutti i denti, rispettando l'anatomia. Non si osservano errori di posizionamento, duplicazioni o assenze. La simmetria e la distribuzione dei punti sono ottimali."
+  },
+  {
+    "scan": "LLJGPB8I_upper",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La posizione dei landmark \u00e8 estremamente accurata e coerente su tutti i denti dell'arcata. Non si rilevano errori di orientamento, duplicazioni o punti mancanti. La distribuzione dei landmark segue in modo eccellente la morfologia anatomica, rendendo questa scan di altissima qualit\u00e0."
+  },
+  {
+    "scan": "LSMGKLAH_upper",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 complessiva \u00e8 compromessa dalla quasi totale assenza o errato posizionamento dei landmark OuterPoint (ciano) su incisivi, canini e premolari. Nonostante gli altri landmark (Mesial, Distal, Cusp, InnerPoint, FacialPoint) siano generalmente ben posizionati, l'errore sistematico su una classe cruciale riduce drasticamente l'accuratezza. Questo difetto \u00e8 grave e rende la scan di bassa qualit\u00e0."
+  },
+  {
+    "scan": "M7RTPNPC_upper",
+    "real_quality": 2,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati in modo estremamente preciso e coerente su tutti i denti, rispettando l'anatomia e la morfologia dentale. Non si osservano errori evidenti di posizionamento, duplicazioni o landmark fuori dalla superficie dentale. La distribuzione e la simmetria sono eccellenti."
+  },
+  {
+    "scan": "OO75RHX3_lower",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La qualit\u00e0 complessiva \u00e8 eccellente. Tutti i landmark sono posizionati correttamente, con elevata coerenza anatomica e simmetria nell'arcata. Non si osservano punti mancanti, duplicati o posizionamenti errati al di fuori delle superfici dentali."
+  },
+  {
+    "scan": "P5NL90OZ_lower",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La scansione presenta un posizionamento dei landmark estremamente accurato e anatomicamente coerente. Non si riscontrano errori evidenti come landmark mancanti, duplicati o posizionati fuori dalla superficie del dente. La distribuzione e la simmetria dei landmark sono eccellenti, indicando un'elevata precisione in tutte le classi."
+  },
+  {
+    "scan": "PY6M5YZ2_lower",
+    "real_quality": 2,
+    "pred_quality": 4,
+    "motivation": "La maggior parte dei landmark, in particolare Mesial, Distal e Cusp, sono posizionati con buona accuratezza e coerenza anatomica. Tuttavia, si notano alcuni landmark mancanti per le classi InnerPoint, OuterPoint e FacialPoint su un incisivo centrale, oltre a qualche lieve imprecisione di posizionamento. Questo comporta una riduzione della qualit\u00e0 complessiva, ma il livello di accuratezza generale rimane alto."
+  },
+  {
+    "scan": "Q5GSR6N2_lower",
+    "real_quality": 2,
+    "pred_quality": 2,
+    "motivation": "La maggior parte dei landmark \u00e8 ben posizionata e segue la morfologia dentale, con buona simmetria generale. Tuttavia, un InnerPoint (giallo) \u00e8 chiaramente fuori dalla superficie del dente sulla parte posteriore destra, indicando un errore significativo. Questo singolo errore grave riduce notevolmente la qualit\u00e0 complessiva, nonostante l'accuratezza degli altri landmark."
+  },
+  {
+    "scan": "QA27COSZ_lower",
+    "real_quality": 2,
+    "pred_quality": 4,
+    "motivation": "I landmark sono generalmente accurati e rispettano le regole anatomiche, con tipologie di landmark corrette per gruppo dentale. Si osservano lievi discrepanze, come un posizionamento leggermente impreciso di alcuni punti Cusp sui molari e premolari, e minime variazioni nelle posizioni degli OuterPoint e InnerPoint. Nel complesso, la qualit\u00e0 \u00e8 buona, ma con spazio per un raffinamento minore."
+  },
+  {
+    "scan": "QF3P9YRI_lower",
+    "real_quality": 3,
+    "pred_quality": 4,
+    "motivation": "I landmark Mesial, Distal, Cusp e InnerPoint mostrano buona precisione e coerenza anatomica. Tuttavia, i FacialPoint e alcuni OuterPoint sugli incisivi e canini sono posizionati troppo in basso, vicino al margine gengivale, indicando una minore accuratezza in queste aree. Nonostante questa imprecisione, la qualit\u00e0 generale \u00e8 buona e non presenta errori gravi come landmark mancanti o fuori dalla superficie."
+  },
+  {
+    "scan": "QOCAWJXM_lower",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza su tutti i denti dell'arcata. Non si osservano errori di posizionamento, duplicazioni o punti fuori dalla superficie del dente. La distribuzione e la tipologia dei landmark, inclusi quelli delle cuspidi, sono impeccabili e rispettano fedelmente l'anatomia dentale."
+  },
+  {
+    "scan": "QPYE7NOP_lower",
+    "real_quality": 1,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e consistenza su tutti i denti dell'arcata inferiore. Si osserva una forte aderenza alle regole anatomiche e una distribuzione uniforme. Non ci sono errori evidenti di duplicazione, assenza o posizionamento fuori dal dente."
+  },
+  {
+    "scan": "QTDZUUZV_lower",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La disposizione dei landmark \u00e8 eccellente, con tutti i punti posizionati correttamente sulle superfici dentali. Si osserva un'ottima coerenza anatomica per tutte le classi di landmark, senza errori di orientamento o posizionamento. La simmetria e la distribuzione sono ideali, indicando una qualit\u00e0 elevata."
+  },
+  {
+    "scan": "RUXSXSCL_lower",
+    "real_quality": 1,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata accuratezza e coerenza anatomica su tutti i denti, inclusi cuspidi e punti mesiali/distali. La distribuzione dei punti rispecchia fedelmente la morfologia dentale e la simmetria tra denti omologhi \u00e8 eccellente. Non si rilevano errori significativi come duplicazioni, assenze o posizionamenti errati al di fuori della superficie del dente. Tutti i tipi di landmark sono presenti nei denti appropriati e correttamente orientati, indicando una qualit\u00e0 molto alta."
+  },
+  {
+    "scan": "S0AON6PZ_lower",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "L'immagine mostra un'arcata incompleta con numerosi denti mancanti. I landmark sono estremamente scarsi e distribuiti in modo incoerente sui denti rimanenti. Molte classi di landmark sono assenti o insufficienti, indicando una rilevazione molto lacunosa."
+  },
+  {
+    "scan": "S8FFW0OP_lower",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "La scansione mostra un posizionamento dei landmark molto accurato e coerente con l'anatomia dentale. Tutti i landmark sono posizionati correttamente sulle rispettive superfici, senza errori di orientamento o presenza/assenza. La distribuzione \u00e8 uniforme e rispetta la morfologia dei denti, indicando una qualit\u00e0 elevata."
+  },
+  {
+    "scan": "SGIFTXFD_lower",
+    "real_quality": 2,
+    "pred_quality": 4,
+    "motivation": "I landmark sono ben posizionati e coerenti con l'anatomia dentale, con una buona simmetria e distribuzione generale. Tutte le classi di landmark sono presenti e correttamente allocate sulle superfici dei denti. Non si rilevano errori significativi o landmark mancanti, indicando una qualit\u00e0 molto buona, sebbene non impeccabile."
+  },
+  {
+    "scan": "SI19V0MY_lower",
+    "real_quality": 2,
+    "pred_quality": 4,
+    "motivation": "I landmark sono complessivamente ben posizionati, con tutte le classi rappresentate correttamente e nessun errore evidente di duplicazione o punti fuori dalla superficie del dente. La distribuzione e la coerenza anatomica sono elevate, inclusa la corretta presenza delle cuspidi su premolari e molari. Tuttavia, alcune piccole imprecisioni nel centraggio di InnerPoint e FacialPoint su alcuni denti anteriori impediscono una valutazione massima."
+  },
+  {
+    "scan": "UNKC1VVC_lower",
+    "real_quality": 3,
+    "pred_quality": 4,
+    "motivation": "La scansione mostra un'ottima qualit\u00e0 generale, con landmark posizionati in modo coerente e accurato rispetto all'anatomia dentale. Si osserva una buona simmetria e una corretta distribuzione dei punti su tutti i denti, senza evidenti errori di orientamento o landmark fuori posizione. Tutte le classi sono ben rappresentate, indicando un'elevata precisione."
+  },
+  {
+    "scan": "VBUD4E5R_lower",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti. Non sono presenti landmark fuori dalla superficie dentale, duplicazioni o errori di orientamento evidenti. La distribuzione e la simmetria dei punti sono eccellenti, indicando un'ottima qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "VCVHV931_lower",
+    "real_quality": 2,
+    "pred_quality": 5,
+    "motivation": "La qualit\u00e0 dei landmark \u00e8 molto elevata. I punti Mesial, Distal, InnerPoint, OuterPoint e FacialPoint sono posizionati in modo estremamente accurato su tutti i denti. Le cuspidi sono presenti correttamente solo su premolari e molari, con una buona distribuzione. L'assenza di errori gravi e l'ottima coerenza anatomica indicano un'elevata Average Precision."
+  },
+  {
+    "scan": "X273URFW_lower",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La posizione dei landmark \u00e8 estremamente accurata e coerente con l'anatomia dentale. Ogni classe di landmark \u00e8 correttamente posizionata e ben distribuita sulla superficie del dente, senza evidenti errori di orientamento o duplicazioni. La simmetria e l'aderenza alla morfologia sono eccellenti."
+  },
+  {
+    "scan": "X3EW8O0A_lower",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La scansione presenta un'eccellente accuratezza anatomica e una distribuzione molto coerente dei landmark su tutti i denti. Ogni punto \u00e8 posizionato correttamente, rispettando le distinzioni tra le classi e le tipologie dentali, senza errori evidenti di duplicazione, assenza o posizionamento fuori dalla superficie. La simmetria e la plausibilit\u00e0 anatomica sono ottimali."
+  },
+  {
+    "scan": "X9OQZ131_lower",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti. Si osserva una distribuzione uniforme e simmetrica, senza errori evidenti di orientamento o posizionamento fuori dente. La gestione di tutte le classi di landmark \u00e8 eccellente, contribuendo a un'ottima qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "X9QY6TGT_lower",
+    "real_quality": 3,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione e coerenza anatomica su tutti i denti dell'arcata. La distribuzione dei punti rispetta la morfologia dentale e le regole di classe, incluse le cuspidi. Non sono evidenti duplicazioni, assenze significative o posizionamenti fuori dalla superficie del dente, indicando una qualit\u00e0 eccellente."
+  },
+  {
+    "scan": "XGOF741N_lower",
+    "real_quality": 3,
+    "pred_quality": 4,
+    "motivation": "I landmark sono generalmente ben posizionati e mostrano una buona coerenza anatomica per la maggior parte delle classi, come Mesial, Distal e Cusp. Tuttavia, alcuni FacialPoint su incisivi e canini appaiono leggermente decentrati o troppo alti. Anche alcuni InnerPoint anteriori potrebbero essere posizionati meglio, ma la qualit\u00e0 complessiva rimane alta."
+  },
+  {
+    "scan": "XKTTBEE0_lower",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "I landmark sono posizionati con elevata precisione su tutti i denti, mostrando un'ottima coerenza anatomica. Non si rilevano punti mancanti, duplicati o posizionati in modo scorretto rispetto alla morfologia del dente. La distribuzione e la simmetria dei landmark sono eccellenti, rendendo la qualit\u00e0 complessiva di questa scan paragonabile ai migliori esempi."
+  },
+  {
+    "scan": "XNNZTXK5_lower",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La maggior parte dei landmark \u00e8 posizionata con alta precisione e coerenza anatomica su tutti i denti dell'arcata. Non si rilevano landmark mancanti, duplicati o posizionati in modo errato. Sebbene ci sia una leggera imprecisione nel centramento di alcuni punti Cusp sui molari, la qualit\u00e0 complessiva \u00e8 eccellente."
+  },
+  {
+    "scan": "Y48DURWV_lower",
+    "real_quality": 4,
+    "pred_quality": 2,
+    "motivation": "La scansione presenta diversi errori significativi nella regione degli incisivi, con un FacialPoint duplicato o fuori dalla superficie tra i due incisivi centrali e un altro FacialPoint sull'incisivo di sinistra posizionato troppo in basso. Si notano anche Mesial e Distal leggermente imprecisi sui canini e l'InnerPoint e OuterPoint troppo vicini su un incisivo. Tali imprecisioni, sebbene i landmark posteriori siano migliori, abbassano notevolmente la qualit\u00e0 complessiva."
+  },
+  {
+    "scan": "Y8BV16EI_lower",
+    "real_quality": 2,
+    "pred_quality": 5,
+    "motivation": "La qualit\u00e0 complessiva dei landmark \u00e8 eccellente. Tutti i punti sono posizionati correttamente sulle superfici dentali e rispettano le convenzioni anatomiche. La simmetria e la coerenza nella distribuzione dei landmark sono molto alte, senza evidenti errori di orientamento, duplicazioni o assenze."
+  },
+  {
+    "scan": "YNKZHRP0_lower",
+    "real_quality": 1,
+    "pred_quality": 3,
+    "motivation": "La maggior parte dei landmark \u00e8 posizionata correttamente e segue la morfologia dentale, con buona distribuzione e simmetria. Tuttavia, la presenza di landmark di tipo Cusp (blu) sui canini costituisce un errore anatomico evidente, in quanto le cuspidi sono attese solo su premolari e molari. Questo specifico errore riduce la qualit\u00e0 complessiva, posizionandola in una fascia intermedia."
+  },
+  {
+    "scan": "ZGH1UT1Q_lower",
+    "real_quality": 4,
+    "pred_quality": 5,
+    "motivation": "La scansione presenta un posizionamento dei landmark estremamente preciso e anatomicamente corretto su tutti gli elementi dentali. Si osserva un'eccellente simmetria e coerenza nella distribuzione dei punti, senza evidenti errori di orientamento, duplicazioni o assenze. Tutti i landmark sono posizionati correttamente sulla superficie dei denti e rispettano le definizioni anatomiche delle classi."
+  },
+  {
+    "scan": "ameziani_upper",
+    "real_quality": 3,
+    "pred_quality": 2,
+    "motivation": "La qualit\u00e0 \u00e8 compromessa dalla totale assenza di landmark FacialPoint (magenta) su tutti gli incisivi. Sebbene gli altri landmark siano per lo pi\u00f9 presenti e posizionati correttamente, questa grave e sistematica mancanza per una classe di landmark cruciale riduce significativamente la qualit\u00e0 complessiva."
+  }
+]
