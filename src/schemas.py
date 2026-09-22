@@ -1,6 +1,16 @@
 from pydantic import BaseModel, Field
 
-
+class FinalDecisionOutput(BaseModel):
+    quality: int
+    confidence: float
+    final_motivation: str
+class OracleProfileOutput(BaseModel):
+    strengths: list[str]
+    weaknesses: list[str]
+    failure_modes: list[str]
+    profile_summary: str
+class OracleErrorDescriptionOutput(BaseModel):
+    failure_analysis: str
 class SingleAgentOutput(BaseModel):
     quality: int = Field(
         ...,
@@ -10,7 +20,6 @@ class SingleAgentOutput(BaseModel):
             "complessiva della correttezza del posizionamento dei landmark."
         ),
     )
-
     motivation: str = Field(
         ...,
         description=(

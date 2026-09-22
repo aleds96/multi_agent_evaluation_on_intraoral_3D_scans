@@ -5,7 +5,41 @@ import pandas as pd
 import json
 from pathlib import Path
 from datetime import datetime
+import json
+from pathlib import Path
 
+CACHE_DIR = Path("oracle_cache")
+CACHE_DIR.mkdir(exist_ok=True)
+
+
+def get_cache_path(experiment_name):
+    return CACHE_DIR / f"{experiment_name}.json"
+def load_oracle_cache(experiment_name):
+
+    cache_path = get_cache_path(
+        experiment_name
+    )
+
+    if not cache_path.exists():
+        return {}
+
+    with open(cache_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+def save_oracle_cache(
+    experiment_name,
+    cache,
+):
+
+    cache_path = get_cache_path(
+        experiment_name )
+    with open(cache_path, "w", encoding="utf-8"
+    ) as f:
+        json.dump(
+            cache,
+            f,
+            ensure_ascii=False,
+            indent=2
+        )
 def save_experiment(config, outputs, evaluation, root="experiments"):
 
     architecture_id = config.get('architecture','')

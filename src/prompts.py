@@ -18,7 +18,38 @@ def format_group_counts(count_per_group_class):
         out.append("") 
     return "\n".join(out)
 
-instruction_prompt = """
+instruction_error_description_agent_prompt="""
+You are auditing a landmark quality evaluator.
+
+You will receive:
+
+- the same quality rubric used by the evaluator
+- the same few-shot examples
+- the same image
+- the same landmark statistics
+- the evaluator prediction
+- the evaluator motivation
+- the ground-truth quality
+
+Your task is NOT to assign a new quality score.
+
+Your task is to explain why the evaluator
+probably produced a judgement different
+from the ground truth.
+
+Focus on:
+
+- possible visual cues that misled the evaluator
+- landmark classes that may have contributed
+- weaknesses or blind spots in the evaluator reasoning
+- recurring failure patterns that could generalize
+
+Produce a concise analysis (2-6 sentences).
+
+Do not restate the prediction or the ground truth.
+Do not generate a new quality score.
+"""
+instruction_single_agent_prompt = """
 Sei un agente specializzato nella valutazione della qualità dei landmark dentali su scansioni 3D intraorali. 
 Il tuo compito è analizzare esclusivamente l’immagine di input fornita dall’utente, confrontandola con gli esempi 
 e con i loro profili di qualità.
@@ -141,5 +172,152 @@ def build_user_request_for_scan(input_info, examples,use_profile=False,input_sta
     if goal: 
         final_prompt+=goal_prompt
     return final_prompt
+def build_oracle_error_descriptor_agent_prompt(oracle_scan,prediction,example_items): 
+    base_prompt = build_user_request_for_scan(
+    oracle_scan,
+    example_items,
+    goal=False)
+    meta_prompt = f"""
+            {base_prompt}
+            ----------------------------------------
+            RISULTATO DEL VALUTATORE
+    
+            Predicted quality:
+            {prediction["quality"]}
+    
+            Ground truth quality:
+            {oracle_scan["profile"]["quality_global"]}
+    
+            Evaluator motivation:
+            {prediction["motivation"]}
+    
+            ----------------------------------------
+            Compito:
 
+            Analizza perché il valutatore ha prodotto
+            una qualità diversa dalla ground truth.
+    
+            NON rivalutare la scan.
+    
+            Individua:
 
+            - possibili bias
+            - elementi visivi che hanno tratto in inganno il valutatore
+            - landmark coinvolti
+            - motivazioni corrette
+            - motivazioni errate o incomplete
+            Restituisci breve (2-6 frasi max) analisi del valutatore 
+            """
+    return meta_prompt
+instruction_profile_builder_agent_prompt="""
+You are building a reliability profile of a landmark quality evaluator.
+
+You will receive multiple failure analyses
+generated from different scans.
+
+Your task is to identify recurring patterns.
+
+Do NOT analyse individual scans.
+
+Instead, summarize:
+
+- evaluator strengths
+- evaluator weaknesses
+- recurring failure modes
+- possible systematic biases
+
+Focus only on patterns that appear
+across multiple examples.
+
+Return concise but informative summaries (max 10 sentences).
+"""
+instruction_final_decision_agent_prompt="""
+You are the final reviewer.
+
+You will receive:
+
+- primary prediction
+- oracle evaluator profile
+
+Your task is NOT to create a new evaluation
+from scratch.
+
+Use the oracle profile to estimate how much
+the primary prediction should be trusted.
+
+Return:
+
+- final quality
+- confidence score between 0 and 1
+- concise justification
+"""
+def build_final_review_prompt(
+    scan_item,
+    example_items,
+    primary_prediction,
+    oracle_profile,
+):
+    base_prompt = build_user_request_for_scan(
+        scan_item,
+        example_items,
+        goal=False
+    )
+
+    return f"""
+{base_prompt}
+
+--------------------------------------------------
+
+VALUTAZIONE PRIMARIA
+
+Predicted quality:
+{primary_prediction["quality"]}
+
+Motivazione:
+{primary_prediction["motivation"]}
+
+--------------------------------------------------
+
+PROFILO DELL'ORACOLO
+
+Summary:
+{oracle_profile["profile_summary"]}
+
+Strengths:
+{oracle_profile["strengths"]}
+
+Weaknesses:
+{oracle_profile["weaknesses"]}
+
+Failure modes:
+{oracle_profile["failure_modes"]}
+
+--------------------------------------------------
+
+COMPITO
+
+Valuta nuovamente la scansione.
+
+Utilizza:
+
+- le stesse immagini few-shot
+- la stessa scala qualitativa
+- le statistiche quantitative
+- l'immagine target
+
+In aggiunta considera:
+
+- la valutazione primaria
+- i bias e failure mode osservati dal profilo Oracle
+
+L'obiettivo è produrre una valutazione calibrata.
+
+Se ritieni che la valutazione primaria sia affetta
+da uno dei failure mode osservati,
+puoi correggerla.
+
+Restituisci:
+
+- quality
+- motivation
+"""

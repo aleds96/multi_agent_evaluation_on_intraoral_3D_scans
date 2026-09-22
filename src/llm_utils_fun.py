@@ -2,6 +2,9 @@ import mimetypes
 from google.genai import types
 import asyncio
 import random
+
+
+
 def part_from_image_path(path):
     with open(path, "rb") as f:
         data = f.read()
@@ -42,11 +45,12 @@ async def run_multimodal(runner, session_id, image_paths, prompt):
 
 
 #gestione sssessione adk
-async def ensure_session(runner, app_name, session_id):
+async def ensure_session(runner, app_name, session_id,state_dict={}):
     await runner.session_service.create_session(
         app_name=app_name,
         user_id="eval_user",
         session_id=session_id,
+        state=state_dict
     )
 
 
