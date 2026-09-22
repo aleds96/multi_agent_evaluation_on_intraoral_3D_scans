@@ -12,8 +12,8 @@ from src.llm_utils_fun import (
     safe_run_multimodal,
     ensure_session,
 )
-from src.prompts import build_user_request_for_scan,instruction_prompt
-from src.schemas import SingleAgentOutput
+from src.prompts import build_user_request_for_scan
+from src.agents import eval_single_agent
 from src.landmark_eval import (
     compute_all_statistics,
     select_examples_by_quantile,
@@ -31,10 +31,7 @@ cred_path = ROOT / os.getenv("SERVICE_ACCOUNT_KEY")
 os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GOOGLE_CLOUD_PROJECT")
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = os.getenv("GOOGLE_GENAI_USE_VERTEXAI")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
-EXAMPLE_ITEMS = None
-ORACLE_DATASET = None
-RUNNER = None
-APP_NAME = None
+
 
 
 async def eval_single_scan(scan_item, example_items, runner, app_name):
@@ -79,20 +76,13 @@ async def eval_scan_task(scan_item, example_items, runner, app_name, semaphore):
             "motivation": pred_motivation,
         }
 
-evaluation_agent = LlmAgent(
-    name="LandmarkQualityEvaluator",
-    model="gemini-2.5-flash",
-    output_schema=SingleAgentOutput,
-    instruction=instruction_prompt,
-    output_key="quality_verdict",
-)
 @node(rerun_on_resume=True)
 async def evaluation_workflow(
     ctx: Context,
     node_input,
 ):
     result = await ctx.run_node(
-        evaluation_agent,
+        eval_single_agent,
         node_input,
     )
 
