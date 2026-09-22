@@ -1,9 +1,15 @@
 from pydantic import BaseModel, Field
 
 class FinalDecisionOutput(BaseModel):
-    quality: int
-    confidence: float
-    final_motivation: str
+    quality: int = Field(
+        ...,
+        description="Final calibrated quality score between 1 and 5."
+    )
+
+    motivation: str = Field(
+        ...,
+        description="Concise explanation (2-4 sentences) supporting the final calibrated judgement."
+    )
 class OracleProfileOutput(BaseModel):
     strengths: list[str]
     weaknesses: list[str]

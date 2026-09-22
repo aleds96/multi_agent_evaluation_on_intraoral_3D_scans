@@ -1,4 +1,5 @@
 from google.adk.agents.llm_agent import LlmAgent
+from google.genai import types
 from src.schemas import( 
     SingleAgentOutput,
     OracleErrorDescriptionOutput,
@@ -10,30 +11,38 @@ from src.prompts import (
     instruction_profile_builder_agent_prompt,
     instruction_final_decision_agent_prompt)
 
-
+MODEL_NAME = "gemini-2.5-flash"
+GENERATION_CONFIG = types.GenerateContentConfig(
+temperature=0.0,
+response_mime_type="application/json",
+)
 eval_single_agent = LlmAgent(
     name="LandmarkQualityEvaluator",
-    model="gemini-2.5-flash",
+    model=MODEL_NAME,
     output_schema=SingleAgentOutput,
     instruction=instruction_single_agent_prompt,
     output_key="quality_verdict",
+    generate_content_config=GENERATION_CONFIG
 )
 
 oracle_error_descriptor_agent = LlmAgent(
     name="OracleErrorDescriptor",
-    model="gemini-2.5-flash",
+    model=MODEL_NAME,
     output_schema=OracleErrorDescriptionOutput,
-    instruction=instruction_error_description_agent_prompt
+    instruction=instruction_error_description_agent_prompt,
+    generate_content_config=GENERATION_CONFIG
 )
 
 oracle_profile_builder_agent = LlmAgent(
     name="OracleProfileBuilder",
-    model="gemini-2.5-flash",
+    model=MODEL_NAME,
     output_schema=OracleProfileOutput,
-    instruction=instruction_profile_builder_agent_prompt
+    instruction=instruction_profile_builder_agent_prompt,
+    generate_content_config=GENERATION_CONFIG
 )
 final_decision_agent = LlmAgent(
     name="FinalDecisionAgent",
-    model="gemini-2.5-flash",
+    model=MODEL_NAME,
     output_schema=FinalDecisionOutput,
-    instruction=instruction_final_decision_agent_prompt)
+    instruction=instruction_final_decision_agent_prompt,
+    generate_content_config=GENERATION_CONFIG)

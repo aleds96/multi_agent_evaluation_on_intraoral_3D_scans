@@ -45,29 +45,20 @@ ORACLE_CACHE_LOCK = asyncio.Lock()
 async def eval_single_scan(scan_item, WORKFLOW_RESOURCES, runner, app_name):
     session_id = f"session_{scan_item['scan']}"
     session_init_dict = {"example_items":WORKFLOW_RESOURCES['example_items'],
-                         "oracle_dataset": WORKFLOW_RESOURCES['oracle_dataset']}
+                         "oracle_dataset": WORKFLOW_RESOURCES['oracle_dataset'],
+                         "scan_item": scan_item}
     await ensure_session(runner, app_name, session_id,session_init_dict)
    
-    prompt = build_user_request_for_scan(scan_item, WORKFLOW_RESOURCES['example_items'])
-
-    #print(f"Prompt for scan {scan_item['scan']}:\n{prompt}")
-    image_paths = (
-        [item["image_pred"] for item in WORKFLOW_RESOURCES['example_items']["lvl5"]] +
-        [item["image_pred"] for item in WORKFLOW_RESOURCES['example_items']["lvl4"]] +
-        [item["image_pred"] for item in WORKFLOW_RESOURCES['example_items']["lvl3"]] +
-        [item["image_pred"] for item in WORKFLOW_RESOURCES['example_items']["lvl2"]] +
-        [item["image_pred"] for item in WORKFLOW_RESOURCES['example_items']["lvl1"]] +
-        [scan_item["image_pred"]]
-    )
-   
+    #prompt = build_user_request_for_scan(scan_item, WORKFLOW_RESOURCES['example_items'])
+    prompt='start'
     final_event = await safe_run_multimodal(
         runner,
         session_id,
-        image_paths,
+        [],
         prompt,
         max_retries=10,
     )
-    print('####### FINALE EVENT==>')
+    #print('####### FINALE EVENT==>')
     #print(final_event)
     verdict = final_event.output
     return verdict
@@ -75,14 +66,15 @@ async def eval_single_scan(scan_item, WORKFLOW_RESOURCES, runner, app_name):
 async def eval_scan_task(scan_item, WORKFLOW_RESOURCES,runner, app_name, semaphore):
     async with semaphore:
         verdict = await eval_single_scan(scan_item, WORKFLOW_RESOURCES, runner, app_name)
-        pred_quality = verdict["quality"]
-        pred_motivation = verdict["motivation"]
+        pred_quality = verdict['final_prediction']["quality"]
+        pred_motivation = verdict['final_prediction']["motivation"]
 
         return {
             "scan": scan_item["scan"],
             "real_quality": scan_item["profile"]["quality_global"],
             "pred_quality": pred_quality,
             "motivation": pred_motivation,
+            "workflow_trace": verdict,
         }
 
 
@@ -93,10 +85,25 @@ async def primary_node(
     node_input,
 ):
     print("###### primary node")
+    example_items = ctx.state["example_items"]
+    scan_item = ctx.state["scan_item"]
+    prompt = build_user_request_for_scan(scan_item, example_items)    
+    image_paths = (
+        [item["image_pred"] for item in example_items["lvl5"]] +
+        [item["image_pred"] for item in example_items["lvl4"]] +
+        [item["image_pred"] for item in example_items["lvl3"]] +
+        [item["image_pred"] for item in example_items["lvl2"]] +
+        [item["image_pred"] for item in example_items["lvl1"]] +
+        [scan_item["image_pred"]]
+    )
+    primary_content = build_multimodal_prompt(
+                text=prompt,
+                image_paths=image_paths,
+            )
     #print('\n node_input==>',node_input,'\n**')
     result = await ctx.run_node(
         eval_single_agent,
-        node_input,
+        primary_content,
     )
     print("PRIMARY RESULT =>", result)
     yield Event(
@@ -253,11 +260,11 @@ async def final_node(
     ctx: Context,
     node_input,
 ):
-
     print("###### final node")
+
     example_items = ctx.state["example_items"]
-     
-    scan_item = ctx.state["input_scan"]
+    oracle_error_descr_per_scan = ctx.state['oracle_result']["oracle_descriptions"]
+    scan_item = ctx.state["scan_item"]
 
     primary_prediction = ctx.state[
         "primary_prediction"
@@ -282,28 +289,40 @@ async def final_node(
         + [item["image_pred"] for item in example_items["lvl1"]]
         + [scan_item["image_pred"]]
     )
+
     final_content = build_multimodal_prompt(
         text=prompt,
         image_paths=image_paths,
     )
+
     final_prediction = await ctx.run_node(
         final_decision_agent,
-        final_content)
+        final_content,
+    )
 
-    yield Event(output=final_prediction)
+    print("FINAL RESULT =>", final_prediction)
 
+    yield Event(
+    output={
+        "scan":scan_item["scan"],
+        "final_prediction": final_prediction,
+
+        "primary_prediction":
+            primary_prediction,
+        "oracle_profile":
+            oracle_profile,
+        "oracle_error_descr_per_scan":oracle_error_descr_per_scan,
+    })
 @node(rerun_on_resume=True)
 async def end_node(
     ctx: Context,
     node_input,
 ):
     print("###### end node")
-    print('########## example =>',len(ctx.state["example_items"]), len(ctx.state["oracle_dataset"]))
-    #print('########### oracolo profile=>',ctx.state['oracle_profile'])
-    #print(ctx.state["primary_prediction"])
-    #print(len(ctx.state['oracle_result']["oracle_descriptions"])) 
-    #print('########## \n oracl description==>',ctx.state['oracle_result']["oracle_descriptions"] )
-    yield Event(output={"quality":5,"motivation": 'this is a test'})
+    yield Event(
+        output=node_input
+    )
+#yield Event(output={"quality":5,"motivation": 'this is a test'})
 root_agent = Workflow(
     name="workflow",
     edges=[
@@ -312,6 +331,7 @@ root_agent = Workflow(
             primary_node,
             oracle_node,
             oracle_profile_builder_node,
+            final_node,
             end_node,
         )
     ],

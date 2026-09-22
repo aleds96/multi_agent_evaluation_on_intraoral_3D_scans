@@ -18,37 +18,7 @@ def format_group_counts(count_per_group_class):
         out.append("") 
     return "\n".join(out)
 
-instruction_error_description_agent_prompt="""
-You are auditing a landmark quality evaluator.
 
-You will receive:
-
-- the same quality rubric used by the evaluator
-- the same few-shot examples
-- the same image
-- the same landmark statistics
-- the evaluator prediction
-- the evaluator motivation
-- the ground-truth quality
-
-Your task is NOT to assign a new quality score.
-
-Your task is to explain why the evaluator
-probably produced a judgement different
-from the ground truth.
-
-Focus on:
-
-- possible visual cues that misled the evaluator
-- landmark classes that may have contributed
-- weaknesses or blind spots in the evaluator reasoning
-- recurring failure patterns that could generalize
-
-Produce a concise analysis (2-6 sentences).
-
-Do not restate the prediction or the ground truth.
-Do not generate a new quality score.
-"""
 instruction_single_agent_prompt = """
 Sei un agente specializzato nella valutazione della qualità dei landmark dentali su scansioni 3D intraorali. 
 Il tuo compito è analizzare esclusivamente l’immagine di input fornita dall’utente, confrontandola con gli esempi 
@@ -209,47 +179,89 @@ def build_oracle_error_descriptor_agent_prompt(oracle_scan,prediction,example_it
             Restituisci breve (2-6 frasi max) analisi del valutatore 
             """
     return meta_prompt
-instruction_profile_builder_agent_prompt="""
-You are building a reliability profile of a landmark quality evaluator.
+instruction_error_description_agent_prompt = """
+Sei incaricato di revisionare un valutatore della qualità dei landmark dentali.
 
-You will receive multiple failure analyses
-generated from different scans.
+Riceverai:
 
-Your task is to identify recurring patterns.
+- la stessa scala qualitativa utilizzata dal valutatore
+- gli stessi esempi few-shot
+- la stessa immagine
+- le stesse statistiche quantitative
+- la predizione del valutatore
+- la motivazione del valutatore
+- la qualità reale (ground truth)
 
-Do NOT analyse individual scans.
+Il tuo compito NON è assegnare una nuova qualità.
 
-Instead, summarize:
+Il tuo compito è spiegare perché il valutatore potrebbe aver prodotto una valutazione diversa dalla ground truth.
 
-- evaluator strengths
-- evaluator weaknesses
-- recurring failure modes
-- possible systematic biases
+Concentrati su:
 
-Focus only on patterns that appear
-across multiple examples.
+- elementi visivi che potrebbero aver tratto in inganno il valutatore
+- classi di landmark che possono aver contribuito all'errore
+- punti deboli o limitazioni del ragionamento del valutatore
+- pattern di errore che potrebbero ripresentarsi in casi simili
 
-Return concise but informative summaries (max 10 sentences).
+Produci una breve analisi (2-6 frasi).
+
+Non limitarti a ripetere la predizione o la ground truth.
+Non proporre una nuova valutazione della qualità.
 """
-instruction_final_decision_agent_prompt="""
-You are the final reviewer.
+instruction_profile_builder_agent_prompt = """
+Sei incaricato di costruire un profilo di affidabilità di un valutatore della qualità dei landmark dentali.
 
-You will receive:
+Riceverai più analisi di errore generate su scansioni differenti.
 
-- primary prediction
-- oracle evaluator profile
+Il tuo compito è identificare pattern ricorrenti.
 
-Your task is NOT to create a new evaluation
-from scratch.
+Non analizzare singole scansioni.
 
-Use the oracle profile to estimate how much
-the primary prediction should be trusted.
+Riassumi invece:
 
-Return:
+- punti di forza del valutatore
+- punti di debolezza del valutatore
+- modalità di errore ricorrenti
+- possibili bias sistematici
 
-- final quality
-- confidence score between 0 and 1
-- concise justification
+Concentrati solo sui pattern che emergono da più esempi.
+
+Mantieni le risposte concise.
+
+Vincoli:
+
+- strengths: massimo 2 elementi
+- weaknesses: massimo 2 elementi
+- failure_modes: massimo 3 elementi
+- profile_summary: massimo 3 frasi
+"""
+instruction_final_decision_agent_prompt = """
+Sei un esperto nella valutazione della qualità dei landmark dentali.
+
+Il tuo compito è produrre una valutazione finale calibrata.
+
+Potresti ricevere:
+
+- immagini contenenti landmark dentali
+- esempi few-shot
+- statistiche quantitative
+- una valutazione precedente
+- un profilo di affidabilità del valutatore
+
+Utilizza tutte le informazioni disponibili per produrre la stima finale più affidabile.
+
+Puoi confermare la valutazione precedente oppure modificarla se il profilo di affidabilità suggerisce la presenza di un errore noto.
+
+Restituisci esclusivamente un oggetto JSON nel formato:
+
+{
+    "quality": int,
+    "motivation": str
+}
+
+La qualità deve essere un numero intero compreso tra 1 e 5.
+
+La motivazione deve essere breve e concentrarsi sugli elementi principali che giustificano la decisione finale.
 """
 def build_final_review_prompt(
     scan_item,
@@ -260,7 +272,7 @@ def build_final_review_prompt(
     base_prompt = build_user_request_for_scan(
         scan_item,
         example_items,
-        goal=False
+        goal=False,
     )
 
     return f"""
@@ -270,7 +282,7 @@ def build_final_review_prompt(
 
 VALUTAZIONE PRIMARIA
 
-Predicted quality:
+Qualità predetta:
 {primary_prediction["quality"]}
 
 Motivazione:
@@ -278,46 +290,49 @@ Motivazione:
 
 --------------------------------------------------
 
-PROFILO DELL'ORACOLO
+PROFILO DI AFFIDABILITÀ DEL VALUTATORE
 
-Summary:
+Riassunto:
 {oracle_profile["profile_summary"]}
 
-Strengths:
+Punti di forza osservati:
 {oracle_profile["strengths"]}
 
-Weaknesses:
+Punti di debolezza osservati:
 {oracle_profile["weaknesses"]}
 
-Failure modes:
+Modalità di errore osservate:
 {oracle_profile["failure_modes"]}
 
 --------------------------------------------------
 
 COMPITO
 
-Valuta nuovamente la scansione.
+Valuta nuovamente la scansione di input.
+
+Il profilo di affidabilità riassume situazioni in cui il valutatore ha prodotto valutazioni errate rispetto alla ground truth.
 
 Utilizza:
 
-- le stesse immagini few-shot
-- la stessa scala qualitativa
-- le statistiche quantitative
 - l'immagine target
-
-In aggiunta considera:
-
+- gli esempi few-shot
+- i profili degli esempi
+- le statistiche quantitative dei landmark
 - la valutazione primaria
-- i bias e failure mode osservati dal profilo Oracle
+- il profilo di affidabilità
 
-L'obiettivo è produrre una valutazione calibrata.
+Determina se la scansione corrente assomiglia a uno o più pattern di errore noti del valutatore.
 
-Se ritieni che la valutazione primaria sia affetta
-da uno dei failure mode osservati,
-puoi correggerla.
+Se nessun pattern di errore appare rilevante, puoi mantenere la valutazione primaria.
 
-Restituisci:
+Se la scansione corrente presenta caratteristiche compatibili con uno dei pattern di errore osservati, puoi modificare la qualità assegnata.
 
-- quality
-- motivation
+L'obiettivo è produrre la migliore valutazione finale possibile.
+
+Restituisci esclusivamente un oggetto JSON:
+
+{{
+    "quality": integer compreso tra 1 e 5,
+    "motivation": "breve spiegazione"
+}}
 """
