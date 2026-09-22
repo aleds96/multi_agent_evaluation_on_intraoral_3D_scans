@@ -1,0 +1,118 @@
+[
+  {
+    "scan": "AKBDPB4C_upper",
+    "real_quality": 5,
+    "pred_quality": 4,
+    "motivation": "The landmarks are generally well-placed and exhibit good anatomical consistency and overall symmetry. There are minor inaccuracies in the positioning of some landmarks on the incisors, specifically the mesial/distal and outerpoint. Despite these slight imperfections, the overall quality remains high, consistent with a score of 4.",
+    "workflow_trace": {
+      "scan": "AKBDPB4C_upper",
+      "final_prediction": {
+        "quality": 4,
+        "motivation": "The landmarks are generally well-placed and exhibit good anatomical consistency and overall symmetry. There are minor inaccuracies in the positioning of some landmarks on the incisors, specifically the mesial/distal and outerpoint. Despite these slight imperfections, the overall quality remains high, consistent with a score of 4."
+      },
+      "primary_prediction": {
+        "quality": 4,
+        "motivation": "I landmark sono ben posizionati e mostrano buona coerenza anatomica e simmetria generale tra i denti. Si osservano lievi imprecisioni nel posizionamento di alcuni landmark sugli incisivi, in particolare i punti mesiali/distali e outerpoint. Nonostante ci\u00f2, la qualit\u00e0 complessiva \u00e8 elevata, sebbene non perfetta."
+      },
+      "oracle_profile": {
+        "strengths": [],
+        "weaknesses": [],
+        "failure_modes": [],
+        "profile_summary": "Insufficient data provided to identify recurring patterns across multiple failure analyses. Only one failure analysis was received, preventing the detection of consistent strengths, weaknesses, or failure modes as per the requirement to focus only on patterns appearing across multiple examples."
+      },
+      "oracle_error_descr_per_scan": [
+        {
+          "scan": "AKBDPB4C_upper",
+          "ground_truth": 5,
+          "predicted_quality": 4,
+          "predicted_motivation": "La distribuzione dei landmark \u00e8 generalmente eccellente, mostrando alta precisione e coerenza anatomica su tutti i denti. La simmetria \u00e8 ben mantenuta e i landmark sono posizionati correttamente sulle superfici dentali. Sono presenti solo lievi discrepanze nei conteggi di alcuni landmark (es. Mesial, Distal, InnerPoint), che impediscono il punteggio massimo, ma non compromettono significativamente la qualit\u00e0 complessiva.",
+          "failure_analysis": "The evaluator misinterpreted accurate landmark counts (Mesial, Distal, InnerPoint) as 'slight discrepancies,' incorrectly assuming a higher expected count. Despite acknowledging excellent precision and anatomical consistency, the evaluator deducted points based on this quantitative misjudgment. The visual evidence of perfectly placed landmarks supports a quality 5, indicating the evaluator overemphasized a numerical count expectation. This bias towards numerical completeness, rather than visual placement quality, led to an unwarranted score reduction."
+        }
+      ]
+    }
+  },
+  {
+    "scan": "ANLLPLV7_upper",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "The input image displays a complete absence of all landmark types, which is accurately reflected in the quantitative statistics showing zero counts for every landmark class. The previous evaluation correctly identified this severe lack of data and assigned the lowest quality score. This situation does not align with the evaluator's known failure modes, which typically involve misinterpreting or overemphasizing counts despite visually good landmark placement. Here, the absence of landmarks unequivocally warrants the lowest quality rating.",
+    "workflow_trace": {
+      "scan": "ANLLPLV7_upper",
+      "final_prediction": {
+        "quality": 1,
+        "motivation": "The input image displays a complete absence of all landmark types, which is accurately reflected in the quantitative statistics showing zero counts for every landmark class. The previous evaluation correctly identified this severe lack of data and assigned the lowest quality score. This situation does not align with the evaluator's known failure modes, which typically involve misinterpreting or overemphasizing counts despite visually good landmark placement. Here, the absence of landmarks unequivocally warrants the lowest quality rating."
+      },
+      "primary_prediction": {
+        "quality": 1,
+        "motivation": "L'immagine di input non presenta alcun landmark su nessuno dei denti. La completa assenza di landmark \u00e8 l'errore pi\u00f9 grave e indica una totale inefficacia nel processo di rilevamento. Questo giustifica il punteggio di qualit\u00e0 pi\u00f9 basso."
+      },
+      "oracle_profile": {
+        "strengths": [
+          "Evaluator demonstrates strong capability in assessing visual qualities like precision, anatomical consistency, and symmetry.",
+          "It accurately identifies correctly placed landmarks on dental surfaces."
+        ],
+        "weaknesses": [
+          "The evaluator tends to misinterpret accurate landmark counts, often assuming a higher expected count than reality.",
+          "It overemphasizes numerical completeness, leading to unwarranted score reductions despite high visual quality.",
+          "There is a difficulty in reconciling excellent visual placement with perceived quantitative shortcomings."
+        ],
+        "failure_modes": [
+          "Incorrectly penalizing scans for 'discrepancies' in landmark counts that are, in fact, accurate or correctly represented.",
+          "Prioritizing quantitative (count) metrics over qualitative (visual placement, consistency) metrics when assigning the final quality score.",
+          "Deducting points based on a quantitative misjudgment even when visual evidence supports a perfect score."
+        ],
+        "profile_summary": "The landmark quality evaluator consistently demonstrates a strong ability to assess visual aspects such as precision, anatomical consistency, and symmetry, correctly identifying well-placed landmarks. However, a significant recurring weakness is its tendency to misinterpret accurate landmark counts, often assuming a higher expected value. This leads to a primary failure mode where scans with otherwise excellent visual quality are incorrectly penalized due to perceived quantitative 'discrepancies.' There is a clear systematic bias towards overemphasizing numerical completeness, which frequently overrides strong qualitative observations of placement and consistency. This results in an unwarranted reduction in quality scores, as the evaluator struggles to reconcile compelling visual evidence with its internal, often flawed, quantitative expectations. The model's reliance on numerical counts detrimentally impacts its overall accuracy."
+      },
+      "oracle_error_descr_per_scan": [
+        {
+          "scan": "AKBDPB4C_upper",
+          "ground_truth": 5,
+          "predicted_quality": 4,
+          "predicted_motivation": "La distribuzione dei landmark \u00e8 generalmente eccellente, mostrando alta precisione e coerenza anatomica su tutti i denti. La simmetria \u00e8 ben mantenuta e i landmark sono posizionati correttamente sulle superfici dentali. Sono presenti solo lievi discrepanze nei conteggi di alcuni landmark (es. Mesial, Distal, InnerPoint), che impediscono il punteggio massimo, ma non compromettono significativamente la qualit\u00e0 complessiva.",
+          "failure_analysis": "The evaluator misinterpreted accurate landmark counts (Mesial, Distal, InnerPoint) as 'slight discrepancies,' incorrectly assuming a higher expected count. Despite acknowledging excellent precision and anatomical consistency, the evaluator deducted points based on this quantitative misjudgment. The visual evidence of perfectly placed landmarks supports a quality 5, indicating the evaluator overemphasized a numerical count expectation. This bias towards numerical completeness, rather than visual placement quality, led to an unwarranted score reduction."
+        }
+      ]
+    }
+  },
+  {
+    "scan": "CK45DVLG_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La qualit\u00e0 visiva dei landmark \u00e8 eccezionale, con punti posizionati in modo preciso e anatomicamente corretto su tutte le superfici dentali. La precedente valutazione ha ridotto il punteggio a causa di presunte piccole discrepanze nel conteggio dei landmark, il che \u00e8 identificato come un errore noto dell'evaluatore che sovrastima l'importanza della completezza numerica a discapito dell'eccellente qualit\u00e0 visiva. Pertanto, un punteggio perfetto di 5 \u00e8 giustificato.",
+    "workflow_trace": {
+      "scan": "CK45DVLG_upper",
+      "final_prediction": {
+        "quality": 5,
+        "motivation": "La qualit\u00e0 visiva dei landmark \u00e8 eccezionale, con punti posizionati in modo preciso e anatomicamente corretto su tutte le superfici dentali. La precedente valutazione ha ridotto il punteggio a causa di presunte piccole discrepanze nel conteggio dei landmark, il che \u00e8 identificato come un errore noto dell'evaluatore che sovrastima l'importanza della completezza numerica a discapito dell'eccellente qualit\u00e0 visiva. Pertanto, un punteggio perfetto di 5 \u00e8 giustificato."
+      },
+      "primary_prediction": {
+        "quality": 4,
+        "motivation": "La qualit\u00e0 complessiva dei landmark \u00e8 molto elevata. I punti presenti sono anatomicamente corretti, ben posizionati sulle superfici dentali appropriate e la loro distribuzione \u00e8 coerente con la morfologia dei denti. Tuttavia, le statistiche indicano piccole discrepanze nel numero totale di alcuni tipi di landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint), suggerendo la possibile assenza di alcuni punti attesi. Nonostante queste lievi omissioni, l'allineamento e la precisione dei landmark visibili sono di alto livello."
+      },
+      "oracle_profile": {
+        "strengths": [
+          "Evaluator generally recognizes and acknowledges excellent precision, anatomical consistency, and maintained symmetry in landmark placement.",
+          "The evaluator can identify correctly positioned landmarks on dental surfaces."
+        ],
+        "weaknesses": [
+          "The evaluator exhibits a tendency to misinterpret accurate landmark counts as 'discrepancies', leading to unwarranted score reductions.",
+          "There is an overemphasis on numerical completeness of landmark counts, sometimes overriding the assessment of visual placement quality."
+        ],
+        "failure_modes": [
+          "Incorrectly deducting points based on perceived 'slight discrepancies' in landmark counts (e.g., Mesial, Distal, InnerPoint), even when visual quality is high and accurate.",
+          "Assigning lower scores due to an expectation of a specific landmark count rather than the quality of their anatomical placement."
+        ],
+        "profile_summary": "The evaluator demonstrates strong capabilities in assessing visual aspects like precision, anatomical consistency, and symmetry of landmark placement. However, a significant weakness lies in its quantitative assessment, specifically an over-reliance on and misinterpretation of landmark counts. This leads to a systematic bias towards numerical completeness, causing scores to be reduced even when the visual quality of landmarking is exceptional. The primary failure mode involves incorrectly penalizing for 'missing' or 'discrepant' landmarks that are, in fact, accurately represented, thereby underscoring otherwise high-quality scans."
+      },
+      "oracle_error_descr_per_scan": [
+        {
+          "scan": "AKBDPB4C_upper",
+          "ground_truth": 5,
+          "predicted_quality": 4,
+          "predicted_motivation": "La distribuzione dei landmark \u00e8 generalmente eccellente, mostrando alta precisione e coerenza anatomica su tutti i denti. La simmetria \u00e8 ben mantenuta e i landmark sono posizionati correttamente sulle superfici dentali. Sono presenti solo lievi discrepanze nei conteggi di alcuni landmark (es. Mesial, Distal, InnerPoint), che impediscono il punteggio massimo, ma non compromettono significativamente la qualit\u00e0 complessiva.",
+          "failure_analysis": "The evaluator misinterpreted accurate landmark counts (Mesial, Distal, InnerPoint) as 'slight discrepancies,' incorrectly assuming a higher expected count. Despite acknowledging excellent precision and anatomical consistency, the evaluator deducted points based on this quantitative misjudgment. The visual evidence of perfectly placed landmarks supports a quality 5, indicating the evaluator overemphasized a numerical count expectation. This bias towards numerical completeness, rather than visual placement quality, led to an unwarranted score reduction."
+        }
+      ]
+    }
+  }
+]

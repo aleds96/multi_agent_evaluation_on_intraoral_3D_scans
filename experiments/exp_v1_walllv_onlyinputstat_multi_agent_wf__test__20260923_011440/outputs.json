@@ -1,0 +1,20 @@
+[
+  {
+    "scan": "AKBDPB4C_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "La distribuzione e il posizionamento dei landmark sono estremamente precisi e coerenti con l'anatomia dentale. Non si rilevano errori di orientamento, landmark fuori dente o duplicazioni. Tutti i tipi di landmark sono presenti correttamente su tutti i denti, inclusa la presenza delle cuspidi solo su premolari e molari."
+  },
+  {
+    "scan": "ANLLPLV7_upper",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "L'immagine di input non presenta alcun landmark su nessuno dei denti. L'assenza totale di landmark indica un fallimento completo nel processo di posizionamento, rendendo la qualit\u00e0 peggiore possibile."
+  },
+  {
+    "scan": "CK45DVLG_upper",
+    "real_quality": 5,
+    "pred_quality": 5,
+    "motivation": "The landmarks are placed with excellent precision and anatomical consistency across all teeth. The previous evaluation correctly recognized this high quality, focusing on visual accuracy rather than penalizing minor numerical discrepancies in landmark counts. The evaluator successfully avoided the described failure mode of prioritizing quantitative expectations over visual quality."
+  }
+]
