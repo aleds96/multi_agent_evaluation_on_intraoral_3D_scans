@@ -142,6 +142,9 @@ def build_user_request_for_scan(input_info, examples,use_profile=False,input_sta
     if goal: 
         final_prompt+=goal_prompt
     return final_prompt
+
+#!!!!!!!! Aggiornare mettendo distribuzione count x class nell'input con rumore
+# e confrontarlo con il GT e aggiungendo info pertbuazione
 def build_oracle_error_descriptor_agent_prompt(oracle_scan,prediction,example_items): 
     base_prompt = build_user_request_for_scan(
     oracle_scan,

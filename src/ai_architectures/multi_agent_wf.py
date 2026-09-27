@@ -173,6 +173,7 @@ async def oracle_node(
             print('### prediction quality uguale a ground truth. Skip!!####')
             continue
         #passa all'agente descrittore della metavalutazione
+        
         meta_prompt = build_oracle_error_descriptor_agent_prompt(oracle_scan,prediction,example_items)
         meta_content = build_multimodal_prompt(text=meta_prompt,image_paths=image_paths)
         meta_description = await ctx.run_node(oracle_error_descriptor_agent,meta_content)

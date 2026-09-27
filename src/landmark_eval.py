@@ -226,6 +226,40 @@ def build_pred_all_map(pred_csv, categories):
         pred_all_map[cls].setdefault(scan, []).append([coord, score])
 
     return pred_all_map
+def extract_pred_scan(
+    pred_all_map,
+    scan_name,
+):
+    coords_pred = []
+    classes_pred = []
+
+    for cls, scans in pred_all_map.items():
+
+        for coord_score in scans.get(scan_name, []):
+
+            coord = coord_score[0]
+
+            coords_pred.append(
+                np.asarray(coord)
+            )
+
+            classes_pred.append(cls)
+
+    return coords_pred, classes_pred
+def extract_gt_scan(
+    gt_all,
+    scan_name,
+):
+    coords_gt = []
+    classes_gt = []
+
+    for cls, scans in gt_all.items():
+        for coord in scans.get(scan_name, []):
+            coords_gt.append(
+                np.asarray(coord)
+            )
+            classes_gt.append(cls)
+    return coords_gt, classes_gt
 def filter_single_scan(gt_all, pred_all_map, scan_name, categories):
     gt_scan = {cat: {scan_name: gt_all[cat].get(scan_name, [])} for cat in categories}
     pred_scan = {cat: {scan_name: pred_all_map[cat].get(scan_name, [])} for cat in categories}
@@ -266,63 +300,103 @@ def evaluate_single_scan(gt_all, pred_all_map, scan_name, categories):
     mAR_scan = np.mean([metrics["AR"][cat] for cat in categories])
 
     return results_scan, mAP_scan, mAR_scan
-def evaluate_all_scans(gt_root, pred_csv, categories):
-    gt_all = build_gt_all(gt_root, categories)
-    pred_all_map = build_pred_all_map(pred_csv, categories)
 
+def evaluate_all_scans(
+    gt_root,
+    pred_csv,
+    categories,
+):
+    gt_all = build_gt_all( gt_root, categories,)
+
+    pred_all_map = build_pred_all_map( pred_csv, categories,)
     all_scans = set()
     for cat in categories:
-        all_scans.update(gt_all[cat].keys())
-        all_scans.update(pred_all_map[cat].keys())
-    all_scans = sorted(list(all_scans))
+        all_scans.update( gt_all[cat].keys() )
+        all_scans.update(pred_all_map[cat].keys()   )
 
-    ap_per_scan = {cat: [] for cat in categories}
-    ar_per_scan = {cat: [] for cat in categories}
-    gt_count_per_scan = {cat: [] for cat in categories}
-
-    mAP_per_scan = []
-    mAR_per_scan = []
-
+    all_scans = sorted(all_scans)
+    results = []
+    
     for scan_name in all_scans:
-
-        gt_scan = {cat: {scan_name: gt_all[cat].get(scan_name, [])} for cat in categories}
-        pred_scan = {cat: {scan_name: pred_all_map[cat].get(scan_name, [])} for cat in categories}
-
-        valid_categories = [cat for cat in categories if len(gt_scan[cat][scan_name]) > 0]
-
-        if len(valid_categories) == 0:
+        coords_gt, classes_gt = (
+            extract_gt_scan( gt_all,scan_name))
+        coords_pred, classes_pred = (
+            extract_pred_scan( pred_all_map,scan_name))
+        try:
+            metrics = (
+                evaluate_single_scan_from_landmarks(
+                    scan_name=scan_name,
+                    coords_pred=coords_pred,
+                    classes_pred=classes_pred,
+                    coords_gt=coords_gt,
+                    classes_gt=classes_gt,
+                    categories=categories)
+            )
+        except ValueError:
             continue
+        results.append(metrics)
+    return results
+#Valuta una singola scansione partendo direttamente
+#da landmark GT e landmark predetti
+def evaluate_single_scan_from_landmarks(
+    scan_name,
+    coords_pred,
+    classes_pred,
+    coords_gt,
+    classes_gt,
+    categories,
+):
+    gt_scan = {cat: {scan_name: []}for cat in categories}
+    pred_scan = {cat: {scan_name: []}for cat in categories }
+    pred_count_per_class = {cat: 0 for cat in categories}
 
-        metrics = score_(
-            {cat: gt_scan[cat] for cat in valid_categories},
-            {cat: pred_scan[cat] for cat in valid_categories}
-        )
+    #GT
+    for coord, cls in zip(coords_gt,classes_gt,
+    ):
+        if cls not in gt_scan:
+            continue
+        gt_scan[cls][scan_name].append(coord)
+    #Predizioni
+    for coord, cls in zip(coords_pred,classes_pred):
+        if cls not in pred_scan:
+            continue
+        pred_scan[cls][scan_name].append([coord, 1.0])
+        pred_count_per_class[cls] += 1
+    valid_categories = [cat for cat in categories if len(gt_scan[cat][scan_name]) > 0]
+    if len(valid_categories) == 0:
+        raise ValueError(f"Nessuna categoria valida per scan {scan_name}")
+    metrics = score_({cat: gt_scan[cat] for cat in valid_categories},
+                     {    cat: pred_scan[cat] for cat in valid_categories})
+    ap_per_class = {}
+    ar_per_class = {}
+    gt_count_per_class = {}
+    for cat in categories:
+        if cat in valid_categories:
+            ap_per_class[cat] = ( metrics["AP"][cat])
+            ar_per_class[cat] = (  metrics["AR"][cat])
+            gt_count_per_class[cat] = len(gt_scan[cat][scan_name] )
+        else:
+            ap_per_class[cat] = 0.0
+            ar_per_class[cat] = 0.0
+            gt_count_per_class[cat] = 0
 
-        for cat in categories:
-            #AP/AR = 0 se classe non valida
-            if cat in valid_categories:
-                ap_per_scan[cat].append(metrics["AP"][cat])
-                ar_per_scan[cat].append(metrics["AR"][cat])
-            else:
-                ap_per_scan[cat].append(0.0)
-                ar_per_scan[cat].append(0.0)
+    mAP_scan = np.mean([
+        metrics["AP"][cat]
+        for cat in valid_categories
+    ])
 
-            #Conta GT
-            gt_count_per_scan[cat].append(len(gt_scan[cat][scan_name]))
-
-        mAP_scan = np.mean([metrics["AP"][cat] for cat in valid_categories])
-        mAR_scan = np.mean([metrics["AR"][cat] for cat in valid_categories])
-
-        mAP_per_scan.append(mAP_scan)
-        mAR_per_scan.append(mAR_scan)
-
+    mAR_scan = np.mean([
+        metrics["AR"][cat]
+        for cat in valid_categories
+    ])
     return {
-        "scans": all_scans,
-        "ap_per_scan": ap_per_scan,
-        "ar_per_scan": ar_per_scan,
-        "gt_count_per_scan": gt_count_per_scan,
-        "mAP_per_scan": mAP_per_scan,
-        "mAR_per_scan": mAR_per_scan
+        "scan": scan_name,
+        "ap_per_class": ap_per_class,
+        "ar_per_class": ar_per_class,
+        "gt_count_per_class": gt_count_per_class,
+        "pred_count_per_class":pred_count_per_class,
+        "mAP": float(mAP_scan),
+        "mAR": float(mAR_scan),
     }
 def compute_quantile_table(values, quantiles=None):
     if quantiles is None:
@@ -347,7 +421,7 @@ def compute_all_statistics(GT_ROOT, PRED_CSV, categories):
     results_global, mAP_global, mAR_global = evaluate_dataset(GT_ROOT, PRED_CSV, categories=categories)
     results = evaluate_all_scans(GT_ROOT, PRED_CSV, categories=categories)
 
-    quantile_mAP = compute_quantile_table(results["mAP_per_scan"])
+    quantile_mAP = compute_quantile_table([scan_["mAP"] for scan_ in results])
 
     return {
         "results": results,
@@ -364,8 +438,8 @@ def select_examples_by_quantile(results, quantile_table, quantiles, k=1, m=5):
       1)primary_examples: dizionario {quantile_label: [k scans]}
       2)extra_examples:   dizionario {quantile_label: [m-k scans]}
     """
-    scans = results["scans"]
-    mAP = results["mAP_per_scan"]
+    scans = [ scan['scan'] for scan in results]
+    mAP = [scan['mAP'] for scan in results]
 
     def closest_m_to(value, m):
         ordered = sorted(zip(scans, mAP), key=lambda x: abs(x[1] - value))
@@ -389,34 +463,33 @@ def compute_profiles_for_scans(results, scans, categories):
         quality_profile_for_scan(results, categories, scan_name=scan)
         for scan in scans
     ]
-def quality_profile_for_scan(results, categories, scan_name):
-    scan_idx = results["scans"].index(scan_name)
-    #print('scan_idx', scan_idx,'scan_name', scan_name)
-    mAP_scan = results["mAP_per_scan"][scan_idx]
-    mAR_scan = results["mAR_per_scan"][scan_idx]
+def quality_profile_for_scan( results, categories, scan_name):
+    scan_metrics = next((item for item in results if item["scan"] == scan_name ), None,)
+    if scan_metrics is None:
+        raise ValueError( f"Scan {scan_name} non trovata nei risultati.")
 
-    quality_global = quality_from_map(mAP_scan)
+    mAP_scan = scan_metrics["mAP"]
+    mAR_scan = scan_metrics["mAR"]
 
+    quality_global = quality_from_map( mAP_scan)
     quality_per_class = {}
     raw_per_class = {}
     valid_class = {}
 
     for cat in categories:
-        ap = results["ap_per_scan"][cat][scan_idx]
-        gt_count = results["gt_count_per_scan"][cat][scan_idx]
-
+        ap = scan_metrics["ap_per_class"][cat]
+        gt_count = scan_metrics[  "gt_count_per_class" ][cat]
         raw_per_class[cat] = f"{ap:.2f}"
-
         if gt_count == 0:
             quality_per_class[cat] = "N/A"
             valid_class[cat] = False
         else:
-            quality_per_class[cat] = quality_from_map(ap)
+            quality_per_class[cat] = (      quality_from_map(ap) )
             valid_class[cat] = True
+    valid_scores = { cat: quality_per_class[cat] for cat in categories if valid_class[cat]}
+    best_class = max( valid_scores,  key=valid_scores.get)
 
-    valid_scores = {cat: quality_per_class[cat] for cat in categories if valid_class[cat]}
-    best_class = max(valid_scores, key=valid_scores.get)
-    worst_class = min(valid_scores, key=valid_scores.get)
+    worst_class = min( valid_scores,   key=valid_scores.get)
 
     return {
         "scan": scan_name,
@@ -442,35 +515,42 @@ def compute_class_counts_for_scan(PRED_CSV: Path, scan_name: str, CATEGORIES: li
     return counts
 
 def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENSHOT_ROOT,CATEGORIES):
-   
-    input_scans = [s for s in results["scans"] if s not in exclude_scans]
+    
+    input_scans = [s for s in results if s['scan'] not in exclude_scans]
     dataset = []
     for scan in input_scans:
-        profile = quality_profile_for_scan(results, CATEGORIES, scan)
-        coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan)
-        count_per_class = compute_class_counts_for_scan(PRED_CSV, scan, CATEGORIES)
-        mesh_path = SCANS / f"{scan}.obj"
-        seg_path  = SCANS / f"{scan}_seg.json"
+        scan_name=scan['scan']
+        #print('### scan to check=>',scan_name)
+        profile = quality_profile_for_scan(results, CATEGORIES, scan_name)
+        #print('###### profile==>',profile)
+        coords_pred, classes_pred = load_pred_landmarks(PRED_CSV, scan_name)
+        #print('### available keys==>',scan.keys()) 
+        pred_count_per_class = scan['pred_count_per_class']
+        gt_count_per_class = scan['gt_count_per_class']
+        #count_per_class = compute_class_counts_for_scan(PRED_CSV, scan, CATEGORIES)
+        mesh_path = SCANS / f"{scan_name}.obj"
+        seg_path  = SCANS / f"{scan_name}_seg.json"
 
         count_per_group_class, count_per_group = compute_group_class_counts_for_scan(
             mesh_path,
             seg_path,
             PRED_CSV,
-            scan,
+            scan_name,
             CATEGORIES,
             TOOTH_TO_GROUP
         )
 
         dataset.append({
-            "scan": scan,
+            "scan": scan_name,
             "profile": profile,
-            "mesh": str(SCANS / f"{scan}.obj"),
-            "gt": str(GT_ROOT / f"{scan}__kpt.json"),
-            "seg": str(SCANS / f"{scan}_seg.json"),
-            "image_pred": str(SCREENSHOT_ROOT / f"{scan}/predicted.png"),
+            "mesh": str(SCANS / f"{scan_name}.obj"),
+            "gt": str(GT_ROOT / f"{scan_name}__kpt.json"),
+            "seg": str(SCANS / f"{scan_name}_seg.json"),
+            "image_pred": str(SCREENSHOT_ROOT / f"{scan_name}/predicted.png"),
             "pred_coords": coords_pred,
             "pred_classes": classes_pred,
-            "pred_count_per_class": count_per_class,
+            "gt_count_per_class":gt_count_per_class,
+            "pred_count_per_class": pred_count_per_class,
             "pred_count_per_group_class": count_per_group_class,
             "pred_count_per_group": count_per_group,
         })
