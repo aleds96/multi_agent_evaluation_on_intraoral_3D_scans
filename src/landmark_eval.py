@@ -453,8 +453,8 @@ def select_examples_by_quantile(results, quantile_table, quantiles, k=1, m=5):
         pool = closest_m_to(q_value, m)
 
         primary_examples[label] = pool[:k]
-        extra_examples[label] = pool[k:]
-
+        if float(q)>=0.5:
+            extra_examples[label] = pool[k:]
     return primary_examples, extra_examples
 def compute_profiles_for_scans(results, scans, categories):
     

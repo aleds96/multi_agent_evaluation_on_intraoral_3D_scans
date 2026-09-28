@@ -40,6 +40,23 @@ def save_oracle_cache(
             ensure_ascii=False,
             indent=2
         )
+def build_perturbation_label(params: dict) -> str:
+
+    chunks = []
+
+    for key, value in params.items():
+
+        if isinstance(value, (list, tuple)):
+            value_str = "_".join(map(str, value))
+
+        else:
+            value_str = str(value)
+
+        chunks.append(
+            f"{key}_{value_str}"
+        )
+
+    return "__".join(chunks)
 def save_experiment(config, outputs, evaluation, root="experiments"):
 
     architecture_id = config.get('architecture','')

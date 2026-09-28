@@ -424,23 +424,27 @@ async def main():
     )[:3]
     print(f"Dataset primary costruito con {len(dataset_primary)} scans.")
 
-    #passa risorse che saranno usati per inizializzare lo stato
-    WORKFLOW_RESOURCES = {
-    "example_items": example_items,
-    "oracle_dataset": dataset_primary[:2],
-    }
-    outputs = await run_agentic_workflow(dataset_primary, WORKFLOW_RESOURCES)
 
-    evaluation = evaluate_agent(outputs)
+    print('###### ORACLE POOL')
+    EXECUTE_WF = False 
+    if EXECUTE_WF:
+        #passa risorse che saranno usati per inizializzare lo stato
+        WORKFLOW_RESOURCES = {
+        "example_items": example_items,
+        "oracle_dataset": dataset_primary[:2],
+        }
+        outputs = await run_agentic_workflow(dataset_primary, WORKFLOW_RESOURCES)
 
-    config = {
-        "architecture": EXPERIMENT_NAME,
-        "model": MODEL_NAME,
-        "primary_examples": primary_examples,
-    }
+        evaluation = evaluate_agent(outputs)
 
-    exp_dir = save_experiment(config, outputs, evaluation)
-    print("Esperimento salvato in:", exp_dir)
+        config = {
+            "architecture": EXPERIMENT_NAME,
+            "model": MODEL_NAME,
+            "primary_examples": primary_examples,
+        }
+
+        exp_dir = save_experiment(config, outputs, evaluation)
+        print("Esperimento salvato in:", exp_dir)
 
 
 if __name__ == "__main__":
