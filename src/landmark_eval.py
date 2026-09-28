@@ -3,8 +3,15 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import auc
 from pathlib import Path
+import random
+from src.utils_fun import build_perturbation_label
+from src.mesh_fun import (
+    load_segmentation,load_pred_landmarks,load_mesh,
+    color_mesh_by_groups,create_landmark_spheres,
+    load_gt_landmarks,save_screenshot
+)
 from src.mesh_fun import load_gt_landmarks, load_pred_landmarks,compute_group_class_counts_for_scan
-from src.var_constants import TOOTH_GROUP_PALETTE,TOOTH_TO_GROUP
+from src.var_constants import TOOTH_GROUP_PALETTE,TOOTH_TO_GROUP,CATEGORIES,LANDMARK_PALETTE
 #da 0 a==> 3 mm, step 0.1
 THRESHOLDS = np.arange(0.0, 3.0 + 0.1, 0.1)  
 
@@ -556,3 +563,164 @@ def build_input_dataset(results, exclude_scans, SCANS, GT_ROOT, PRED_CSV,SCREENS
         })
 
     return dataset
+#Rimuove una percentuale di landmark
+def apply_missing_landmark_perturbation(
+    coords,
+    classes,
+    fraction,
+    #specifica opzionalmente un sotto-insieme di classi da considerare. Es. Mesial
+    target_landmark_classes=[],
+    seed=42,
+):
+    rng = random.Random(seed)
+    if len(coords) == 0:
+        return coords.copy(), classes.copy()
+    if len(target_landmark_classes)==0:
+        candidate_idx = list(range(len(coords)))
+    else:
+        candidate_idx = [i for i, cls in enumerate(classes) if cls in target_landmark_classes]
+    if len(candidate_idx) == 0:
+        return ( coords.copy(),classes.copy() )
+    n_remove = max( 1, int(len(candidate_idx) * fraction))
+
+    remove_idx = set(rng.sample(  candidate_idx, min(    n_remove,len(candidate_idx))) )
+    keep_idx = [i for i in range(len(coords)) if i not in remove_idx]
+    coords_new = coords[keep_idx]
+    classes_new = [classes[i] for i in keep_idx]
+    return (
+        coords_new,
+        classes_new,
+    )
+def apply_perturbation(perturbation_type,coords_pred,classes_pred,perturbation_params):
+    if perturbation_type == "missing_landmarks":
+        return apply_missing_landmark_perturbation(
+            coords_pred,
+            classes_pred,
+            fraction=perturbation_params["fraction"],
+            target_landmark_classes=perturbation_params["target_landmark_classes"],
+        )
+    return coords_pred,classes_pred
+def build_synthetic_oracle_sample(
+    scan_name,
+    mesh_path,
+    gt_path,
+    seg_path,
+    pred_landmark_path,
+    screenshot_dir,
+    perturbation_type,
+    perturbation_params,
+    pertubation_metadata,
+    prefix=''
+):
+
+    pert_scan_name = f"{scan_name}_{perturbation_type}_{build_perturbation_label(perturbation_params)}"
+    tooth_seg_labels = load_segmentation(seg_path)
+    mesh = load_mesh(mesh_path)
+    mesh = color_mesh_by_groups(mesh, tooth_seg_labels, TOOTH_TO_GROUP, TOOTH_GROUP_PALETTE) 
+
+    coords_pred, classes_pred = load_pred_landmarks(pred_landmark_path, scan_name)
+    #print('## len class pred',len(classes_pred),'###shape coords pred==>',coords_pred.shape)
+    #print('### pred landmark path ==>')
+    coords_gt, classes_gt = load_gt_landmarks(gt_path)
+
+    #applica pertubazione richista
+    coords_after_pert,classes_after_pert=apply_perturbation(perturbation_type,coords_pred,classes_pred,perturbation_params)
+    #print('pert scan name==>',pert_scan_name)
+    #print("original:", len(classes_pred))
+    #print("noisy:", len(classes_after_pert))
+    #valuta scan e ottieni profilo qualità
+    scan_evaluation_pred=evaluate_single_scan_from_landmarks(scan_name=scan_name,
+                                coords_pred=coords_after_pert,
+                                classes_pred=classes_after_pert,
+                                coords_gt=coords_gt,
+                                classes_gt=classes_gt,categories=CATEGORIES)
+    #print('####### scan eval pred==>\n',scan_evaluation_pred)
+    scan_quality_profile_pred=quality_profile_for_scan([scan_evaluation_pred],categories=CATEGORIES,scan_name=scan_name)
+    #crea screenshot 
+    spheres_pred_after_pert = create_landmark_spheres(coords_after_pert, classes_after_pert, LANDMARK_PALETTE)
+    image_pred_after_pert_path = screenshot_dir / scan_name /f"{pert_scan_name}.png"
+    if image_pred_after_pert_path.exists()==False:
+        save_screenshot(mesh, spheres_pred_after_pert, image_pred_after_pert_path, zoom=0.65)
+
+
+    obs_features ={
+                f'{prefix}_scan_conf_name': pert_scan_name,
+                f'{prefix}_count_per_class':scan_evaluation_pred.get('pred_count_per_class'), 
+                f'{prefix}_quality_score':scan_quality_profile_pred.get('quality_global'),
+                f'{prefix}_gmap': scan_evaluation_pred.get('mAP'),
+                f'{prefix}_quality_per_class': scan_quality_profile_pred.get('quality_per_class'), 
+                f'{prefix}_metadata': pertubation_metadata.get('description',''),
+                f'{prefix}_image_path': image_pred_after_pert_path
+            }
+    return obs_features
+#qui potrei aggiungere anche un max di campioni che hanno specifica qualità (es. quality=3 o quality=4) prima di passare
+#ad un'altra configurazione
+def build_synthetic_oracle_dataset(scan_names, SCANS, GT_ROOT, PRED_CSV,SCREENSHOT_DIR,pertubation_configs):
+    dataset = []
+    for scan_name in scan_names: 
+        mesh_path = SCANS / f"{scan_name}.obj"
+        gt_path = GT_ROOT / f"{scan_name}__kpt.json"
+        seg_path  =SCANS / f"{scan_name}_seg.json"
+
+        #memorizziamo le informazioni basilari sullinput sul quale viene applicata la pertubazione.
+        #in modo da fornire all'agente contesto maggiore sul dato originale e non solo sulla versione pertubata
+        pred_features_before_pert=build_synthetic_oracle_sample(scan_name,
+                                    mesh_path,gt_path,seg_path,
+                                    PRED_CSV,SCREENSHOT_DIR,
+                                    perturbation_type='',
+                                    perturbation_params={},
+                                    pertubation_metadata={},
+                                    prefix='origin_pred')
+        #print('##### PRED INFO BEFORE PERTUBATION==>\n',pred_features_before_pert)
+
+        #applica tutte le possibili pertubazioni per generare k dati sintetici
+        for pert_cfg in pertubation_configs: 
+            pert_features=build_synthetic_oracle_sample(scan_name,
+                                                mesh_path,gt_path,seg_path,
+                                                PRED_CSV,SCREENSHOT_DIR,
+                                                perturbation_type=pert_cfg.get('type'),
+                                                perturbation_params=pert_cfg.get('params'),
+                                                pertubation_metadata=pert_cfg.get('metadata'),
+                                                prefix='pred')
+            
+            dataset.append({
+            "scan": scan_name,
+            **pred_features_before_pert, 
+            **pert_features,
+            "mesh_path": mesh_path,
+            "gt_path": gt_path,
+            "seg_path": seg_path,
+        })
+        return dataset
+def build_missing_landmark_configs(
+        global_config={'frac':[0.05,0.1]},
+        local_config={'cls':["Mesial",
+        "Distal",
+        "InnerPoint",
+        "OuterPoint"], 'frac':[0.3,0.6]}):
+    configs = []
+
+    for frac in global_config.get('frac'):
+        configs.append({
+            "type": "missing_landmarks",
+            "params": {
+                "target_landmark_classes":[],
+                "fraction": frac},
+            "metadata": {
+                "description":
+                    f"rimosso {int(frac*100)}% landmarks globalmente" }
+        })
+
+    #configurazioni rispetto ad una classe target
+    for cls in local_config.get('cls'):
+        for frac in local_config.get('frac'):
+            configs.append({
+                "type": "missing_landmarks",
+                "params": {
+                    "fraction": frac, 
+                    "target_landmark_classes": [] if cls == 'any class' else  [cls] },
+                "metadata": {
+                    "description":
+                        f"rimosso {int(frac*100)}% {cls}" }
+            })
+    return configs

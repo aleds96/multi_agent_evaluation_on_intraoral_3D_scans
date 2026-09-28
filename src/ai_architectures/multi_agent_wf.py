@@ -11,7 +11,9 @@ from google.adk import Event
 from src.llm_utils_fun import (
     safe_run_multimodal,
     ensure_session,
-    build_multimodal_prompt
+    build_multimodal_prompt, 
+    safe_run_node
+    
 )
 from src.prompts import (
     build_user_request_for_scan,
@@ -26,9 +28,12 @@ from src.landmark_eval import (
     compute_all_statistics,
     select_examples_by_quantile,
     build_input_dataset,
+    build_synthetic_oracle_dataset, 
+    build_missing_landmark_configs
+
 )
 from src.llm_eval import evaluate_agent
-from src.utils_fun import save_experiment,load_oracle_cache,save_oracle_cache
+from src.utils_fun import save_experiment,load_oracle_cache,save_oracle_cache, build_perturbation_label,build_profile_cache_key
 from src.var_constants import CATEGORIES
 
 
@@ -41,6 +46,7 @@ os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = os.getenv("GOOGLE_GENAI_USE_VERTEXAI")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
 EXPERIMENT_NAME = "v1_walllv_onlyinputstat_multi_agent_wf__test"
 MODEL_NAME = "gemini-2.5-flash"
+PERT_MISSING_LANDMARK= True
 ORACLE_CACHE_LOCK = asyncio.Lock()
 async def eval_single_scan(scan_item, WORKFLOW_RESOURCES, runner, app_name):
     session_id = f"session_{scan_item['scan']}"
@@ -101,10 +107,10 @@ async def primary_node(
                 image_paths=image_paths,
             )
     #print('\n node_input==>',node_input,'\n**')
-    result = await ctx.run_node(
-        eval_single_agent,
-        primary_content,
-    )
+    result = await safe_run_node( ctx,
+    eval_single_agent,
+    primary_content)
+
     print("PRIMARY RESULT =>", result)
     yield Event(
         output=node_input,
@@ -122,30 +128,22 @@ async def oracle_node(
     example_items = ctx.state["example_items"]
     oracle_dataset = ctx.state["oracle_dataset"]
     oracle_descriptions=[]
+    pertubation_used_labels =[]
     for oracle_scan in oracle_dataset:
+        await asyncio.sleep(1)
         scan_name = oracle_scan["scan"]
-        print('### oracle=> scan_name=>',scan_name)
+        #identifica in maniera univoca la pertubazione e la scan di applicazione
+        oracle_scan_key = oracle_scan["pred_scan_conf_name"]
+        print('### oracle=> scan_name=>',scan_name, '## scan key==>',oracle_scan_key)
         async with ORACLE_CACHE_LOCK:
             oracle_cache = load_oracle_cache(
                 EXPERIMENT_NAME
             )
-            cached = oracle_cache.get(scan_name,None)
+            cached = oracle_cache.get(oracle_scan_key,None)
         if cached is not None:
             print('### usando cache ####')
-            oracle_descriptions.append({
-                        "scan": oracle_scan["scan"],
-                        "ground_truth":
-                            oracle_scan["profile"]["quality_global"],
-            
-                        "predicted_quality":
-                            cached["quality"],
-            
-                        "predicted_motivation":
-                            cached["motivation"],
-            
-                        "failure_analysis":
-                            cached["failure_analysis"],
-                    })
+            oracle_descriptions.append(cached)
+            pertubation_used_labels.append(oracle_scan['pred_scan_conf_name'])
             continue
         prompt = build_user_request_for_scan(
             oracle_scan,
@@ -158,58 +156,65 @@ async def oracle_node(
             + [item["image_pred"] for item in example_items["lvl3"]]
             + [item["image_pred"] for item in example_items["lvl2"]]
             + [item["image_pred"] for item in example_items["lvl1"]]
-            + [oracle_scan["image_pred"]]
+            + [oracle_scan["pred_image_path"]]
         )
         oracle_content = build_multimodal_prompt(
             text=prompt,
             image_paths=image_paths,
         )
 
-        prediction = await ctx.run_node(
-            eval_single_agent,
-            oracle_content,
-        )
-        if int(prediction["quality"]) == int(oracle_scan["profile"]["quality_global"]):
+        prediction=await safe_run_node(
+                ctx,
+                eval_single_agent,
+                oracle_content,
+                max_retries=10,
+                base_delay=10,
+                )
+        if int(prediction["quality"]) == int(oracle_scan["pred_quality_score"]):
             print('### prediction quality uguale a ground truth. Skip!!####')
             continue
+        pertubation_used_labels.append(oracle_scan['pred_scan_conf_name'])
         #passa all'agente descrittore della metavalutazione
-        
         meta_prompt = build_oracle_error_descriptor_agent_prompt(oracle_scan,prediction,example_items)
         meta_content = build_multimodal_prompt(text=meta_prompt,image_paths=image_paths)
-        meta_description = await ctx.run_node(oracle_error_descriptor_agent,meta_content)
-        
+        #meta_description = await ctx.run_node(oracle_error_descriptor_agent,meta_content)
+        meta_description=await safe_run_node(
+                ctx,
+                oracle_error_descriptor_agent,
+                meta_content,
+                max_retries=10,
+                base_delay=10,
+                )
+
+        description_obs = {
+            "scan":oracle_scan_key,
+            #qualità reale post pertubazione
+            "ground_truth_quality": oracle_scan["pred_quality_score"],
+            #qualità stimata rispetto alla pertubazione dall'agente
+            "predicted_quality": prediction["quality"],
+            "predicted_motivation": prediction["motivation"],
+            "failure_analysis": meta_description["failure_analysis"],
+            #descrive brevemente la pertubazione effettuata
+            "perturbation":oracle_scan["pred_metadata"],
+            #qualità della scansione prima della pertubazione
+            "origin_quality_before_pertubation": oracle_scan["origin_pred_quality_score"],
+        }
+
         async with ORACLE_CACHE_LOCK:
             oracle_cache = load_oracle_cache(
                 EXPERIMENT_NAME
             )
-            oracle_cache[scan_name] = {
-                "quality": prediction["quality"],
-                "motivation": prediction["motivation"],
-                "failure_analysis":
-                    meta_description["failure_analysis"],
-            }
+            oracle_cache[oracle_scan_key] = description_obs
             save_oracle_cache(
                 EXPERIMENT_NAME,
                 oracle_cache)
-        oracle_descriptions.append({
-        "scan": oracle_scan["scan"],
-        "ground_truth":
-            oracle_scan["profile"]["quality_global"],
-
-        "predicted_quality":
-            prediction["quality"],
-
-        "predicted_motivation":
-            prediction["motivation"],
-
-        "failure_analysis":
-            meta_description["failure_analysis"],
-    })
+        oracle_descriptions.append(description_obs)
 
     yield Event(
         output=node_input,
         state={
             "oracle_result": {
+                "perturbation_labels": pertubation_used_labels,
                 "primary_prediction":
                     ctx.state["primary_prediction"],
                 "oracle_descriptions":
@@ -217,7 +222,6 @@ async def oracle_node(
             }
         },
     )
-
 
 
 @node(rerun_on_resume=True)
@@ -239,14 +243,31 @@ async def oracle_profile_builder_node(
                 "Evaluator predictions matched all available oracle examples."
         }
     else:
-        profile_input = {
-            "oracle_error_descriptions":
-                descriptions
-        }
-        oracle_profile = await ctx.run_node(
-            oracle_profile_builder_agent,
-            profile_input,
-        )
+        profile_cache_key=build_profile_cache_key(descriptions,'scan')
+        async with ORACLE_CACHE_LOCK:
+            oracle_cache = load_oracle_cache(EXPERIMENT_NAME)
+            cached_profile = oracle_cache.get(profile_cache_key,None)
+        if cached_profile is not None:
+            print('### usando cache ####')
+            oracle_profile = cached_profile
+        else: 
+            print('### profile senza cache###')
+            profile_input = { 
+                "oracle_error_descriptions": descriptions}
+            print("### invoking profile builder ###")
+            oracle_profile=await safe_run_node(
+                ctx,
+                oracle_profile_builder_agent,
+                profile_input,
+                max_retries=10,
+                base_delay=10,
+                )
+            print("### profile builder completed ###")
+            async with ORACLE_CACHE_LOCK:
+                oracle_cache = load_oracle_cache(EXPERIMENT_NAME)
+                oracle_cache[profile_cache_key] = oracle_profile
+                oracle_cache['last_profile'] = profile_cache_key
+                save_oracle_cache( EXPERIMENT_NAME,oracle_cache)
     yield Event(
         output=node_input,
         state={
@@ -264,6 +285,7 @@ async def final_node(
     print("###### final node")
 
     example_items = ctx.state["example_items"]
+    perturbation_labels = ctx.state['oracle_result']['perturbation_labels']
     oracle_error_descr_per_scan = ctx.state['oracle_result']["oracle_descriptions"]
     scan_item = ctx.state["scan_item"]
 
@@ -295,10 +317,13 @@ async def final_node(
         text=prompt,
         image_paths=image_paths,
     )
-
-    final_prediction = await ctx.run_node(
-        final_decision_agent,
-        final_content,
+    print("final prompt chars =",len(prompt))
+    final_prediction = await safe_run_node(
+    ctx,
+    final_decision_agent,
+    final_content,
+    max_retries=10,
+    base_delay=10,
     )
 
     print("FINAL RESULT =>", final_prediction)
@@ -307,7 +332,8 @@ async def final_node(
     output={
         "scan":scan_item["scan"],
         "final_prediction": final_prediction,
-
+        "n_oracle_examples":len(oracle_error_descr_per_scan),
+        "perturbation_labels": perturbation_labels,
         "primary_prediction":
             primary_prediction,
         "oracle_profile":
@@ -394,7 +420,7 @@ async def main():
     exclude_examples = set(sum(primary_examples.values(), []))
     dataset_examples = build_input_dataset(
         stats_over_scan,
-        exclude_scans=set(stats_over_scan["scans"]) - exclude_examples,
+        exclude_scans=set([obs['scan'] for obs in stats_over_scan]) - exclude_examples,
         SCANS=SCANS,
         GT_ROOT=GT_ROOT,
         PRED_CSV=PRED_CSV,
@@ -425,13 +451,35 @@ async def main():
     print(f"Dataset primary costruito con {len(dataset_primary)} scans.")
 
 
+    #Definizione pertubazioni da applicare 
+    PERTURBATIONS=[] 
+    #landmark mancanti
+    miss_landmark_configs_par={
+    "global_cfg":{'frac':[0.05,0.1]},
+    "local_cfg":{
+        'cls':["Mesial",
+             "Distal",
+            "InnerPoint",
+            "OuterPoint"], 
+            'frac':[0.3,0.6]}}
+    #identifica con una label la configurazione scelta
+    miss_landmark_config_label = build_perturbation_label(miss_landmark_configs_par)
+    miss_landmark_configs_list= build_missing_landmark_configs(
+        global_config=miss_landmark_configs_par['global_cfg'],
+        local_config= miss_landmark_configs_par['local_cfg'])
+    if PERT_MISSING_LANDMARK:
+        PERTURBATIONS.extend(miss_landmark_configs_list)
+
+    #dataset sintetico a partire dalle scan in oracle_pool 
+    oracle_pool_scans= [v[0] for k,v in oracle_pool.items()]
+    oracle_dataset=build_synthetic_oracle_dataset(oracle_pool_scans, SCANS, GT_ROOT, PRED_CSV,SCREENSHOT_DIR,pertubation_configs=PERTURBATIONS)
     print('###### ORACLE POOL')
-    EXECUTE_WF = False 
+    EXECUTE_WF = True 
     if EXECUTE_WF:
         #passa risorse che saranno usati per inizializzare lo stato
         WORKFLOW_RESOURCES = {
         "example_items": example_items,
-        "oracle_dataset": dataset_primary[:2],
+        "oracle_dataset": oracle_dataset[:10]
         }
         outputs = await run_agentic_workflow(dataset_primary, WORKFLOW_RESOURCES)
 
@@ -441,6 +489,10 @@ async def main():
             "architecture": EXPERIMENT_NAME,
             "model": MODEL_NAME,
             "primary_examples": primary_examples,
+            "pertubation_used": 
+            {
+                "missing_landmarks": [] if PERT_MISSING_LANDMARK==False else miss_landmark_config_label
+            }
         }
 
         exp_dir = save_experiment(config, outputs, evaluation)

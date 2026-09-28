@@ -1,17 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
-import json
 from pathlib import Path
 from datetime import datetime
 import json
+import hashlib
 from pathlib import Path
 
 CACHE_DIR = Path("oracle_cache")
 CACHE_DIR.mkdir(exist_ok=True)
 
 
+def build_profile_cache_key(profiles_list,profile_key):
+    ids = sorted([d[profile_key] for d in profiles_list])
+    return hashlib.md5( json.dumps(ids).encode()  ).hexdigest()
 def get_cache_path(experiment_name):
     return CACHE_DIR / f"{experiment_name}.json"
 def load_oracle_cache(experiment_name):

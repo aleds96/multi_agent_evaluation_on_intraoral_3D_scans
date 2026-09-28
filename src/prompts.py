@@ -143,100 +143,280 @@ def build_user_request_for_scan(input_info, examples,use_profile=False,input_sta
         final_prompt+=goal_prompt
     return final_prompt
 
-#!!!!!!!! Aggiornare mettendo distribuzione count x class nell'input con rumore
-# e confrontarlo con il GT e aggiungendo info pertbuazione
+
 def build_oracle_error_descriptor_agent_prompt(oracle_scan,prediction,example_items): 
     base_prompt = build_user_request_for_scan(
     oracle_scan,
     example_items,
     goal=False)
     meta_prompt = f"""
-            {base_prompt}
-            ----------------------------------------
-            RISULTATO DEL VALUTATORE
-    
-            Predicted quality:
-            {prediction["quality"]}
-    
-            Ground truth quality:
-            {oracle_scan["profile"]["quality_global"]}
-    
-            Evaluator motivation:
-            {prediction["motivation"]}
-    
-            ----------------------------------------
-            Compito:
+    {base_prompt}
 
-            Analizza perché il valutatore ha prodotto
-            una qualità diversa dalla ground truth.
-    
-            NON rivalutare la scan.
-    
-            Individua:
+    ----------------------------------------
+    RISULTATO DEL VALUTATORE
 
-            - possibili bias
-            - elementi visivi che hanno tratto in inganno il valutatore
-            - landmark coinvolti
-            - motivazioni corrette
-            - motivazioni errate o incomplete
-            Restituisci breve (2-6 frasi max) analisi del valutatore 
-            """
+    Predicted quality:
+    {prediction["quality"]}
+
+    Ground truth quality:
+    {oracle_scan["pred_quality_score"]}
+
+    Evaluator motivation:
+    {prediction["motivation"]}
+
+    ----------------------------------------
+    INFORMAZIONI SULLA PERTURBAZIONE
+
+    Original quality:
+    {oracle_scan["origin_pred_quality_score"]}
+
+    Perturbed quality:
+    {oracle_scan["pred_quality_score"]}
+
+    Quality drop:
+    {
+        oracle_scan["origin_pred_quality_score"]
+        -
+        oracle_scan["pred_quality_score"]
+    }
+
+    Perturbation metadata:
+    {oracle_scan["pred_metadata"]}
+
+    ----------------------------------------
+    METRICHE QUANTITATIVE
+
+    Original mAP:
+    {round(float(oracle_scan["origin_pred_gmap"]), 3)}
+
+    Perturbed mAP:
+    {round(float(oracle_scan["pred_gmap"]), 3)}
+
+    mAP drop:
+    {
+        round(
+            float(oracle_scan["origin_pred_gmap"])
+            -
+            float(oracle_scan["pred_gmap"]),
+            3
+        )
+    }
+
+    ----------------------------------------
+    COUNT LANDMARK PER CLASSE
+
+    Original counts:
+    {oracle_scan["origin_pred_count_per_class"]}
+
+    Perturbed counts:
+    {oracle_scan["pred_count_per_class"]}
+
+    ----------------------------------------
+    QUALITY PER CLASSE
+
+    Original:
+    {oracle_scan["origin_pred_quality_per_class"]}
+
+    Perturbed:
+    {oracle_scan["pred_quality_per_class"]}
+
+    ----------------------------------------
+    CONTESTO
+
+    Questa scansione è stata ottenuta applicando
+    una perturbazione controllata ai landmark
+    della predizione originale.
+
+    La perturbazione rappresenta la causa nota
+    del degrado osservato.
+
+    Lo scopo non è analizzare la scansione in sé,
+    ma capire quali debolezze del valutatore
+    sono emerse quando è stato esposto a questa
+    perturbazione.
+
+    ----------------------------------------
+    COMPITO
+
+    Non rivalutare la scan.
+
+    Non cercare di indovinare quale perturbazione
+    sia stata applicata: la perturbazione è già nota.
+
+    Analizza perché il valutatore ha prodotto
+    una qualità diversa dalla ground truth.
+
+    Concentrati su:
+
+    - bias del valutatore
+    - landmark coinvolti
+    - effetto della perturbazione
+    - aspetti visivi fuorvianti
+    - motivazioni corrette
+    - motivazioni errate o incomplete
+    - segnali ignorati
+    - differenze tra qualità originale e perturbata
+    - differenze tra mAP originale e perturbato
+
+    Valuta anche se la risposta del valutatore
+    è proporzionata al reale degrado introdotto.
+
+    Ad esempio evidenzia se il valutatore:
+
+    - ha sovrastimato la qualità
+    - ha sottostimato la qualità
+    - ha individuato il problema corretto ma con gravità errata
+    - ha ignorato una riduzione significativa dei landmark
+    - si è fatto influenzare da segnali visivi fuorvianti
+
+    Non limitarti a descrivere la perturbazione.
+
+    L'obiettivo è identificare quale vulnerabilità
+    o failure mode del valutatore è stata evidenziata
+    da questo esempio.
+
+    Restituisci una breve analisi diagnostica
+    (2-6 frasi).
+    """
+
     return meta_prompt
 instruction_error_description_agent_prompt = """
-Sei incaricato di revisionare un valutatore della qualità dei landmark dentali.
+Sei un analista incaricato di studiare i limiti di un valutatore automatico
+della qualità dei landmark dentali.
 
-Riceverai:
+CONTESTO
+
+Per costruire un profilo di affidabilità del valutatore,
+alcune predizioni sono state modificate artificialmente tramite
+perturbazioni controllate.
+
+Le perturbazioni simulano errori realistici sui landmark
+(ad esempio landmark mancanti, classi scambiate,
+spostamenti spaziali o altre alterazioni).
+
+Per ogni caso avrai accesso a:
 
 - la stessa scala qualitativa utilizzata dal valutatore
 - gli stessi esempi few-shot
-- la stessa immagine
-- le stesse statistiche quantitative
-- la predizione del valutatore
-- la motivazione del valutatore
-- la qualità reale (ground truth)
+- l'immagine perturbata
+- statistiche quantitative sulla predizione
+- il tipo di perturbazione applicata
+- la qualità originale prima della perturbazione
+- la qualità reale dopo la perturbazione
+- la qualità predetta dal valutatore
+- la motivazione prodotta dal valutatore
+
+OBIETTIVO
 
 Il tuo compito NON è assegnare una nuova qualità.
 
-Il tuo compito è spiegare perché il valutatore potrebbe aver prodotto una valutazione diversa dalla ground truth.
+Il tuo compito è identificare quali limiti,
+bias o pattern di errore del valutatore sono emersi
+a causa della perturbazione applicata.
 
-Concentrati su:
+Analizza:
 
-- elementi visivi che potrebbero aver tratto in inganno il valutatore
-- classi di landmark che possono aver contribuito all'errore
-- punti deboli o limitazioni del ragionamento del valutatore
-- pattern di errore che potrebbero ripresentarsi in casi simili
+- quali aspetti della perturbazione hanno tratto in inganno il valutatore
+- quali landmark o classi di landmark sono coinvolti
+- quali segnali visivi sono stati ignorati
+- quali segnali visivi sono stati sovrastimati
+- quali parti della motivazione del valutatore sono corrette
+- quali parti della motivazione del valutatore sono errate, incomplete o fuorvianti
+- quali pattern di errore potrebbero ripresentarsi in casi simili
+- se il valutatore ha reagito in modo proporzionato al reale degrado introdotto
+- se il valutatore ha sottostimato o sovrastimato l'impatto della perturbazione
 
-Produci una breve analisi (2-6 frasi).
+IMPORTANTE
 
-Non limitarti a ripetere la predizione o la ground truth.
-Non proporre una nuova valutazione della qualità.
+La perturbazione rappresenta la causa nota del degrado.
+
+Non cercare di indovinare cosa sia successo alla scan.
+
+Usa le informazioni disponibili sulla perturbazione,
+sui conteggi dei landmark, sulle qualità per classe
+e sulle metriche quantitative (mAP) per spiegare
+il comportamento del valutatore.
+
+Valuta se l'errore del valutatore è coerente
+con l'entità reale del degrado osservato.
+
+Un piccolo calo del mAP indica una perturbazione lieve.
+
+Un forte calo del mAP indica una perturbazione significativa.
+
+Se il valutatore non reagisce in modo proporzionato
+al degrado reale, evidenzialo chiaramente nell'analisi.
+
+OUTPUT
+
+Produci una breve analisi diagnostica (2-6 frasi).
+
+L'analisi deve essere focalizzata sui limiti del valutatore
+e non sulla descrizione generale della scansione.
 """
 instruction_profile_builder_agent_prompt = """
-Sei incaricato di costruire un profilo di affidabilità di un valutatore della qualità dei landmark dentali.
+Sei incaricato di costruire un profilo di affidabilità
+di un valutatore della qualità dei landmark dentali.
 
-Riceverai più analisi di errore generate su scansioni differenti.
+CONTESTO
 
-Il tuo compito è identificare pattern ricorrenti.
+Riceverai una collezione di osservazioni generate
+tramite perturbazioni controllate applicate a scansioni dentali.
 
-Non analizzare singole scansioni.
+Ogni osservazione descrive:
 
-Riassumi invece:
+- la qualità reale dopo la perturbazione
+- la qualità predetta dal valutatore
+- la motivazione del valutatore
+- il tipo di perturbazione applicata
+- un'analisi delle cause dell'errore del valutatore
+
+Le perturbazioni sono state introdotte deliberatamente
+per evidenziare limiti e vulnerabilità del valutatore.
+
+OBIETTIVO
+
+Il tuo compito non è analizzare le singole scansioni.
+
+Il tuo compito è identificare pattern ricorrenti
+nel comportamento del valutatore.
+
+Costruisci un profilo che descriva:
 
 - punti di forza del valutatore
 - punti di debolezza del valutatore
-- modalità di errore ricorrenti
-- possibili bias sistematici
+- failure mode ricorrenti
+- bias sistematici
+- situazioni nelle quali il valutatore tende
+  a sovrastimare o sottostimare la qualità
 
-Concentrati solo sui pattern che emergono da più esempi.
+IMPORTANTE
 
-Mantieni le risposte concise.
+Concentrati soprattutto sui pattern osservati
+in più esempi diversi.
 
-Vincoli:
+Non riportare dettagli specifici di una singola scansione.
+
+Non limitarti a ripetere le failure analysis ricevute.
+
+Generalizza le osservazioni in comportamenti
+stabili del valutatore.
+
+Ignora failure mode isolati che compaiono
+in un solo esempio.
+
+Privilegia invece failure mode che emergono
+in modo consistente in esempi multipli.
+
+OUTPUT
 
 - strengths: massimo 2 elementi
 - weaknesses: massimo 2 elementi
 - failure_modes: massimo 3 elementi
 - profile_summary: massimo 3 frasi
+
+Le voci devono descrivere comportamenti generali
+del valutatore e non casi specifici del dataset.
 """
 instruction_final_decision_agent_prompt = """
 Sei un esperto nella valutazione della qualità dei landmark dentali.
@@ -272,6 +452,7 @@ def build_final_review_prompt(
     primary_prediction,
     oracle_profile,
 ):
+
     base_prompt = build_user_request_for_scan(
         scan_item,
         example_items,
@@ -309,30 +490,57 @@ Modalità di errore osservate:
 
 --------------------------------------------------
 
+CONTESTO
+
+Il profilo di affidabilità è stato costruito
+analizzando la risposta del valutatore a numerose
+perturbazioni controllate dei landmark.
+
+Le debolezze e i failure mode riportati
+rappresentano vulnerabilità osservate
+sperimentalmente del valutatore.
+
+--------------------------------------------------
+
 COMPITO
 
-Valuta nuovamente la scansione di input.
+Valuta la scansione di input.
 
-Il profilo di affidabilità riassume situazioni in cui il valutatore ha prodotto valutazioni errate rispetto alla ground truth.
+Parti dalla valutazione primaria.
+
+Successivamente verifica se la scansione corrente
+presenta caratteristiche compatibili con
+uno o più failure mode del valutatore.
+
+In particolare chiediti:
+
+- il valutatore potrebbe stare ignorando landmark importanti?
+- il valutatore potrebbe sovrastimare la qualità?
+- il valutatore potrebbe sottostimare la qualità?
+- sono presenti pattern simili a quelli osservati nel profilo Oracle?
+- i punti deboli identificati nel profilo sono applicabili al caso corrente?
 
 Utilizza:
 
 - l'immagine target
 - gli esempi few-shot
-- i profili degli esempi
-- le statistiche quantitative dei landmark
+- le statistiche quantitative
 - la valutazione primaria
 - il profilo di affidabilità
 
-Determina se la scansione corrente assomiglia a uno o più pattern di errore noti del valutatore.
+Modifica la valutazione primaria
+solo se esistono evidenze concrete
+che uno o più failure mode individuati
+dal profilo Oracle siano pertinenti
+alla scansione corrente.
 
-Se nessun pattern di errore appare rilevante, puoi mantenere la valutazione primaria.
+In assenza di evidenze sufficienti
+mantieni la valutazione primaria.
 
-Se la scansione corrente presenta caratteristiche compatibili con uno dei pattern di errore osservati, puoi modificare la qualità assegnata.
+L'obiettivo è produrre
+la migliore stima finale possibile.
 
-L'obiettivo è produrre la migliore valutazione finale possibile.
-
-Restituisci esclusivamente un oggetto JSON:
+Restituisci esclusivamente un JSON:
 
 {{
     "quality": integer compreso tra 1 e 5,

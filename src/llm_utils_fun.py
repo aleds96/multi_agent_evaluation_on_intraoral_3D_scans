@@ -71,3 +71,47 @@ async def safe_run_multimodal(runner, session_id, image_paths, prompt,
             await asyncio.sleep(delay)
 
     raise RuntimeError("Max retries exceeded for run_multimodal")
+async def safe_run_node(
+    ctx,
+    agent,
+    payload,
+    max_retries=5,
+    base_delay=5,
+):
+
+    for attempt in range(max_retries):
+
+        try:
+
+            return await ctx.run_node(
+                agent,
+                payload,
+            )
+
+        except Exception as e:
+
+            msg = str(e).lower()
+
+            if (
+                "429" not in msg
+                and
+                "resource_exhausted" not in msg
+            ):
+                raise
+
+            delay = (
+                base_delay
+                * (2 ** attempt)
+            )
+
+            print(
+                f"[WARN] Retry "
+                f"{attempt+1}/{max_retries}"
+                f" after {delay}s"
+            )
+
+            await asyncio.sleep(delay)
+
+    raise RuntimeError(
+        "Max retry exceeded"
+    )
