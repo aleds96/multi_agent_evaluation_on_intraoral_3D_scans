@@ -1,0 +1,24 @@
+{
+  "architecture": "v1_walllv_onlyinputstat_multi_agent_wf__test",
+  "model": "gemini-2.5-flash",
+  "primary_examples": {
+    "lvl1": [
+      "JXVWXY0L_upper"
+    ],
+    "lvl2": [
+      "TZRY3HIX_lower"
+    ],
+    "lvl3": [
+      "CNUR69O9_upper"
+    ],
+    "lvl4": [
+      "LHP32GAK_upper"
+    ],
+    "lvl5": [
+      "ZKJEPFDD_lower"
+    ]
+  },
+  "pertubation_used": {
+    "missing_landmarks": "global_cfg_{'frac': [0.05, 0.1]}__local_cfg_{'cls': ['Mesial', 'Distal', 'InnerPoint', 'OuterPoint'], 'frac': [0.3, 0.6]}"
+  }
+}
