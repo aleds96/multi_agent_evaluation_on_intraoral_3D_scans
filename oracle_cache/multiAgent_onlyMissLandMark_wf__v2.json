@@ -1,0 +1,19 @@
+{
+  "f463086cc7a36ab3123b928dd03750bc": {
+    "strengths": [
+      "Il valutatore dimostra una comprensione fondamentale dell'anatomia dentale, riconoscendo la presenza di tutti i denti e la corretta posizione dei landmark nelle regioni non perturbate.",
+      "È in grado, in alcuni casi, di identificare correttamente la classe specifica di landmark che è stata perturbata, sebbene la sua valutazione dell'impatto possa essere imprecisa."
+    ],
+    "weaknesses": [
+      "Inconsistente sensibilità alla perdita di landmark: il valutatore mostra una vulnerabilità significativa sia a sovrastimare l'impatto di rimozioni minori di landmark (sottostimando la qualità) sia a sottostimare l'impatto di perdite sostanziali (sovrastimando la qualità).",
+      "Propensione alla confabulazione e alla misattribuzione degli errori: il valutatore genera frequentemente spiegazioni inaccurate o esagerate per i problemi di qualità percepiti, spesso attribuendo difetti a anomalie anatomiche inesistenti o fraintendendo la vera origine del degrado."
+    ],
+    "failure_modes": [
+      "Aggiustamento sproporzionato della qualità: il valutatore fatica ad assegnare un punteggio di qualità che rifletta accuratamente la magnitudine della perturbazione, portando a sottostime significative per cambiamenti minori e sovrastime per degradazioni maggiori.",
+      "Misattribuzione delle cause di errore: il valutatore non riesce costantemente a individuare la causa effettiva del degrado della qualità, inventando o interpretando erroneamente indizi visivi come difetti anatomici più ampi o problemi con classi di landmark non perturbate.",
+      "Mancanza di localizzazione precisa del problema: il valutatore tende a generalizzare perturbazioni specifiche di landmark a regioni anatomiche più ampie o ad altri tipi di landmark, indicando una difficoltà nell'isolare e descrivere accuratamente la natura esatta del problema."
+    ],
+    "profile_summary": "Il valutatore mostra una notevole inconsistenza nella valutazione della qualità, reagendo in modo sproporzionato sia a perturbazioni minime che a quelle significative. Tende a confabulare e misattribuire le cause degli errori, generando motivazioni imprecise o inventando problemi anatomici inesistenti. La sua capacità di localizzare e quantificare l'impatto reale delle perturbazioni è limitata, portando a diagnosi spesso fuorvianti."
+  },
+  "last_profile": "f463086cc7a36ab3123b928dd03750bc"
+}

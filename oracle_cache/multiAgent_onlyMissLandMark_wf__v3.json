@@ -1,0 +1,62 @@
+{
+  "f463086cc7a36ab3123b928dd03750bc": {
+    "strengths": [
+      "Il valutatore tenta di fornire spiegazioni anatomiche dettagliate per i problemi percepiti, anche quando errate.",
+      "È in grado di identificare la presenza generale dei landmark e la loro distribuzione, anche in presenza di conteggi imprecisi.",
+      "Nei casi di perdita massiva di landmark, il valutatore può identificare correttamente la classe di landmark perturbata."
+    ],
+    "weaknesses": [
+      "Scarsa sensibilità al grado di perdita dei landmark, che porta a reazioni sproporzionate (sia sovrastima che sottostima dell'impatto).",
+      "Tendenza a 'allucinare' o attribuire erroneamente difetti anatomici non direttamente causati dalla perturbazione.",
+      "Difficoltà nell'isolare la vera causa del degrado, spesso generalizzando problemi locali o citando questioni non correlate."
+    ],
+    "biases": [
+      {
+        "bias_name": "Overreaction to Minor Local Loss",
+        "description": "Quando una piccola percentuale di landmark di una classe specifica viene rimossa, il valutatore tende a interpretare questa perdita come prova di problemi anatomici gravi, strutturali o sistematici (es. denti mancanti, posizionamento errato delle cuspidi, errori di orientamento diffusi) che non sono presenti. Questo porta a un calo sproporzionato della qualità predetta.",
+        "error_direction": "mixed",
+        "typical_effect": "Il punteggio di qualità diminuisce di uno o più livelli, accompagnato da diagnosi anatomiche dettagliate ma errate.",
+        "trigger_conditions": [
+          "Rimozione di una piccola percentuale (es. 20-30%) di landmark da una singola classe.",
+          "Il degrado effettivo della qualità è minimo o moderato."
+        ],
+        "supporting_examples": [
+          "Mesial 20%",
+          "Distal 20%",
+          "InnerPoint 20%",
+          "Distal 30%"
+        ]
+      },
+      {
+        "bias_name": "Insensitivity to Significant Local Landmark Loss",
+        "description": "Quando una percentuale moderata o massiva (es. 30-60%) di landmark di una classe specifica viene rimossa, il valutatore spesso non riesce a tenere adeguatamente conto dell'impatto di questa perdita sulla qualità complessiva. O ignora completamente i landmark mancanti o li riconosce ma assegna un peso sproporzionatamente basso alla loro assenza, portando a una sovrastima della qualità complessiva.",
+        "error_direction": "overestimation",
+        "typical_effect": "La qualità predetta è un livello superiore rispetto alla qualità reale, nonostante un degrado significativo. La motivazione potrebbe concentrarsi sulla 'plausibilità generale' dei landmark rimanenti.",
+        "trigger_conditions": [
+          "Rimozione di una percentuale moderata o massiva (es. 30-60%) di landmark da una singola classe.",
+          "Il degrado effettivo della qualità è significativo."
+        ],
+        "supporting_examples": [
+          "Mesial 30%",
+          "Mesial 60%",
+          "OuterPoint 60%"
+        ]
+      },
+      {
+        "bias_name": "Over-generalization of Massive Local Loss",
+        "description": "Quando una percentuale massiva (es. 60%) di landmark di una classe specifica viene rimossa, il valutatore identifica correttamente la perdita ma tende a esagerarne l'impatto complessivo e/o a generalizzare erroneamente il problema ad altre classi di landmark non perturbate. Questo porta a una sottostima della qualità complessiva, spesso accompagnata da una spiegazione diagnostica imprecisa e troppo ampia.",
+        "error_direction": "mixed",
+        "typical_effect": "La qualità predetta è un livello inferiore rispetto alla qualità reale, con la motivazione che cita erroneamente problemi in più classi di landmark oltre a quella perturbata.",
+        "trigger_conditions": [
+          "Rimozione di una percentuale massiva (es. 60%) di landmark da una singola classe.",
+          "Il degrado effettivo della qualità è significativo ma meno grave di quanto percepito dal valutatore."
+        ],
+        "supporting_examples": [
+          "InnerPoint 60%"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore interpreta frequentemente in modo errato la gravità e la natura delle perturbazioni dei landmark. Tende a reagire in modo eccessivo a perdite locali minori, 'allucinando' problemi strutturali gravi, oppure a sottovalutare l'impatto di perdite significative, sovrastimando la qualità. Inoltre, spesso generalizza problemi specifici a classi di landmark non correlate, portando a spiegazioni diagnostiche imprecise."
+  },
+  "last_profile": "f463086cc7a36ab3123b928dd03750bc"
+}

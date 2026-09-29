@@ -355,85 +355,267 @@ L'analisi deve essere focalizzata sui limiti del valutatore
 e non sulla descrizione generale della scansione.
 """
 instruction_profile_builder_agent_prompt = """
-Sei incaricato di costruire un profilo di affidabilità
+Sei incaricato di costruire un profilo di calibrazione
 di un valutatore della qualità dei landmark dentali.
 
 CONTESTO
 
-Riceverai una collezione di osservazioni generate
+Riceverai una collezione di osservazioni ottenute
 tramite perturbazioni controllate applicate a scansioni dentali.
 
-Ogni osservazione descrive:
+Ogni osservazione contiene informazioni strutturate sul comportamento
+del valutatore in un caso di errore.
 
-- la qualità reale dopo la perturbazione
-- la qualità predetta dal valutatore
-- la motivazione del valutatore
-- il tipo di perturbazione applicata
-- un'analisi delle cause dell'errore del valutatore
+Le osservazioni possono includere:
+
+- qualità reale dopo la perturbazione
+- qualità predetta dal valutatore
+- motivazione prodotta dal valutatore
+- qualità originale prima della perturbazione
+- descrizione della perturbazione applicata
+- analisi delle cause dell'errore del valutatore
 
 Le perturbazioni sono state introdotte deliberatamente
-per evidenziare limiti e vulnerabilità del valutatore.
-
-OBIETTIVO
-
-Il tuo compito non è analizzare le singole scansioni.
-
-Il tuo compito è identificare pattern ricorrenti
-nel comportamento del valutatore.
-
-Costruisci un profilo che descriva:
-
-- punti di forza del valutatore
-- punti di debolezza del valutatore
-- failure mode ricorrenti
-- bias sistematici
-- situazioni nelle quali il valutatore tende
-  a sovrastimare o sottostimare la qualità
+per evidenziare vulnerabilità e bias del valutatore.
 
 IMPORTANTE
 
-Concentrati soprattutto sui pattern osservati
-in più esempi diversi.
+Le osservazioni fornite rappresentano esclusivamente
+casi nei quali il valutatore ha prodotto una valutazione
+differente dalla qualità reale.
 
-Non riportare dettagli specifici di una singola scansione.
+I casi corretti non vengono forniti.
 
-Non limitarti a ripetere le failure analysis ricevute.
+Di conseguenza:
 
-Generalizza le osservazioni in comportamenti
-stabili del valutatore.
+- il profilo risultante descrive principalmente
+  vulnerabilità e pattern di errore osservati;
 
-Ignora failure mode isolati che compaiono
-in un solo esempio.
+- il profilo non rappresenta una misura completa
+  dell'affidabilità globale del valutatore;
 
-Privilegia invece failure mode che emergono
-in modo consistente in esempi multipli.
+- i punti di forza devono essere dedotti soltanto
+  da capacità che il valutatore continua a mostrare
+  anche nei casi in cui commette errori.
+
+OBIETTIVO
+
+Il tuo compito NON è riassumere le singole osservazioni.
+
+Il tuo compito è identificare pattern ricorrenti
+e trasformarli in bias utilizzabili da un agente calibratore.
+
+Il calibratore utilizzerà il profilo per decidere:
+
+- quando fidarsi della valutazione primaria;
+- quando sospettare la presenza di un errore;
+- in quale direzione il valutatore tende a sbagliare;
+- quali condizioni tendono ad attivare il bias.
+
+UTILIZZA TUTTE LE INFORMAZIONI DISPONIBILI
+
+Non basarti esclusivamente sul campo failure_analysis.
+
+Utilizza congiuntamente:
+
+- tipo di perturbazione
+- qualità reale
+- qualità predetta
+- differenza tra qualità reale e predetta
+- motivazione del valutatore
+- analisi delle cause dell'errore
+
+per identificare pattern robusti.
+
+BIAS
+
+Un bias rappresenta un comportamento ricorrente
+osservato in più esempi.
+
+Ogni bias deve essere sufficientemente generale
+da poter essere applicato a scansioni non viste.
+
+Per ciascun bias identifica:
+
+- cosa attiva il bias
+- come si manifesta
+- in quale direzione tende a produrre errori
+- quale effetto produce tipicamente
+- quali esempi supportano la sua esistenza
+
+GENERALIZZAZIONE
+
+Non limitarti a ripetere le osservazioni ricevute.
+
+Non riportare descrizioni dettagliate
+di singole scansioni.
+
+Generalizza le evidenze osservate
+in pattern stabili del comportamento del valutatore.
+
+Privilegia pattern che emergono
+in più perturbazioni differenti.
+
+Ignora fenomeni che compaiono
+in un singolo esempio isolato.
+
+ERROR_DIRECTION
+
+Utilizza esclusivamente uno dei seguenti valori:
+
+- overestimation
+- underestimation
+- hallucinated_explanation
+- mixed
+
+Dove:
+
+overestimation
+=
+il valutatore tende a sovrastimare la qualità.
+
+underestimation
+=
+il valutatore tende a sottostimare la qualità.
+
+hallucinated_explanation
+=
+il problema principale riguarda motivazioni
+inventate o non supportate dalle evidenze.
+
+mixed
+=
+il bias si presenta in modi differenti.
+
+SUPPORING_EXAMPLES
+
+Gli esempi devono essere sintetici.
+
+Utilizza preferibilmente il nome della perturbazione.
+
+Esempi validi:
+
+- "Mesial 20%"
+- "Distal 20%"
+- "OuterPoint 60%"
+
+Non copiare intere failure analysis.
 
 OUTPUT
 
-- strengths: massimo 2 elementi
-- weaknesses: massimo 2 elementi
-- failure_modes: massimo 3 elementi
-- profile_summary: massimo 3 frasi
+Genera:
 
-Le voci devono descrivere comportamenti generali
-del valutatore e non casi specifici del dataset.
+- strengths
+- weaknesses
+- biases
+- profile_summary
+
+STRENGTHS
+
+Massimo 3 elementi.
+
+Descrivono capacità che il valutatore mantiene
+anche nei casi di errore.
+
+WEAKNESSES
+
+Massimo 3 elementi.
+
+Descrivono vulnerabilità ricorrenti.
+
+BIASES
+
+Massimo 5 bias.
+
+Ogni bias deve contenere:
+
+- bias_name
+- description
+- error_direction
+- typical_effect
+- trigger_conditions
+- supporting_examples
+
+PROFILE_SUMMARY
+
+Massimo 3 frasi.
+
+Riassumi le principali vulnerabilità osservate.
+
+OBIETTIVO FINALE
+
+Costruisci un profilo sufficientemente concreto
+da permettere a un agente calibratore di verificare
+se una nuova scansione presenta condizioni compatibili
+con uno dei bias osservati e decidere se mantenere
+o modificare la valutazione primaria.
 """
 instruction_final_decision_agent_prompt = """
 Sei un esperto nella valutazione della qualità dei landmark dentali.
 
 Il tuo compito è produrre una valutazione finale calibrata.
 
-Potresti ricevere:
+Riceverai una combinazione delle seguenti informazioni:
 
 - immagini contenenti landmark dentali
 - esempi few-shot
 - statistiche quantitative
-- una valutazione precedente
-- un profilo di affidabilità del valutatore
+- una valutazione primaria prodotta da un altro valutatore
+- un profilo di calibrazione costruito analizzando errori osservati in precedenti perturbazioni sintetiche
 
-Utilizza tutte le informazioni disponibili per produrre la stima finale più affidabile.
+OBIETTIVO
 
-Puoi confermare la valutazione precedente oppure modificarla se il profilo di affidabilità suggerisce la presenza di un errore noto.
+Il tuo ruolo non è eseguire una nuova valutazione indipendente da zero.
+
+Il tuo ruolo è analizzare criticamente la valutazione primaria
+e decidere se mantenerla oppure correggerla.
+
+Il profilo di calibrazione descrive bias e vulnerabilità
+osservati sperimentalmente nel valutatore primario.
+
+Ogni bias può includere:
+
+- una descrizione del pattern osservato
+- la direzione tipica dell'errore
+- l'effetto tipico prodotto dal bias
+- condizioni che tendono ad attivarlo
+- esempi che hanno generato il bias
+
+UTILIZZO DEL PROFILO
+
+Utilizza il profilo come una base di conoscenza
+sui comportamenti storicamente osservati del valutatore.
+
+I bias NON sono regole deterministiche.
+
+La semplice presenza di un bias nel profilo
+non implica che tale bias sia attivo nella scansione corrente.
+
+Prima di modificare la valutazione primaria devi verificare che:
+
+- la scansione corrente sia compatibile con le condizioni di attivazione del bias
+- l'immagine supporti la possibile correzione
+- le statistiche quantitative supportino la possibile correzione
+- la motivazione fornita dal valutatore mostri segnali coerenti con il bias osservato
+
+DECISIONE
+
+Mantieni la valutazione primaria quando:
+
+- non esistono evidenze sufficienti di errore
+- il profilo non è pertinente al caso corrente
+- l'immagine e le statistiche supportano la stima primaria
+
+Modifica la valutazione primaria soltanto quando:
+
+- uno o più bias osservati risultano compatibili con il caso corrente
+- esistono evidenze concrete che il valutatore stia commettendo un errore noto
+
+In caso di dubbio privilegia la valutazione primaria.
+
+L'obiettivo è produrre la stima finale più affidabile possibile.
+
+OUTPUT
 
 Restituisci esclusivamente un oggetto JSON nel formato:
 
@@ -442,10 +624,16 @@ Restituisci esclusivamente un oggetto JSON nel formato:
     "motivation": str
 }
 
-La qualità deve essere un numero intero compreso tra 1 e 5.
+Dove:
 
-La motivazione deve essere breve e concentrarsi sugli elementi principali che giustificano la decisione finale.
+- quality è un numero intero tra 1 e 5
+- motivation è una spiegazione breve che descrive
+  le ragioni principali della decisione finale
+
+Non aggiungere testo fuori dal JSON.
 """
+
+
 def build_final_review_prompt(
     scan_item,
     example_items,
@@ -474,7 +662,7 @@ Motivazione:
 
 --------------------------------------------------
 
-PROFILO DI AFFIDABILITÀ DEL VALUTATORE
+PROFILO DI CALIBRAZIONE DEL VALUTATORE
 
 Riassunto:
 {oracle_profile["profile_summary"]}
@@ -485,20 +673,63 @@ Punti di forza osservati:
 Punti di debolezza osservati:
 {oracle_profile["weaknesses"]}
 
-Modalità di errore osservate:
-{oracle_profile["failure_modes"]}
+Bias osservati:
+{oracle_profile["biases"]}
 
 --------------------------------------------------
 
 CONTESTO
 
-Il profilo di affidabilità è stato costruito
-analizzando la risposta del valutatore a numerose
-perturbazioni controllate dei landmark.
+Il profilo è stato costruito analizzando
+numerose perturbazioni sintetiche applicate
+ai landmark dentali.
 
-Le debolezze e i failure mode riportati
-rappresentano vulnerabilità osservate
-sperimentalmente del valutatore.
+Le perturbazioni sono state utilizzate per
+identificare pattern ricorrenti di errore,
+vulnerabilità e bias del valutatore.
+
+Ogni bias contiene:
+
+- una descrizione del pattern osservato
+- la direzione tipica dell'errore
+- gli effetti normalmente prodotti
+- le condizioni che tendono ad attivarlo
+- esempi concreti che hanno generato il bias
+
+I bias rappresentano conoscenza empirica
+sui comportamenti osservati del valutatore.
+
+--------------------------------------------------
+
+IMPORTANTE
+
+Il profilo è stato costruito utilizzando
+esclusivamente casi nei quali il valutatore
+ha commesso errori rispetto alla ground truth.
+
+Pertanto il profilo descrive vulnerabilità
+osservate ma non rappresenta una misura completa
+dell'affidabilità complessiva del valutatore.
+
+La presenza di un bias nel profilo non implica
+che il bias sia necessariamente attivo
+nella scansione corrente.
+
+Utilizza i bias come evidenze di calibrazione
+e non come regole deterministiche.
+
+Non modificare la valutazione primaria
+soltanto perché un bias esiste.
+
+Prima verifica che nella scansione corrente
+siano presenti condizioni compatibili con:
+
+- trigger_conditions
+- description
+- typical_effect
+- error_direction
+
+descritti dal bias.
 
 --------------------------------------------------
 
@@ -509,16 +740,19 @@ Valuta la scansione di input.
 Parti dalla valutazione primaria.
 
 Successivamente verifica se la scansione corrente
-presenta caratteristiche compatibili con
-uno o più failure mode del valutatore.
+presenta caratteristiche compatibili con uno
+o più bias osservati nel profilo.
 
-In particolare chiediti:
+Per ogni bias chiediti:
 
-- il valutatore potrebbe stare ignorando landmark importanti?
-- il valutatore potrebbe sovrastimare la qualità?
-- il valutatore potrebbe sottostimare la qualità?
-- sono presenti pattern simili a quelli osservati nel profilo Oracle?
-- i punti deboli identificati nel profilo sono applicabili al caso corrente?
+- il pattern descritto è applicabile a questa scansione?
+- le condizioni di attivazione del bias sono presenti?
+- la motivazione fornita dal valutatore presenta segnali
+  compatibili con il bias?
+- la direzione dell'errore suggerita dal bias è coerente
+  con il caso corrente?
+- l'immagine e le statistiche quantitative supportano
+  una correzione della valutazione primaria?
 
 Utilizza:
 
@@ -526,19 +760,18 @@ Utilizza:
 - gli esempi few-shot
 - le statistiche quantitative
 - la valutazione primaria
-- il profilo di affidabilità
+- il profilo di calibrazione
 
-Modifica la valutazione primaria
-solo se esistono evidenze concrete
-che uno o più failure mode individuati
-dal profilo Oracle siano pertinenti
+Modifica la valutazione primaria soltanto
+se esistono evidenze concrete che uno o più
+bias osservati siano realmente applicabili
 alla scansione corrente.
 
-In assenza di evidenze sufficienti
-mantieni la valutazione primaria.
+In assenza di evidenze sufficienti mantieni
+la valutazione primaria.
 
-L'obiettivo è produrre
-la migliore stima finale possibile.
+L'obiettivo è produrre la stima finale più
+affidabile possibile.
 
 Restituisci esclusivamente un JSON:
 
@@ -547,3 +780,4 @@ Restituisci esclusivamente un JSON:
     "motivation": "breve spiegazione"
 }}
 """
+
