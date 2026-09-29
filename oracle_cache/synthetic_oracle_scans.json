@@ -130,5 +130,101 @@
       "perturbation": "rimosso 60% OuterPoint",
       "origin_quality_before_pertubation": 3
     }
+  },
+  "F92OKIOI_upper_class_flip_target_landmark_classes___fraction_0.05": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La scansione presenta diversi errori di posizionamento dei landmark. I FacialPoint e OuterPoint sono spesso posizionati in modo errato sul bordo incisale degli incisivi. I punti Cusp sui molari posteriori sono eccessivamente sparsi e mal localizzati, con alcuni posizionati troppo bucalmente o lingualmente. I punti Mesial e Distal sugli incisivi centrali sono troppo vicini, indicando una scarsa precisione."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.2__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_class_flip_fraction_0.2__target_landmark_classes_Mesial",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diversi landmark mancanti, inclusi Mesial e FacialPoint sugli incisivi centrali e alcune cuspidi. Si notano anche posizionamenti imprecisi di alcuni punti, come i FacialPoint sui molari e i Distal sui molari, e una generale asimmetria nella distribuzione dei landmark tra i denti omologhi.",
+      "failure_analysis": "Il valutatore sovrastima l'impatto della perturbazione, prevedendo una qualità 2 contro una reale di 3, nonostante un calo minimo del mAP (0.024). Sebbene identifichi correttamente problemi con i landmark Mesial, la motivazione è errata e fuorviante nell'attribuire mancanze o imprecisioni a classi non perturbate come FacialPoint, Cusp e Distal. Questo evidenzia un bias del valutatore a generalizzare eccessivamente problemi localizzati e una mancanza di proporzionalità nella valutazione del degrado complessivo.",
+      "perturbation": "flip 20% dei landmarks con classe Mesial",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.3__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_class_flip_fraction_0.3__target_landmark_classes_Mesial",
+      "ground_truth_quality": 2,
+      "predicted_quality": 3,
+      "predicted_motivation": "La maggior parte dei landmark è posizionata correttamente e rispetta l'anatomia dentale. Tuttavia, il secondo premolare destro mostra un raggruppamento e un posizionamento errato dei landmark Mesial, Distal e Facial, indicando un errore significativo su quel dente. Questo abbassa la qualità complessiva, nonostante la buona performance sugli altri denti.",
+      "failure_analysis": "Il valutatore ha sovrastimato la qualità, prevedendo 3 contro una ground truth di 2, indicando una sottostima dell'impatto della perturbazione. La motivazione del valutatore è parzialmente errata, poiché attribuisce problemi a landmark Distal e Facial su un dente specifico, mentre la perturbazione ha interessato solo il 30% dei landmark Mesial. Inoltre, il valutatore ha ignorato il calo significativo della qualità dei landmark OuterPoint (da 5 a 3), che è una conseguenza indiretta della perturbazione. Questo evidenzia un limite del valutatore nel diagnosticare correttamente la classe e la localizzazione degli errori, e nel reagire proporzionalmente al degrado reale.",
+      "perturbation": "flip 30% dei landmarks con classe Mesial",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.5__target_landmark_classes_Mesial": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La scan presenta gravi errori di posizionamento e coerenza anatomica. Si notano numerosi scambi di orientamento tra i landmark Mesial e Distal, specialmente negli incisivi e canini. È presente un landmark Mesial fluttuante fuori dalla superficie del dente e un forte squilibrio nel conteggio dei landmark Mesial e Distal, indicando punti mancanti o errati."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.2__target_landmark_classes_Distal": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "I landmark Mesial e Distal sugli incisivi sono posizionati in modo errato sul bordo incisale anziché sulle superfici prossimali. Anche i punti Facial e Inner sugli incisivi sono posizionati troppo in alto. Le statistiche quantitative mostrano discrepanze come punti Distal mancanti e OuterPoint in eccesso, indicando errori di rilevamento o classificazione."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.3__target_landmark_classes_Distal": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La qualità è bassa a causa di errori sistematici nel posizionamento dei landmark. I punti Mesial, Distal, InnerPoint, OuterPoint e FacialPoint sugli incisivi sono posizionati troppo in basso, vicino al margine gengivale, e i punti Mesial/Distal non sono sulle superfici corrette. Inoltre, i FacialPoint sui premolari e molari sono spesso posizionati troppo in alto, discostandosi dalla superficie vestibolare centrale."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.5__target_landmark_classes_Distal": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La scan presenta errori significativi e sistematici. Si osserva uno scambio tra InnerPoint (giallo) e OuterPoint (ciano) su tutti i premolari e molari del lato sinistro del paziente, indicando un errore di orientamento. Sono inoltre presenti duplicazioni di FacialPoint, InnerPoint e OuterPoint su diversi denti, compromettendo l'accuratezza del posizionamento."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.2__target_landmark_classes_InnerPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La qualità è compromessa da un significativo posizionamento errato dei landmark Mesial, Distal, InnerPoint e OuterPoint sugli incisivi centrali, che risultano troppo prossimi al bordo incisale. Si osserva inoltre uno spostamento mesiale del FacialPoint sul canino destro e una duplicazione del punto Distal su un molare. Questi errori riducono la coerenza anatomica complessiva dei landmark."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.3__target_landmark_classes_InnerPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La qualità è bassa a causa di diversi errori significativi. Un landmark Cusp (blu) è posizionato sulla gengiva, non sul dente. Inoltre, mancano diversi OuterPoint (ciano) sugli incisivi e alcuni landmark sono posizionati in modo impreciso sulla superficie del dente."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.5__target_landmark_classes_InnerPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La qualità è bassa a causa della significativa assenza di InnerPoints, con solo 7 su 14 denti che ne presentano uno. Si notano anche alcuni Mesial points posizionati in modo errato, troppo buccale su premolari e molari destri. Le discrepanze nei conteggi dei landmark indicano ulteriori errori di rilevamento e una scarsa coerenza anatomica."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.2__target_landmark_classes_OuterPoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_class_flip_fraction_0.2__target_landmark_classes_OuterPoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "Diversi landmark OuterPoint e FacialPoint sono assenti sui molari e premolari del lato sinistro del paziente. Inoltre, i landmark Mesial su questi stessi denti sono significativamente mal posizionati verso la superficie buccale. Questa mancanza di simmetria e gli errori sistematici su un lato riducono notevolmente la qualità complessiva.",
+      "failure_analysis": "Il valutatore ha sovrastimato l'impatto di una perturbazione lieve, abbassando la qualità predetta da 3 a 2 nonostante la qualità reale sia rimasta 3 e il mAP sia diminuito solo di 0.02. Sebbene abbia correttamente identificato un problema con i landmark OuterPoint, ha erroneamente menzionato assenze o malposizionamenti per i landmark FacialPoint e Mesial, che non sono stati influenzati dalla perturbazione. Questo indica una tendenza a generalizzare o 'allucinare' errori su classi non coinvolte, portando a una valutazione sproporzionatamente negativa e a una motivazione parzialmente errata.",
+      "perturbation": "flip 20% dei landmarks con classe OuterPoint",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.3__target_landmark_classes_OuterPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La scan presenta una marcata asimmetria nel conteggio delle cuspidi tra denti omologhi, con molari che mostrano 3 cuspidi su un lato e 4 sull'altro, e un premolare con una sola cuspide. Numerosi OuterPoint e FacialPoint sono gravemente fuori posizione, troppo buccali o troppo bassi sulla superficie del dente, in particolare sul lato sinistro del paziente. La distribuzione generale dei landmark su questo lato è incoerente e anatomicamente implausibile."
+  },
+  "F92OKIOI_upper_class_flip_fraction_0.5__target_landmark_classes_OuterPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse problematiche significative: mancano numerosi OuterPoint su premolari e molari, e sono presenti InnerPoint duplicati sugli incisivi. Si osservano anche errori di orientamento Mesial/Distal sugli incisivi centrali. Questi errori compromettono l'accuratezza anatomica e la completezza dei landmark."
   }
 }

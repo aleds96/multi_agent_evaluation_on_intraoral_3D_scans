@@ -591,6 +591,43 @@ def apply_missing_landmark_perturbation(
         coords_new,
         classes_new,
     )
+#fai il flip della classe di un landmark
+def apply_class_flip_perturbation(
+    coords,
+    classes,
+    fraction,
+    target_landmark_classes=[],
+    seed=42,
+):
+    MESH_CLASSES = list(set(classes))
+    rng = random.Random(seed)
+    if len(classes) == 0:
+        return coords.copy(), classes.copy()
+
+    #GLOBAL FLIP==> considera tutti i punti
+    if len(target_landmark_classes) == 0:
+        candidate_idx = list(range(len(classes)))
+        #print('### global flip with len(candidate)==>',len(candidate_idx))
+    #LOCALIZED FLIP=> solo specifica classe target
+    else:
+        candidate_idx = [ i for i, cls in enumerate(classes) if cls in target_landmark_classes]
+
+    if len(candidate_idx) == 0:
+        return (coords.copy(),classes.copy())
+    n_flip = max(1,int(len(candidate_idx) * fraction))
+    #print('## num flip==>',n_flip)
+    flip_idx = rng.sample(candidate_idx,min(n_flip, len(candidate_idx))
+                          )
+    classes_new = classes.copy()
+    for idx in flip_idx:
+        current_class = classes_new[idx]
+        candidate_classes = [ c for c in MESH_CLASSES if c != current_class]
+        if len(candidate_classes) == 0:
+            continue
+        new_class = rng.choice(candidate_classes)
+        classes_new[idx] = new_class
+
+    return (coords.copy(),classes_new)
 def apply_perturbation(perturbation_type,coords_pred,classes_pred,perturbation_params):
     if perturbation_type == "missing_landmarks":
         return apply_missing_landmark_perturbation(
@@ -599,6 +636,13 @@ def apply_perturbation(perturbation_type,coords_pred,classes_pred,perturbation_p
             fraction=perturbation_params["fraction"],
             target_landmark_classes=perturbation_params["target_landmark_classes"],
         )
+    elif perturbation_type == "class_flip":
+            return apply_class_flip_perturbation(
+                coords_pred,
+                classes_pred,
+                fraction=perturbation_params["fraction"],
+                target_landmark_classes=perturbation_params["target_landmark_classes"],
+            )
     return coords_pred,classes_pred
 def build_synthetic_oracle_sample(
     scan_name,
@@ -692,6 +736,7 @@ def build_synthetic_oracle_dataset(scan_names, SCANS, GT_ROOT, PRED_CSV,SCREENSH
             "seg_path": seg_path,
         })
         return dataset
+
 def build_missing_landmark_configs(
         global_config={'frac':[0.05,0.1]},
         local_config={'cls':["Mesial",
@@ -723,4 +768,97 @@ def build_missing_landmark_configs(
                     "description":
                         f"rimosso {int(frac*100)}% {cls}" }
             })
+    return configs
+def build_class_flip_configs(
+    global_config={
+        'frac': [0.05]
+    },
+    local_config={
+        'cls': [
+            "Mesial",
+            "Distal",
+            "InnerPoint",
+            "OuterPoint",
+        ],
+        'frac': [0.20, 0.30, 0.50] 
+    }):
+    configs = []
+
+    #GLOBAL FLIP
+    for frac in global_config.get('frac', []):
+        configs.append({
+            "type": "class_flip",
+            "params": {
+                "target_landmark_classes": [],
+                "fraction": frac,
+            },
+            "metadata": {
+                "description":
+                    f"flip classe {int(frac * 100)}% landmarks globalmente"
+            },
+        })
+
+    #flip locale
+    for cls in local_config.get('cls', []):
+        for frac in local_config.get('frac', []):
+            configs.append({
+                "type": "class_flip",
+                "params": {
+                    "fraction": frac,
+                    "target_landmark_classes":
+                        [] if cls == 'any class' else [cls],
+                },
+                "metadata": {
+                    "description":f"flip {int(frac * 100)}% dei landmarks con classe {cls}"}})
+    return configs
+def build_landmark_shift_configs(
+    global_config={
+        "frac": [0.20,0.40],
+        "shift_mm": [0.5,1.0, 2.0, 3.0],
+    },
+    local_config={
+        "cls": [
+            "Mesial",
+            "OuterPoint",
+        ],
+        "frac": [0.20, 0.30, 0.50],
+        "shift_mm": [1.0, 2.0, 3.0],
+    }
+):
+
+    configs = []
+    #GLOBAL SHIFT
+    for frac in global_config.get("frac", []):
+
+        for shift_mm in global_config.get("shift_mm", []):
+            configs.append({
+                "type": "landmark_shift",
+                "params": {
+                    "fraction": frac,
+                    "shift_mm": shift_mm,
+                    "target_landmark_classes": [],
+                },
+                "metadata": {
+                    "description":
+                        f"spostato {int(frac * 100)}% landmarks globalmente di {shift_mm}mm"
+                },
+            })
+    #LOCALIZED SHIFT
+    for cls in local_config.get("cls", []):
+        for frac in local_config.get("frac", []):
+            for shift_mm in local_config.get("shift_mm", []):
+                configs.append({
+                    "type": "landmark_shift",
+                    "params": {
+                        "fraction": frac,
+                        "shift_mm": shift_mm,
+                        "target_landmark_classes":
+                            [] if cls == "any class" else [cls],
+                    },
+                    "metadata": {
+                        "description":
+                            f"spostato {int(frac * 100)}% landmarks {cls} di {shift_mm}mm"
+                    },
+                })
+
     return configs

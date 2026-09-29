@@ -1,0 +1,74 @@
+{
+  "67bcc39dcdf6bbdbf2cc55d653aecb2b": {
+    "strengths": [
+      "Capacità di rilevare problemi localizzati, anche se la loro estensione o natura specifica viene talvolta fraintesa.",
+      "Fornisce motivazioni dettagliate per le sue valutazioni, offrendo una base per l'analisi e la calibrazione, nonostante le imprecisioni.",
+      "Sensibilità alle anomalie strutturali come l'asimmetria, riconoscendola come un indicatore di degrado della qualità."
+    ],
+    "weaknesses": [
+      "Tendenza a 'allucinare' difetti, riportando problemi in classi di landmark non perturbate.",
+      "Inconsistenza nella proporzionalità della valutazione della qualità, sovrastimando o sottostimando l'impatto delle perturbazioni.",
+      "Precisione diagnostica limitata, con difficoltà nell'identificare correttamente la classe e la localizzazione esatta degli errori."
+    ],
+    "biases": [
+      {
+        "bias_name": "Hallucination of Secondary Defects",
+        "description": "Quando una specifica classe di landmark viene perturbata, il valutatore tende a riportare erroneamente problemi (mancanze, imprecisioni, malposizionamenti) anche in altre classi di landmark non perturbate, spesso correlate anatomicamente o funzionalmente. Questo porta a una percezione gonfiata o mal indirizzata del degrado complessivo.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "La motivazione del valutatore include affermazioni errate o non supportate su difetti in classi di landmark non perturbate, rendendo la valutazione complessiva più severa o fuorviante. Questo può portare a una sottostima della qualità reale.",
+        "trigger_conditions": [
+          "Perturbazioni localizzate che interessano una specifica classe di landmark.",
+          "Perturbazioni che causano un calo di qualità evidente ma non catastrofico."
+        ],
+        "supporting_examples": [
+          "Mesial 20%",
+          "Mesial 30%",
+          "OuterPoint 20%"
+        ]
+      },
+      {
+        "bias_name": "Disproportionate Impact Assessment",
+        "description": "Il valutatore fatica a valutare in modo coerente l'entità del degrado della qualità. Per livelli simili di perturbazione o cali di qualità reali, a volte sovrastima l'impatto (prevedendo una qualità inferiore a quella reale) e a volte lo sottostima (prevedendo una qualità superiore a quella reale).",
+        "error_direction": "mixed",
+        "typical_effect": "Le previsioni di qualità sono inaffidabili; possono essere troppo basse o troppo alte rispetto alla qualità effettiva, rendendo difficile fidarsi direttamente del punteggio numerico.",
+        "trigger_conditions": [
+          "Perturbazioni che influenzano le posizioni dei landmark.",
+          "Situazioni in cui la qualità reale è moderata (es. 2 o 3)."
+        ],
+        "supporting_examples": [
+          "Mesial 20%",
+          "Mesial 30%",
+          "OuterPoint 20%"
+        ]
+      },
+      {
+        "bias_name": "Neglect of Indirect Degradation",
+        "description": "Il valutatore tende a concentrarsi principalmente sulla classe di landmark direttamente perturbata, spesso trascurando o sottovalutando le conseguenze indirette della perturbazione su altre classi di landmark non perturbate che potrebbero subire anch'esse un calo di qualità.",
+        "error_direction": "overestimation",
+        "typical_effect": "La qualità predetta è superiore a quella reale perché il valutatore non riesce a tenere conto di tutti gli aspetti del degrado. La motivazione si concentra troppo strettamente sulla classe primaria perturbata.",
+        "trigger_conditions": [
+          "Perturbazioni che hanno effetti a cascata sulla qualità di altre classi di landmark."
+        ],
+        "supporting_examples": [
+          "Mesial 30%"
+        ]
+      },
+      {
+        "bias_name": "Overemphasis on Asymmetry",
+        "description": "Il valutatore è altamente sensibile all'asimmetria percepita nella distribuzione o nel posizionamento dei landmark. Spesso evidenzia l'asimmetria come un fattore significativo nel degrado della qualità, a volte sovrastimandone il ruolo rispetto alla perturbazione primaria.",
+        "error_direction": "underestimation",
+        "typical_effect": "L'asimmetria viene frequentemente citata nella motivazione, portando potenzialmente a una valutazione della qualità più negativa di quanto giustificato dalla sola perturbazione primaria.",
+        "trigger_conditions": [
+          "Perturbazioni che creano o esacerbano intrinsecamente l'asimmetria.",
+          "Qualsiasi deviazione evidente dalla simmetria bilaterale."
+        ],
+        "supporting_examples": [
+          "Mesial 20%",
+          "OuterPoint 20%"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore mostra capacità di rilevare problemi localizzati e di fornire motivazioni dettagliate, ma la sua affidabilità è compromessa da una tendenza a 'allucinare' difetti in aree non perturbate. Presenta una proporzionalità inconsistente nelle sue valutazioni di qualità e spesso sovrastima l'impatto dell'asimmetria. Questo porta a punteggi di qualità e motivazioni inaffidabili che richiedono calibrazione."
+  },
+  "last_profile": "67bcc39dcdf6bbdbf2cc55d653aecb2b"
+}

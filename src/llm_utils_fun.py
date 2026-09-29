@@ -80,30 +80,14 @@ async def safe_run_node(
 ):
 
     for attempt in range(max_retries):
-
         try:
-
-            return await ctx.run_node(
-                agent,
-                payload,
-            )
-
+            return await ctx.run_node(agent,payload)
         except Exception as e:
-
             msg = str(e).lower()
-
-            if (
-                "429" not in msg
-                and
-                "resource_exhausted" not in msg
-            ):
+            if ("429" not in msg and
+                "resource_exhausted" not in msg):
                 raise
-
-            delay = (
-                base_delay
-                * (2 ** attempt)
-            )
-
+            delay = (base_delay * (2 ** attempt) )
             print(
                 f"[WARN] Retry "
                 f"{attempt+1}/{max_retries}"

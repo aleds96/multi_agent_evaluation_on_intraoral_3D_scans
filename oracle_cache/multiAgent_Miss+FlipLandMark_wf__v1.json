@@ -1,0 +1,77 @@
+{
+  "d96f8f4a14b0a48214ddb9141f2884a8": {
+    "strengths": [
+      "Il valutatore genera costantemente una motivazione testuale dettagliata per la sua valutazione della qualità, anche quando l'analisi è errata.",
+      "In molti casi, il valutatore identifica correttamente la classe di landmark o il tipo di perturbazione applicata, sebbene poi ne travisi la gravità o aggiunga problemi non correlati.",
+      "Il valutatore mantiene un senso generale di plausibilità anatomica per i landmark rimanenti, il che può contribuire a una valutazione stabile in presenza di degrado localizzato."
+    ],
+    "weaknesses": [
+      "Incapacità di identificare con precisione la causa principale del degrado, attribuendo spesso problemi a classi di landmark o strutture anatomiche non perturbate.",
+      "Reazione sproporzionata alla gravità del degrado, manifestando sia un'eccessiva sensibilità a problemi minori che una sottostima dell'impatto di quelli significativi.",
+      "Tendenza a 'allucinare' problemi inesistenti, come la mancanza di denti o anomalie strutturali, non supportati dalle evidenze della scansione."
+    ],
+    "biases": [
+      {
+        "bias_name": "Allucinazione di Problemi Non Correlati e Iper-Generalizzazione",
+        "description": "Il valutatore genera frequentemente motivazioni che includono problemi con classi di landmark o caratteristiche anatomiche non direttamente influenzate dalla perturbazione. Tende a generalizzare problemi localizzati a difetti strutturali o anatomici più ampi e inesistenti (es. denti mancanti, anomalie delle cuspidi, errori di orientamento) anche quando sono stati solo rimossi o scambiati specifici landmark.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "Fornisce informazioni diagnostiche fuorvianti e inutili, oscurando la vera natura del degrado e potenzialmente portando a sforzi di correzione mal diretti.",
+        "trigger_conditions": [
+          "Qualsiasi perturbazione che influenzi la presenza o la classe dei landmark.",
+          "Presenza di qualsiasi anomalia rilevata, indipendentemente dalla sua classe o gravità specifica."
+        ],
+        "supporting_examples": [
+          "rimosso 20% Mesial",
+          "rimosso 30% Mesial",
+          "rimosso 60% Mesial",
+          "rimosso 20% Distal",
+          "rimosso 30% Distal",
+          "rimosso 20% InnerPoint",
+          "rimosso 60% InnerPoint",
+          "rimosso 60% OuterPoint",
+          "flip 20% dei landmarks con classe Mesial",
+          "flip 30% dei landmarks con classe Mesial",
+          "flip 20% dei landmarks con classe OuterPoint"
+        ]
+      },
+      {
+        "bias_name": "Iper-sensibilità a Degrado Minore Localizzato",
+        "description": "Quando una piccola percentuale di landmark (es. 20-30%) viene rimossa o la sua classe viene scambiata, il valutatore tende a percepire il degrado come più grave di quanto non sia. Spesso interpreta problemi minori e localizzati come problemi sistemici o strutturali, portando a una riduzione ingiustificata della qualità predetta.",
+        "error_direction": "underestimation",
+        "typical_effect": "Segnalazione non necessaria di scansioni come di bassa qualità, richiedendo una nuova valutazione per problemi minori e non critici. La qualità predetta è tipicamente un livello inferiore rispetto alla qualità reale.",
+        "trigger_conditions": [
+          "Bassa percentuale (es. 20-30%) di landmark rimossi da una classe specifica.",
+          "Bassa percentuale (es. 20-30%) di landmark con classe scambiata.",
+          "Calo minimo del mAP."
+        ],
+        "supporting_examples": [
+          "rimosso 20% Mesial",
+          "rimosso 20% Distal",
+          "rimosso 20% InnerPoint",
+          "rimosso 30% Distal",
+          "flip 20% dei landmarks con classe Mesial",
+          "flip 20% dei landmarks con classe OuterPoint"
+        ]
+      },
+      {
+        "bias_name": "Sotto-sensibilità a Degrado Significativo Localizzato",
+        "description": "Quando una percentuale moderata o alta di landmark (es. 30-60%) viene rimossa o la sua classe viene scambiata, il valutatore spesso non riesce a riconoscere appieno l'entità del degrado della qualità. Potrebbe riconoscere la perturbazione specifica ma minimizzarne l'impatto complessivo, con conseguente sovrastima della qualità della scansione.",
+        "error_direction": "overestimation",
+        "typical_effect": "Accettazione di scansioni con problemi di qualità significativi, che potrebbero portare a problemi a valle. La qualità predetta è tipicamente un livello superiore rispetto alla qualità reale.",
+        "trigger_conditions": [
+          "Percentuale moderata o alta (es. 30-60%) di landmark rimossi da una classe specifica.",
+          "Percentuale moderata (es. 30%) di landmark con classe scambiata.",
+          "Calo significativo del mAP."
+        ],
+        "supporting_examples": [
+          "rimosso 30% Mesial",
+          "rimosso 60% Mesial",
+          "rimosso 60% OuterPoint",
+          "flip 30% dei landmarks con classe Mesial"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore mostra una forte tendenza a diagnosticare erroneamente la causa principale del degrado, spesso allucinando problemi anatomici o di landmark non correlati. Inoltre, esibisce una sensibilità incoerente all'entità delle perturbazioni, reagendo in modo eccessivo a problemi minori e sottostimando l'impatto di quelli significativi."
+  },
+  "last_profile": "d96f8f4a14b0a48214ddb9141f2884a8"
+}
