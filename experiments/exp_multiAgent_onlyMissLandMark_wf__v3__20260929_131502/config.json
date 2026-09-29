@@ -1,0 +1,31 @@
+{
+  "architecture": "multiAgent_onlyMissLandMark_wf__v3",
+  "mdifiche_fatte_rispetto_a_versione_precedente": "aggiornato prompt finale e profile builder introducendo concetto di bias e non solo valutazione generica",
+  "model": "gemini-2.5-flash",
+  "primary_examples": {
+    "lvl1": [
+      "JXVWXY0L_upper"
+    ],
+    "lvl2": [
+      "TZRY3HIX_lower"
+    ],
+    "lvl3": [
+      "CNUR69O9_upper"
+    ],
+    "lvl4": [
+      "LHP32GAK_upper"
+    ],
+    "lvl5": [
+      "ZKJEPFDD_lower"
+    ]
+  },
+  "oracle_example_len": 14,
+  "oracle_example_scans": [
+    "F92OKIOI_upper",
+    "K4BAII5F_upper",
+    "RZ69JRI9_lower"
+  ],
+  "pertubation_used": {
+    "missing_landmarks": "global_cfg_{'frac': [0.05, 0.1]}__local_cfg_{'cls': ['Mesial', 'Distal', 'InnerPoint', 'OuterPoint'], 'frac': [0.2, 0.3, 0.6]}"
+  }
+}

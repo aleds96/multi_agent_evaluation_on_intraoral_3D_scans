@@ -1,0 +1,146 @@
+[
+  {
+    "scan": "AKBDPB4C_upper",
+    "real_quality": 5,
+    "pred_quality": 3,
+    "motivation": "La valutazione primaria ha sovrastimato la qualit\u00e0. Sebbene i landmark esistenti siano ben posizionati, le statistiche quantitative e l'ispezione visiva rivelano una rimozione massiva di landmark di tipo 'Cusp'. Questo rientra nel pattern di errore del valutatore, che tende a sovrastimare la qualit\u00e0 in presenza di landmark mancanti.",
+    "workflow_trace": {
+      "scan": "AKBDPB4C_upper",
+      "final_prediction": {
+        "quality": 3,
+        "motivation": "La valutazione primaria ha sovrastimato la qualit\u00e0. Sebbene i landmark esistenti siano ben posizionati, le statistiche quantitative e l'ispezione visiva rivelano una rimozione massiva di landmark di tipo 'Cusp'. Questo rientra nel pattern di errore del valutatore, che tende a sovrastimare la qualit\u00e0 in presenza di landmark mancanti."
+      },
+      "n_oracle_examples": 1,
+      "perturbation_labels": [
+        "F92OKIOI_upper_missing_landmarks_fraction_0.3__target_landmark_classes_Mesial"
+      ],
+      "primary_prediction": {
+        "quality": 4,
+        "motivation": "I landmark sono posizionati con elevata precisione, seguendo la morfologia dentale e mostrando buona simmetria. Tutti i punti visibili sono correttamente orientati e si trovano sulle superfici dei denti. Sebbene i conteggi quantitativi suggeriscano una leggera sovrastima di alcuni landmark (es. OuterPoint, FacialPoint) e potenzialmente qualche cuspide mancante, la qualit\u00e0 visiva complessiva \u00e8 molto alta e non presenta errori grossolani."
+      },
+      "oracle_profile": {
+        "strengths": [
+          "Capacit\u00e0 di identificare imprecisioni di posizionamento e asimmetrie",
+          "Riconoscimento di singoli landmark mancanti o mal posizionati"
+        ],
+        "weaknesses": [
+          "Incapacit\u00e0 di rilevare in modo affidabile la rimozione massiva di landmark di una specifica categoria",
+          "Tendenza a sovrastimare la qualit\u00e0 quando la perturbazione principale riguarda landmark mancanti"
+        ],
+        "failure_modes": [
+          "Sovrastima della qualit\u00e0 a causa della mancata identificazione di un'elevata percentuale di landmark assenti",
+          "Motivazioni errate o incomplete che si concentrano su problemi secondari ignorando la causa principale del degrado",
+          "Bias verso la rilevazione di errori di posizionamento rispetto alla rilevazione di landmark completamente mancanti"
+        ],
+        "profile_summary": "Il valutatore mostra difficolt\u00e0 nel rilevare la rimozione massiva di landmark specifici, portando a una sovrastima della qualit\u00e0. Le sue motivazioni spesso si concentrano su imprecisioni di posizionamento minori, trascurando le perturbazioni pi\u00f9 significative. Questo indica una vulnerabilit\u00e0 nella gestione di scenari con landmark completamente assenti."
+      },
+      "oracle_error_descr_per_scan": [
+        {
+          "scan": "F92OKIOI_upper_missing_landmarks_fraction_0.3__target_landmark_classes_Mesial",
+          "ground_truth_quality": 2,
+          "predicted_quality": 3,
+          "predicted_motivation": "La scansione presenta una buona copertura generale dei landmark, ma si notano alcune imprecisioni. Un FacialPoint \u00e8 mancante su un incisivo e diversi OuterPoint sui molari sono posizionati troppo in alto. Sono presenti anche alcune asimmetrie e posizionamenti non ottimali per i landmark Mesial e Distal sui denti posteriori.",
+          "failure_analysis": "Il valutatore ha sovrastimato la qualit\u00e0, prevedendo 3 invece del valore reale 2, non riconoscendo il degrado introdotto. Ha completamente ignorato la perturbazione principale, ovvero la rimozione del 30% dei landmark Mesial, che ha causato un calo di qualit\u00e0 da 2 a 1 per quella classe. Invece, la motivazione ha erroneamente citato problemi con FacialPoint e OuterPoint, e ha menzionato genericamente posizionamenti non ottimali per Mesial e Distal, dimostrando una debolezza nel rilevare landmark mancanti. Questo indica un limite significativo nella capacit\u00e0 del valutatore di identificare la perdita di landmark, portando a una valutazione complessiva imprecisa e sproporzionata rispetto al degrado effettivo.",
+          "perturbation": "rimosso 30% Mesial",
+          "origin_quality_before_pertubation": 3
+        }
+      ]
+    }
+  },
+  {
+    "scan": "ANLLPLV7_upper",
+    "real_quality": 1,
+    "pred_quality": 1,
+    "motivation": "L'immagine di input non presenta alcun landmark su nessuno dei denti, come confermato dalle statistiche quantitative. La completa assenza di landmark impedisce qualsiasi valutazione di correttezza anatomica o coerenza, giustificando la qualit\u00e0 pi\u00f9 bassa possibile. La valutazione primaria \u00e8 accurata e non mostra segni di sovrastima, nonostante i punti deboli noti del valutatore riguardo ai landmark mancanti.",
+    "workflow_trace": {
+      "scan": "ANLLPLV7_upper",
+      "final_prediction": {
+        "quality": 1,
+        "motivation": "L'immagine di input non presenta alcun landmark su nessuno dei denti, come confermato dalle statistiche quantitative. La completa assenza di landmark impedisce qualsiasi valutazione di correttezza anatomica o coerenza, giustificando la qualit\u00e0 pi\u00f9 bassa possibile. La valutazione primaria \u00e8 accurata e non mostra segni di sovrastima, nonostante i punti deboli noti del valutatore riguardo ai landmark mancanti."
+      },
+      "n_oracle_examples": 1,
+      "perturbation_labels": [
+        "F92OKIOI_upper_missing_landmarks_fraction_0.3__target_landmark_classes_Mesial"
+      ],
+      "primary_prediction": {
+        "quality": 1,
+        "motivation": "L'immagine di input non presenta alcun landmark su nessuno dei denti. La completa assenza di landmark impedisce qualsiasi valutazione di correttezza anatomica o coerenza. Questo indica un fallimento totale nel processo di identificazione e posizionamento dei landmark."
+      },
+      "oracle_profile": {
+        "strengths": [
+          "Capacit\u00e0 di identificare imprecisioni di posizionamento e asimmetrie",
+          "Riconoscimento di singoli landmark mancanti o mal posizionati"
+        ],
+        "weaknesses": [
+          "Incapacit\u00e0 di rilevare in modo affidabile la rimozione massiva di landmark di una specifica categoria",
+          "Tendenza a sovrastimare la qualit\u00e0 quando la perturbazione principale riguarda landmark mancanti"
+        ],
+        "failure_modes": [
+          "Sovrastima della qualit\u00e0 a causa della mancata identificazione di un'elevata percentuale di landmark assenti",
+          "Motivazioni errate o incomplete che si concentrano su problemi secondari ignorando la causa principale del degrado",
+          "Bias verso la rilevazione di errori di posizionamento rispetto alla rilevazione di landmark completamente mancanti"
+        ],
+        "profile_summary": "Il valutatore mostra difficolt\u00e0 nel rilevare la rimozione massiva di landmark specifici, portando a una sovrastima della qualit\u00e0. Le sue motivazioni spesso si concentrano su imprecisioni di posizionamento minori, trascurando le perturbazioni pi\u00f9 significative. Questo indica una vulnerabilit\u00e0 nella gestione di scenari con landmark completamente assenti."
+      },
+      "oracle_error_descr_per_scan": [
+        {
+          "scan": "F92OKIOI_upper_missing_landmarks_fraction_0.3__target_landmark_classes_Mesial",
+          "ground_truth_quality": 2,
+          "predicted_quality": 3,
+          "predicted_motivation": "La scansione presenta una buona copertura generale dei landmark, ma si notano alcune imprecisioni. Un FacialPoint \u00e8 mancante su un incisivo e diversi OuterPoint sui molari sono posizionati troppo in alto. Sono presenti anche alcune asimmetrie e posizionamenti non ottimali per i landmark Mesial e Distal sui denti posteriori.",
+          "failure_analysis": "Il valutatore ha sovrastimato la qualit\u00e0, prevedendo 3 invece del valore reale 2, non riconoscendo il degrado introdotto. Ha completamente ignorato la perturbazione principale, ovvero la rimozione del 30% dei landmark Mesial, che ha causato un calo di qualit\u00e0 da 2 a 1 per quella classe. Invece, la motivazione ha erroneamente citato problemi con FacialPoint e OuterPoint, e ha menzionato genericamente posizionamenti non ottimali per Mesial e Distal, dimostrando una debolezza nel rilevare landmark mancanti. Questo indica un limite significativo nella capacit\u00e0 del valutatore di identificare la perdita di landmark, portando a una valutazione complessiva imprecisa e sproporzionata rispetto al degrado effettivo.",
+          "perturbation": "rimosso 30% Mesial",
+          "origin_quality_before_pertubation": 3
+        }
+      ]
+    }
+  },
+  {
+    "scan": "CK45DVLG_upper",
+    "real_quality": 5,
+    "pred_quality": 2,
+    "motivation": "La valutazione primaria ha sovrastimato la qualit\u00e0, come previsto dal profilo di affidabilit\u00e0 per scenari con landmark mancanti. Nonostante il buon posizionamento dei landmark presenti, i dati quantitativi indicano la mancanza di diversi landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint). Questa significativa incompletezza giustifica un punteggio di qualit\u00e0 inferiore.",
+    "workflow_trace": {
+      "scan": "CK45DVLG_upper",
+      "final_prediction": {
+        "quality": 2,
+        "motivation": "La valutazione primaria ha sovrastimato la qualit\u00e0, come previsto dal profilo di affidabilit\u00e0 per scenari con landmark mancanti. Nonostante il buon posizionamento dei landmark presenti, i dati quantitativi indicano la mancanza di diversi landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint). Questa significativa incompletezza giustifica un punteggio di qualit\u00e0 inferiore."
+      },
+      "n_oracle_examples": 1,
+      "perturbation_labels": [
+        "F92OKIOI_upper_missing_landmarks_fraction_0.3__target_landmark_classes_Mesial"
+      ],
+      "primary_prediction": {
+        "quality": 3,
+        "motivation": "I landmark presenti sono generalmente ben posizionati e rispettano la morfologia dentale e le regole anatomiche. Tuttavia, i dati quantitativi indicano la mancanza di diversi landmark (Mesial, Distal, InnerPoint, OuterPoint, FacialPoint). Questa incompletezza impedisce un punteggio di qualit\u00e0 superiore, posizionando la scan intorno alla mediana."
+      },
+      "oracle_profile": {
+        "strengths": [
+          "Capacit\u00e0 di identificare imprecisioni di posizionamento e asimmetrie",
+          "Riconoscimento di singoli landmark mancanti o mal posizionati"
+        ],
+        "weaknesses": [
+          "Incapacit\u00e0 di rilevare in modo affidabile la rimozione massiva di landmark di una specifica categoria",
+          "Tendenza a sovrastimare la qualit\u00e0 quando la perturbazione principale riguarda landmark mancanti"
+        ],
+        "failure_modes": [
+          "Sovrastima della qualit\u00e0 a causa della mancata identificazione di un'elevata percentuale di landmark assenti",
+          "Motivazioni errate o incomplete che si concentrano su problemi secondari ignorando la causa principale del degrado",
+          "Bias verso la rilevazione di errori di posizionamento rispetto alla rilevazione di landmark completamente mancanti"
+        ],
+        "profile_summary": "Il valutatore mostra difficolt\u00e0 nel rilevare la rimozione massiva di landmark specifici, portando a una sovrastima della qualit\u00e0. Le sue motivazioni spesso si concentrano su imprecisioni di posizionamento minori, trascurando le perturbazioni pi\u00f9 significative. Questo indica una vulnerabilit\u00e0 nella gestione di scenari con landmark completamente assenti."
+      },
+      "oracle_error_descr_per_scan": [
+        {
+          "scan": "F92OKIOI_upper_missing_landmarks_fraction_0.3__target_landmark_classes_Mesial",
+          "ground_truth_quality": 2,
+          "predicted_quality": 3,
+          "predicted_motivation": "La scansione presenta una buona copertura generale dei landmark, ma si notano alcune imprecisioni. Un FacialPoint \u00e8 mancante su un incisivo e diversi OuterPoint sui molari sono posizionati troppo in alto. Sono presenti anche alcune asimmetrie e posizionamenti non ottimali per i landmark Mesial e Distal sui denti posteriori.",
+          "failure_analysis": "Il valutatore ha sovrastimato la qualit\u00e0, prevedendo 3 invece del valore reale 2, non riconoscendo il degrado introdotto. Ha completamente ignorato la perturbazione principale, ovvero la rimozione del 30% dei landmark Mesial, che ha causato un calo di qualit\u00e0 da 2 a 1 per quella classe. Invece, la motivazione ha erroneamente citato problemi con FacialPoint e OuterPoint, e ha menzionato genericamente posizionamenti non ottimali per Mesial e Distal, dimostrando una debolezza nel rilevare landmark mancanti. Questo indica un limite significativo nella capacit\u00e0 del valutatore di identificare la perdita di landmark, portando a una valutazione complessiva imprecisa e sproporzionata rispetto al degrado effettivo.",
+          "perturbation": "rimosso 30% Mesial",
+          "origin_quality_before_pertubation": 3
+        }
+      ]
+    }
+  }
+]
