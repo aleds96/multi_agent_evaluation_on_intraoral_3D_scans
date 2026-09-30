@@ -1,0 +1,68 @@
+{
+  "dd3128f173ea8aa20056d136ed04b599": {
+    "strengths": [
+      "Fornisce sempre motivazioni dettagliate per le sue valutazioni.",
+      "È sensibile alla presenza di anomalie, anche se spesso le identifica erroneamente.",
+      "Tenta di valutare la coerenza anatomica e la simmetria, sebbene i dettagli specifici possano essere errati."
+    ],
+    "weaknesses": [
+      "Tende a 'allucinare' difetti anatomici specifici o landmark mancanti che non sono presenti.",
+      "Ha difficoltà a distinguere tra l'assenza di landmark e il loro spostamento spaziale.",
+      "Mostra una proporzionalità inconsistente nel valutare l'impatto delle perturbazioni sulla qualità."
+    ],
+    "biases": [
+      {
+        "bias_name": "Sovra-interpretazione di Assenze Minori di Landmark",
+        "description": "Quando una percentuale piccola o moderata di landmark viene rimossa, il valutatore tende a interpretare questa assenza come un problema anatomico o strutturale più grave e diffuso, piuttosto che una semplice riduzione del conteggio. Spesso 'allucina' difetti anatomici specifici o errori sistematici (es. molari mancanti, landmark scambiati, cuspidi inconsistenti) che non sono stati introdotti dalla perturbazione.",
+        "error_direction": "underestimation",
+        "typical_effect": "Una caduta sproporzionata della qualità predetta (es. da 3 a 2 o da 2 a 1), giustificata da una motivazione diagnostica elaborata ma errata, focalizzata su problemi strutturali inesistenti.",
+        "trigger_conditions": [
+          "Percentuale piccola o moderata (20-30%) di landmark rimossi da una classe specifica."
+        ],
+        "supporting_examples": [
+          "removed 20% Mesial",
+          "removed 20% Distal",
+          "removed 30% Distal",
+          "removed 20% InnerPoint"
+        ]
+      },
+      {
+        "bias_name": "Sensibilità Inconsistente a Perdite Massicce di Landmark",
+        "description": "Quando una percentuale elevata (es. 30-60%) di landmark di una classe specifica viene rimossa, la reazione del valutatore è inconsistente. A volte sovrastima la qualità (sottostimando l'impatto della perdita massiccia) privilegiando la 'plausibilità' dei landmark rimanenti. Altre volte, identifica correttamente la perdita ma ne sovrastima l'impatto, sottostimando la qualità e generalizzando il problema ad altre classi di landmark non perturbate, 'allucinando' ulteriori assenze.",
+        "error_direction": "mixed",
+        "typical_effect": "Valutazione della qualità imprecisa (troppo alta o troppo bassa rispetto alla verità) e una motivazione diagnostica che, pur identificando il problema principale, include problemi inesistenti da altre classi di landmark.",
+        "trigger_conditions": [
+          "Percentuale moderata o elevata (30% o più) di landmark rimossi da una classe specifica."
+        ],
+        "supporting_examples": [
+          "removed 30% Mesial",
+          "removed 60% Mesial",
+          "removed 60% InnerPoint",
+          "removed 60% OuterPoint"
+        ]
+      },
+      {
+        "bias_name": "Confusione Spostamento Spaziale con Assenza di Landmark",
+        "description": "Il valutatore ha una forte tendenza a interpretare gli spostamenti spaziali dei landmark come la loro completa assenza. Riporta costantemente 'landmark mancanti' (spesso classi specifiche e non perturbate come InnerPoint o FacialPoint) anche quando la perturbazione reale è stata uno spostamento. Questa confusione porta a una diagnosi errata della natura del problema.",
+        "error_direction": "mixed",
+        "typical_effect": "La diagnosi primaria è errata (assenza invece di spostamento). Questa errata diagnosi porta a una reazione inappropriata sulla qualità: sottostima per spostamenti lievi/moderati e sovrastima per spostamenti significativi, poiché la vera gravità dell'errore spaziale non viene compresa.",
+        "trigger_conditions": [
+          "Qualsiasi perturbazione che comporti uno spostamento spaziale dei landmark, indipendentemente dalla magnitudine o dalla frazione di landmark coinvolti."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks globalmente di 3.0mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 3.0mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks Mesial di 3.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore spesso fraintende la natura e la gravità delle perturbazioni dei landmark, confondendo gli spostamenti spaziali con le assenze e 'allucinando' difetti anatomici. Ciò porta a valutazioni di qualità inconsistenti, sovrastimando o sottostimando la qualità reale, e fornendo spiegazioni diagnostiche fuorvianti. La sua vulnerabilità principale risiede nell'incapacità di identificare accuratamente la causa radice del degrado, specialmente in presenza di imprecisioni spaziali."
+  },
+  "last_profile": "dd3128f173ea8aa20056d136ed04b599"
+}

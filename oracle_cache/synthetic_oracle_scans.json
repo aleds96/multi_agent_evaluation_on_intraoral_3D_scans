@@ -226,5 +226,347 @@
     "predicted_quality": 2,
     "ground_truth_quality": 2,
     "predicted_motivation": "L'immagine presenta diverse problematiche significative: mancano numerosi OuterPoint su premolari e molari, e sono presenti InnerPoint duplicati sugli incisivi. Si osservano anche errori di orientamento Mesial/Distal sugli incisivi centrali. Questi errori compromettono l'accuratezza anatomica e la completezza dei landmark."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_0.5__target_landmark_classes_": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_0.5__target_landmark_classes_",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente identificato la perturbazione come \"lacune significative nei landmark\" e \"punti mancanti\" (Mesial, InnerPoint, FacialPoint), quando in realtà la perturbazione consisteva in un lieve spostamento spaziale (0.5mm per il 20% dei landmark) senza alcuna perdita. Questa errata interpretazione ha portato a una motivazione fuorviante e a una sottostima sproporzionata della qualità (da 3 a 2), nonostante il mAP sia diminuito solo marginalmente (0.014) e la qualità reale sia rimasta invariata. Il valutatore mostra un limite nel distinguere tra lievi imprecisioni spaziali e l'assenza effettiva di landmark, sovrastimando gravemente l'impatto di perturbazioni minori. Questo pattern di errore suggerisce una sensibilità eccessiva a piccoli spostamenti, che vengono confusi con problemi strutturali più gravi.",
+      "perturbation": "spostato 20% landmarks globalmente di 0.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_",
+      "ground_truth_quality": 1,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente interpretato la perturbazione, scambiando lo spostamento spaziale significativo del 20% dei landmark per landmark mancanti, come indicato dalla motivazione che menziona punti assenti nonostante i conteggi siano invariati. Questa errata identificazione della causa del degrado ha portato a una motivazione fuorviante e a una sovrastima della qualità (predetta 2 vs. reale 1), sottostimando l'impatto di uno spostamento di 3.0mm. Il valutatore mostra una vulnerabilità nel distinguere tra assenza e grave dislocazione spaziale dei landmark, specialmente per le classi Mesial e FacialPoint la cui qualità è crollata a 1. Questo pattern di errore suggerisce che il valutatore potrebbe avere difficoltà a valutare correttamente la gravità di errori di posizionamento significativi.",
+      "perturbation": "spostato 20% landmarks globalmente di 3.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_0.5__target_landmark_classes_": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_0.5__target_landmark_classes_",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "La qualità è bassa a causa del posizionamento sistematicamente errato dei landmark Mesial (rossi) e Distal (verdi). Questi punti sono spesso spostati verso la superficie buccale anziché trovarsi sulle superfici interprossimali. Questo errore è evidente su quasi tutti i denti, indicando una scarsa coerenza anatomica.",
+      "failure_analysis": "Il valutatore ha sovrastimato l'impatto di una perturbazione lieve (spostamento di 0.5mm sul 40% dei landmark), declassando la qualità da 3 a 2 nonostante la qualità reale sia rimasta 3 e il mAP sia diminuito solo marginalmente. La motivazione è errata e incompleta, poiché attribuisce il degrado ai landmark Mesial e Distal, la cui qualità non è cambiata, ignorando il significativo calo di qualità dei FacialPoint. Questo evidenzia una mancanza di proporzionalità nella valutazione e un bias nell'identificazione delle classi di landmark realmente compromesse.",
+      "perturbation": "spostato 40% landmarks globalmente di 0.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_1.0__target_landmark_classes_": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_1.5__target_landmark_classes_": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_1.5__target_landmark_classes_",
+      "ground_truth_quality": 1,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente attribuito il degrado a landmark mancanti, sebbene la perturbazione consistesse in uno spostamento spaziale globale del 40% dei landmark. Questa errata interpretazione evidenzia un limite nel distinguere tra assenza di landmark e grave dislocazione spaziale. La motivazione del valutatore è quindi fuorviante, concentrandosi su \"lacune\" inesistenti. La qualità predetta (2) sovrastima la qualità reale (1), indicando che il valutatore ha sottostimato l'impatto dello spostamento di 1.5mm, nonostante il significativo calo del mAP di 0.15. Questo suggerisce un pattern di errore in cui spostamenti spaziali rilevanti possono essere mal interpretati, portando a una valutazione di qualità troppo ottimistica.",
+      "perturbation": "spostato 40% landmarks globalmente di 1.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_2.0__target_landmark_classes_": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_2.0__target_landmark_classes_",
+      "ground_truth_quality": 1,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente interpretato la perturbazione come la \"mancanza\" di landmark, in particolare Mesial, InnerPoint e FacialPoint, quando la perturbazione consisteva in uno spostamento spaziale globale del 40% dei landmark di 2.0mm. Questa errata identificazione del tipo di degrado ha portato a una motivazione imprecisa e a una sovrastima della qualità (predetta 2 vs reale 1). Il valutatore ha sottostimato l'impatto di uno spostamento significativo (2.0mm) su una porzione consistente dei landmark, non reagendo in modo proporzionato al reale degrado evidenziato dal calo del mAP di 0.225.",
+      "perturbation": "spostato 40% landmarks globalmente di 2.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_3.0__target_landmark_classes_": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.4__shift_mm_3.0__target_landmark_classes_",
+      "ground_truth_quality": 1,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha sovrastimato la qualità, prevedendo 2 anziché la ground truth 1, nonostante un significativo calo del mAP. Il suo errore principale risiede nell'errata interpretazione della perturbazione: ha erroneamente attribuito il degrado a \"lacune significative\" e \"landmark mancanti\", mentre la perturbazione consisteva in uno spostamento spaziale di 3.0mm per il 40% dei landmark, senza alcuna assenza. Ciò evidenzia un bias nel rilevamento dei landmark mancanti e una scarsa capacità di valutare l'impatto di spostamenti spaziali, portando a una motivazione diagnostica errata e a una sottostima del reale degrado.",
+      "perturbation": "spostato 40% landmarks globalmente di 3.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_Mesial",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente interpretato lo spostamento del 20% dei landmark Mesial come lacune significative e landmark mancanti (Mesial, InnerPoint, FacialPoint), come indicato nella motivazione. Questa errata identificazione della perturbazione ha portato a una sottostima della qualità reale (predetta 2 vs ground truth 3), nonostante il degrado effettivo fosse minimo (mAP drop di 0.005 e qualità reale invariata). La motivazione del valutatore è fuorviante, poiché non ci sono landmark mancanti e le classi InnerPoint e FacialPoint non sono state perturbate. Ciò evidenzia un limite del valutatore nel distinguere tra spostamenti spaziali lievi e assenza di landmark, portando a una reazione sproporzionata e a diagnosi errate.",
+      "perturbation": "spostato 20% landmarks Mesial di 1.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_Mesial",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha sovrastimato l'impatto di una perturbazione lieve (spostamento di 1.5mm del 20% dei landmark Mesial, con un mAP drop di soli 0.009 e nessuna variazione nella qualità reale). Ha erroneamente interpretato lo spostamento come \"landmark mancanti\" per le classi Mesial, InnerPoint e FacialPoint, nonostante i conteggi dei landmark siano rimasti invariati. Questa errata diagnosi ha portato a un declassamento ingiustificato della qualità da 3 a 2. Il valutatore mostra una vulnerabilità a confondere lievi spostamenti spaziali con assenze di landmark, esagerando la gravità del problema e producendo una motivazione largamente inaccurata.",
+      "perturbation": "spostato 20% landmarks Mesial di 1.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_Mesial",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha reagito in modo sproporzionato a una perturbazione lieve, declassando la qualità da 3 a 2 nonostante un calo minimo del mAP (0.015) e nessuna variazione nella qualità reale. La motivazione è errata, attribuendo il degrado a 'lacune significative' e 'landmark mancanti' (Mesial, InnerPoint, FacialPoint) e a una 'marcata asimmetria', quando in realtà solo il 20% dei landmark Mesial è stato spostato di 2.0mm. Questo evidenzia un limite del valutatore nel distinguere tra spostamenti spaziali minori e assenze di landmark, sovrastimando l'impatto visivo di piccole alterazioni e producendo una diagnosi inaccurata e fuorviante.",
+      "perturbation": "spostato 20% landmarks Mesial di 2.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_Mesial",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha mostrato un limite significativo nel distinguere tra spostamento e assenza di landmark. Nonostante la perturbazione abbia solo spostato il 20% dei landmark Mesial di 3.0mm, con un mAP drop minimo (0.021) e nessuna variazione della qualità reale (GT 3), il valutatore ha erroneamente dedotto \"lacune significative\" e \"mancanza costante\" di landmark, inclusi InnerPoint e FacialPoint non perturbati. Questa errata interpretazione ha portato a una sottostima sproporzionata della qualità (da 3 a 2), evidenziando una sovrastima dell'impatto di lievi spostamenti spaziali e un bias verso la percezione di landmark mancanti.",
+      "perturbation": "spostato 20% landmarks Mesial di 3.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.0__target_landmark_classes_Mesial": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.0__target_landmark_classes_Mesial",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha sovrastimato l'impatto della perturbazione, abbassando la qualità da 3 a 2 nonostante un calo minimo del mAP (0.018) e nessuna variazione della qualità reale. Il limite principale è la sua incapacità di distinguere tra landmark spostati e landmark mancanti, interpretando erroneamente uno spostamento di 1.0mm del 50% dei punti Mesial come \"lacune significative\". La motivazione è errata anche nell'identificare altre classi (InnerPoint, FacialPoint) come mancanti, indicando una scarsa precisione nell'analisi della perturbazione. Questo suggerisce che il valutatore è eccessivamente sensibile a lievi spostamenti spaziali e tende a generalizzare il problema a classi non coinvolte.",
+      "perturbation": "spostato 50% landmarks Mesial di 1.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.5__target_landmark_classes_Mesial": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "Sono presenti errori significativi, inclusa l'inversione dei landmark Mesial e Distal su un premolare destro. Si riscontra anche un FacialPoint mancante e un Distal point in eccesso, indicando problemi di completezza e accuratezza. Alcuni FacialPoint sono inoltre leggermente fuori posizione su incisivi e canini."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_2.0__target_landmark_classes_Mesial": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_3.0__target_landmark_classes_Mesial": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_OuterPoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_OuterPoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha sottostimato la qualità, prevedendo 2 invece di 3, nonostante la perturbazione abbia causato un degrado minimo (mAP drop di 0.006 e nessuna variazione della qualità reale). La motivazione del valutatore è completamente errata, poiché attribuisce il calo di qualità a \"lacune significative\" e alla \"mancanza costante\" di landmark Mesial, InnerPoint e FacialPoint, mentre la perturbazione ha solo spostato il 20% dei landmark OuterPoint di 1.0mm e nessun landmark è mancante. Questo evidenzia una vulnerabilità del valutatore a interpretare erroneamente piccole perturbazioni spaziali come gravi assenze di landmark, portando a una valutazione sproporzionata e a una diagnosi errata della causa del problema.",
+      "perturbation": "spostato 20% landmarks OuterPoint di 1.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_OuterPoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_OuterPoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente diagnosticato la presenza di lacune significative e landmark mancanti (Mesial, InnerPoint, FacialPoint), quando la perturbazione ha coinvolto solo un lieve spostamento del 20% dei landmark OuterPoint. Questa errata interpretazione ha portato a una sottostima della qualità reale (predetta 2 vs. ground truth 3) e a una motivazione completamente fuorviante. Il valutatore ha reagito in modo sproporzionato a una perturbazione minima (mAP drop di 0.013), evidenziando una vulnerabilità a sovrastimare l'impatto di piccoli spostamenti spaziali, interpretandoli come assenze gravi.",
+      "perturbation": "spostato 20% landmarks OuterPoint di 1.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_OuterPoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_OuterPoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente identificato la presenza di \"lacune significative\" e landmark mancanti (Mesial, InnerPoint, FacialPoint), quando la perturbazione reale consisteva solo in un lieve spostamento spaziale del 20% dei landmark OuterPoint. Questa errata interpretazione ha portato a una motivazione completamente fuorviante e a una sottostima sproporzionata della qualità (da 3 a 2), nonostante un calo minimo del mAP (0.019) e nessuna variazione della qualità reale. Il valutatore mostra un limite nel distinguere tra spostamenti spaziali e assenza di landmark, sovrastimando l'impatto di perturbazioni minori e generando diagnosi errate.",
+      "perturbation": "spostato 20% landmarks OuterPoint di 2.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_OuterPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "La scansione presenta diversi errori quantitativi, inclusi punti Cusp mancanti, un FacialPoint mancante e un Distal point in eccesso. Sebbene la maggior parte dei landmark esistenti sia ben posizionata, la presenza di landmark mancanti e duplicati indica problemi significativi nella completezza e accuratezza."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.0__target_landmark_classes_OuterPoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.0__target_landmark_classes_OuterPoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente attribuito il degrado a \"lacune significative nei landmark\" (Mesial, InnerPoint, FacialPoint), contraddetto dai conteggi dei landmark e dalla perturbazione reale (spostamento spaziale dei landmark OuterPoint). Questo evidenzia un bias del valutatore nel confondere gli spostamenti spaziali con landmark mancanti. Nonostante un calo minimo del mAP (0.023) e nessuna variazione della qualità reale (rimasta 3), il valutatore ha sottostimato la qualità a 2, reagendo in modo sproporzionato a una perturbazione lieve. La motivazione fornita è errata e fuorviante, non identificando la vera natura del problema.",
+      "perturbation": "spostato 50% landmarks OuterPoint di 1.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.5__target_landmark_classes_OuterPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_2.0__target_landmark_classes_OuterPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_3.0__target_landmark_classes_OuterPoint": {
+    "status": "oracle_correct",
+    "predicted_quality": 2,
+    "ground_truth_quality": 2,
+    "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata."
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.0__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente declassato la qualità da 3 a 2, nonostante la perturbazione (spostamento di 1.0mm del 20% dei landmark InnerPoint) non abbia causato alcun degrado reale (mAP drop 0.0, qualità perturbata 3). La motivazione del valutatore è errata, poiché descrive \"lacune significative\" e landmark mancanti, che non sono presenti nei dati. Ciò evidenzia una vulnerabilità del valutatore a sovrastimare l'impatto di piccoli spostamenti spaziali, interpretandoli come assenze di landmark e reagendo in modo sproporzionato al reale degrado.",
+      "perturbation": "spostato 20% landmarks InnerPpoint di 1.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_1.5__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente identificato la presenza di landmark mancanti significativi (Mesial, InnerPoint, FacialPoint) sul lato destro, declassando la qualità da 3 a 2. Questa motivazione è completamente errata, poiché la perturbazione ha comportato solo un lieve spostamento spaziale del 20% dei landmark InnerPoint, senza alcuna perdita di punti o calo del mAP. Il valutatore ha sovrastimato l'impatto della perturbazione, non riconoscendo la sua entità trascurabile e producendo una spiegazione fuorviante. Ciò evidenzia una vulnerabilità nel distinguere tra lievi errori di posizionamento e l'assenza effettiva di landmark.",
+      "perturbation": "spostato 20% landmarks InnerPpoint di 1.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_2.0__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente identificato lacune significative e landmark mancanti (Mesial, InnerPoint, FacialPoint), sebbene la perturbazione abbia solo spostato spazialmente il 20% dei landmark InnerPoint senza causare alcuna perdita. Questa errata interpretazione ha portato a una sottostima della qualità reale (da 3 a 2) e a una motivazione completamente fuorviante. Il valutatore ha ignorato l'assenza di un calo nel mAP e nella qualità per classe, dimostrando una vulnerabilità a sovrastimare l'impatto di piccole perturbazioni spaziali e a generare false segnalazioni di landmark mancanti.",
+      "perturbation": "spostato 20% landmarks InnerPpoint di 2.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.2__shift_mm_3.0__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente interpretato lo spostamento del 20% dei landmark InnerPoint come \"lacune significative\" e \"landmark mancanti\" per più classi (Mesial, InnerPoint, FacialPoint), come indicato nella motivazione. Questa errata percezione ha portato a una sottostima della qualità reale (predetta 2 vs. reale 3), nonostante la perturbazione non abbia causato alcun calo nel mAP o nella qualità effettiva. Il valutatore ha ignorato i segnali quantitativi (mAP drop 0.0, Quality drop 0) e ha reagito in modo sproporzionato a una perturbazione lieve, dimostrando una sensibilità eccessiva a spostamenti spaziali minori e una tendenza a formulare motivazioni basate su osservazioni visive errate.",
+      "perturbation": "spostato 20% landmarks InnerPpoint di 3.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.0__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.0__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha sovrastimato l'impatto di una perturbazione lieve (spostamento di 1.0mm del 50% dei landmark InnerPoint), che non ha alterato la qualità reale (3) né il mAP. Ha erroneamente diagnosticato la presenza di \"lacune significative nei landmark\" (Mesial, InnerPoint, FacialPoint) e asimmetrie dovute a landmark mancanti, quando in realtà nessun landmark è stato rimosso. Questo evidenzia un limite del valutatore nel distinguere tra spostamenti spaziali e assenza di landmark, portando a una motivazione errata e a una sottostima ingiustificata della qualità (predetta 2 vs. reale 3).",
+      "perturbation": "spostato 50% landmarks InnerPpoint di 1.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.5__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_1.5__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha erroneamente identificato lacune e landmark mancanti (Mesial, InnerPoint, FacialPoint) quando la perturbazione ha solo spostato il 50% dei landmark InnerPoint di 1.5mm. Nonostante l'assenza di un reale degrado (mAP drop 0.0, qualità perturbata uguale all'originale), il valutatore ha sottostimato la qualità da 3 a 2. Questo evidenzia una vulnerabilità del valutatore a interpretare spostamenti spaziali come assenze di landmark, reagendo in modo sproporzionato a perturbazioni che non compromettono la qualità complessiva.",
+      "perturbation": "spostato 50% landmarks InnerPpoint di 1.5mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_2.0__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_2.0__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "La qualità è bassa a causa del posizionamento sistematicamente errato dei landmark Mesial (rossi) e Distal (verdi). Questi punti sono spesso spostati verso la superficie buccale anziché trovarsi sulle superfici interprossimali. Questo errore è evidente su quasi tutti i denti, indicando una scarsa coerenza anatomica.",
+      "failure_analysis": "Il valutatore ha erroneamente attribuito un degrado di qualità ai landmark Mesial e Distal, sebbene la perturbazione abbia interessato esclusivamente gli InnerPoint e non abbia causato alcun calo di mAP o di qualità reale. Questo indica una vulnerabilità del valutatore nel diagnosticare correttamente le classi di landmark problematiche. Inoltre, il valutatore ha sottostimato la qualità reale (2 vs 3) e ha reagito in modo sproporzionato a una perturbazione che non ha introdotto alcun degrado misurabile. La motivazione fornita è completamente errata riguardo ai landmark coinvolti e alla gravità del problema.",
+      "perturbation": "spostato 50% landmarks InnerPpoint di 2.0mm",
+      "origin_quality_before_pertubation": 3
+    }
+  },
+  "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_3.0__target_landmark_classes_InnerPpoint": {
+    "status": "oracle_failure",
+    "description": {
+      "scan": "F92OKIOI_upper_landmark_shift_fraction_0.5__shift_mm_3.0__target_landmark_classes_InnerPpoint",
+      "ground_truth_quality": 3,
+      "predicted_quality": 2,
+      "predicted_motivation": "L'immagine presenta diverse lacune significative nei landmark, in particolare sui premolari e molari destri, dove mancano costantemente i punti Mesial, InnerPoint e FacialPoint. Questa assenza di landmark crea una marcata asimmetria e incoerenza rispetto all'arcata sinistra. La distribuzione dei landmark non segue la morfologia del dente in modo completo su un lato dell'arcata.",
+      "failure_analysis": "Il valutatore ha sottostimato la qualità, prevedendo 2 anziché 3, nonostante la perturbazione non abbia causato alcun calo nel mAP o nella qualità reale. Ha erroneamente interpretato lo spostamento del 50% dei landmark InnerPoint come \"lacune significative\" e \"landmark mancanti\" per più classi (Mesial, InnerPoint, FacialPoint). Questo indica una sensibilità eccessiva a lievi spostamenti spaziali, scambiandoli per assenze di landmark, e una reazione sproporzionata a perturbazioni che non incidono sulle metriche quantitative complessive. La motivazione è fuorviante, concentrandosi su problemi inesistenti anziché sull'effettivo spostamento.",
+      "perturbation": "spostato 50% landmarks InnerPpoint di 3.0mm",
+      "origin_quality_before_pertubation": 3
+    }
   }
 }

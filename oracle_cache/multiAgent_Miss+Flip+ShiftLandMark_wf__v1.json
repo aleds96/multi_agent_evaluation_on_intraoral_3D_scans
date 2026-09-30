@@ -1,0 +1,92 @@
+{
+  "95530985cd729c723b7674d4d165e65b": {
+    "strengths": [
+      "Fornisce motivazioni testuali dettagliate per le sue valutazioni, anche se talvolta errate.",
+      "È in grado di identificare la presenza di anomalie o deviazioni, sebbene la loro natura sia spesso fraintesa.",
+      "Riconosce problemi specifici a classi di landmark, anche se poi generalizza in modo errato."
+    ],
+    "weaknesses": [
+      "Incapacità di distinguere accuratamente tra landmark mancanti e landmark spazialmente spostati.",
+      "Tendenza a 'allucinare' o generalizzare eccessivamente errori a classi di landmark non perturbate o a difetti anatomici inesistenti.",
+      "Reazione sproporzionata a perturbazioni minori, portando a valutazioni di qualità imprecise."
+    ],
+    "biases": [
+      {
+        "bias_name": "Misinterpretazione Spostamento/Mancanza Landmark",
+        "description": "Il valutatore confonde frequentemente gli spostamenti spaziali dei landmark con la loro completa assenza. Tende a riportare 'lacune significative' o 'landmark mancanti' anche quando i landmark sono solo spostati.",
+        "error_direction": "mixed",
+        "typical_effect": "La valutazione della qualità è distorta da una diagnosi errata del tipo di difetto. Le motivazioni sono fattualmente scorrette riguardo al conteggio dei landmark.",
+        "trigger_conditions": [
+          "Qualsiasi spostamento spaziale di landmark, indipendentemente dalla magnitudine o dalla classe interessata."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks globalmente di 3.0mm",
+          "spostato 40% landmarks globalmente di 3.0mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks Mesial di 3.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Over-generalizzazione e Allucinazione Errori Secondari",
+        "description": "Quando è presente una perturbazione specifica e localizzata (es. landmark mancanti di una classe), il valutatore tende a riportare problemi aggiuntivi e inesistenti su altre classi di landmark non perturbate o inventa difetti anatomici non presenti.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "Le motivazioni sono confuse da falsi positivi, rendendo difficile individuare il problema reale. La gravità percepita del problema è spesso gonfiata.",
+        "trigger_conditions": [
+          "Perturbazioni localizzate che influenzano una specifica classe di landmark (mancanti o scambiati)."
+        ],
+        "supporting_examples": [
+          "rimosso 20% Mesial",
+          "rimosso 30% Mesial",
+          "rimosso 60% Mesial",
+          "rimosso 20% Distal",
+          "rimosso 60% InnerPoint",
+          "rimosso 60% OuterPoint",
+          "flip 20% dei landmarks con classe Mesial",
+          "flip 20% dei landmarks con classe OuterPoint"
+        ]
+      },
+      {
+        "bias_name": "Reazione Sproporzionata a Perturbazioni Minori",
+        "description": "Il valutatore tende ad abbassare significativamente la sua previsione di qualità anche quando il degrado effettivo da una perturbazione minore (piccola percentuale di landmark mancanti/scambiati o spostamenti spaziali molto piccoli) è minimo o inesistente.",
+        "error_direction": "underestimation",
+        "typical_effect": "Produce punteggi di qualità eccessivamente pessimistici per scansioni con problemi minori e localizzati.",
+        "trigger_conditions": [
+          "Piccola percentuale (es. 20%) di landmark rimossi o scambiati.",
+          "Piccoli spostamenti spaziali (es. 0.5mm, 1.0mm)."
+        ],
+        "supporting_examples": [
+          "rimosso 20% Mesial",
+          "rimosso 20% Distal",
+          "rimosso 20% InnerPoint",
+          "flip 20% dei landmarks con classe Mesial",
+          "flip 20% dei landmarks con classe OuterPoint",
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Insensibilità a Perdite Massicce di Classi Specifiche",
+        "description": "Nonostante un degrado significativo causato da una grande percentuale di landmark di una singola classe rimossi o scambiati, il valutatore spesso non abbassa proporzionalmente la qualità predetta, a volte persino sovrastimandola. Sembra dare priorità alla 'plausibilità' complessiva dei landmark rimanenti.",
+        "error_direction": "overestimation",
+        "typical_effect": "Fornisce punteggi di qualità eccessivamente ottimistici per scansioni con degradi gravi, ma localizzati, di specifiche classi di landmark.",
+        "trigger_conditions": [
+          "Alta percentuale (es. 30% o 60%) di landmark di una singola classe rimossi o scambiati."
+        ],
+        "supporting_examples": [
+          "rimosso 30% Mesial",
+          "rimosso 60% Mesial",
+          "rimosso 60% OuterPoint",
+          "flip 30% dei landmarks con classe Mesial"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore fatica a diagnosticare accuratamente la natura e la gravità delle perturbazioni dei landmark, confondendo frequentemente gli spostamenti spaziali con i landmark mancanti e allucinando errori aggiuntivi. Ciò porta spesso a reazioni sproporzionate, sottostimando la qualità per problemi minori o sovrastimandola per degradi gravi ma localizzati. Le sue motivazioni sono spesso inaffidabili a causa di queste interpretazioni errate e generalizzazioni eccessive."
+  },
+  "last_profile": "95530985cd729c723b7674d4d165e65b"
+}

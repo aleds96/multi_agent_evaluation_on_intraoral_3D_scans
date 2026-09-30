@@ -1,0 +1,81 @@
+{
+  "384cddad5f749cda6151f95de10c4de4": {
+    "strengths": [
+      "Capacità di rilevare la presenza di anomalie nei landmark, anche se la loro natura viene talvolta fraintesa.",
+      "Generazione di motivazioni dettagliate per la valutazione, fornendo un punto di partenza per l'analisi, sebbene non sempre accurate.",
+      "Sensibilità ai cambiamenti di posizione dei landmark, reagendo sia a perturbazioni di tipo 'flip' che 'shift'."
+    ],
+    "weaknesses": [
+      "Incapacità di distinguere accuratamente tra landmark spostati e landmark completamente assenti.",
+      "Tendenza a generalizzare o 'allucinare' difetti su classi di landmark non direttamente perturbate.",
+      "Mancanza di proporzionalità nella valutazione della qualità, portando a reazioni eccessive per problemi minori o sottostime per degradi severi."
+    ],
+    "biases": [
+      {
+        "bias_name": "Hallucinazione e Generalizzazione dei Difetti",
+        "description": "Il valutatore tende a identificare problemi (landmark mancanti, imprecisi o malposizionati) in classi che non sono state direttamente influenzate dalla perturbazione. Generalizza problemi localizzati a un insieme più ampio di landmark o all'intera scansione, portando a una percezione gonfiata del degrado complessivo.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "Produce motivazioni che includono difetti inesistenti o attribuisce problemi a classi di landmark non coinvolte. Spesso porta a una qualità predetta inferiore a quella reale.",
+        "trigger_conditions": [
+          "Presenza di qualsiasi perturbazione localizzata (flip o shift).",
+          "Perturbazioni che influenzano specifiche classi di landmark (es. Mesial, OuterPoint)."
+        ],
+        "supporting_examples": [
+          "Mesial 20% (flip)",
+          "OuterPoint 20% (flip)",
+          "Mesial 20% (shift 1.0mm)",
+          "OuterPoint 20% (shift 1.0mm)"
+        ]
+      },
+      {
+        "bias_name": "Confusione Spostamento-Assenza",
+        "description": "Il valutatore interpreta frequentemente gli spostamenti spaziali dei landmark come assenze complete o 'lacune significative'. Fatica a distinguere tra un landmark leggermente o gravemente fuori posizione e un landmark interamente mancante dalla scansione.",
+        "error_direction": "mixed",
+        "typical_effect": "Per spostamenti minori, porta a una sottostima della qualità reale. Per spostamenti severi, può portare a una sovrastima della qualità, poiché il problema viene erroneamente classificato come 'mancante' anziché 'gravemente dislocato'. La motivazione descrive costantemente landmark mancanti quando sono solo spostati.",
+        "trigger_conditions": [
+          "Spostamenti spaziali dei landmark, indipendentemente dalla loro entità (0.5mm, 1.0mm, 3.0mm).",
+          "Perturbazioni che influenzano una percentuale di landmark globalmente o classi specifiche."
+        ],
+        "supporting_examples": [
+          "Global 20% (shift 0.5mm)",
+          "Global 20% (shift 3.0mm)",
+          "Mesial 20% (shift 1.0mm)",
+          "OuterPoint 50% (shift 1.0mm)"
+        ]
+      },
+      {
+        "bias_name": "Ipersensibilità a Perturbazioni Minori",
+        "description": "Il valutatore mostra una reazione esagerata a perturbazioni minori o localizzate, spesso declassando la qualità di un livello anche quando la qualità reale rimane alta o il degrado effettivo è minimo. Questo è spesso aggravato dall'allucinazione di difetti aggiuntivi.",
+        "error_direction": "underestimation",
+        "typical_effect": "Predice un punteggio di qualità inferiore di un livello rispetto alla ground truth, anche quando il calo del mAP è trascurabile. Porta a una valutazione eccessivamente cauta o pessimistica.",
+        "trigger_conditions": [
+          "Piccola percentuale di landmark influenzati da 'flip' (es. 20%).",
+          "Piccoli spostamenti spaziali (es. 0.5mm, 1.0mm) che influenzano una percentuale moderata di landmark.",
+          "Qualità reale elevata (es. 3)."
+        ],
+        "supporting_examples": [
+          "Mesial 20% (flip)",
+          "OuterPoint 20% (flip)",
+          "Global 20% (shift 0.5mm)",
+          "Mesial 20% (shift 1.0mm)"
+        ]
+      },
+      {
+        "bias_name": "Sottostima dell'Impatto di Dislocazioni Severe",
+        "description": "Quando i landmark subiscono spostamenti spaziali significativi, il valutatore tende a sottostimare la vera gravità del degrado. Spesso classifica erroneamente questi spostamenti severi come landmark 'mancanti', il che, pur essendo un problema, potrebbe portare a una previsione di qualità meno severa rispetto all'impatto reale di una dislocazione estrema.",
+        "error_direction": "overestimation",
+        "typical_effect": "Predice un punteggio di qualità superiore alla ground truth quando la qualità reale è molto bassa (es. 1). La motivazione si concentra sui landmark 'mancanti' piuttosto che sul malposizionamento estremo.",
+        "trigger_conditions": [
+          "Grandi spostamenti spaziali (es. 3.0mm) che influenzano una percentuale di landmark.",
+          "Qualità reale molto bassa (es. 1)."
+        ],
+        "supporting_examples": [
+          "Global 20% (shift 3.0mm)",
+          "Global 40% (shift 3.0mm)"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore mostra una vulnerabilità significativa nel distinguere tra spostamenti spaziali e assenza di landmark, spesso interpretando erroneamente i primi come i secondi. Tende inoltre a generalizzare i difetti a classi non perturbate, portando a motivazioni fuorvianti. Questo comportamento si traduce in una valutazione della qualità spesso sproporzionata, con una tendenza a sovrastimare l'impatto di perturbazioni minori e, in alcuni casi, a sottostimare la gravità di dislocazioni severe."
+  },
+  "last_profile": "384cddad5f749cda6151f95de10c4de4"
+}

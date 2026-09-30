@@ -1,0 +1,91 @@
+{
+  "b26ffa122842e45cc010e12bd65396b7": {
+    "strengths": [
+      "Il valutatore tenta sempre di fornire una motivazione dettagliata per la sua valutazione.",
+      "È in grado di rilevare la presenza di una deviazione dalla configurazione attesa dei landmark.",
+      "Cerca di localizzare il problema a specifiche regioni o tipi di landmark, anche se a volte in modo impreciso."
+    ],
+    "weaknesses": [
+      "Incapacità di distinguere tra spostamento spaziale e assenza di landmark.",
+      "Reazione sproporzionata alla gravità delle perturbazioni spaziali.",
+      "Tendenza a generalizzare problemi locali a classi di landmark non perturbate."
+    ],
+    "biases": [
+      {
+        "bias_name": "Misinterpretazione Spostamento vs Assenza",
+        "description": "Il valutatore interpreta sistematicamente qualsiasi spostamento spaziale dei landmark come la loro completa assenza o come 'lacune significative'. Non riesce a distinguere tra un landmark fuori posizione e un landmark mancante.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "Produce motivazioni diagnostiche altamente inaccurate, focalizzandosi su 'punti mancanti' inesistenti anziché sui reali errori di posizionamento. Questo può portare sia a sottostime (per piccoli spostamenti) che a sovrastime (per spostamenti gravi) della qualità.",
+        "trigger_conditions": [
+          "Qualsiasi spostamento spaziale dei landmark (globale o per classi specifiche).",
+          "Perturbazioni con entità di spostamento da lieve a significativa (0.5mm a 3.0mm).",
+          "Perturbazioni che interessano una frazione dei landmark (20% a 50%)."
+        ],
+        "supporting_examples": [
+          "global shift 0.5mm",
+          "global shift 3.0mm",
+          "Mesial shift 1.0mm",
+          "OuterPoint shift 1.0mm",
+          "InnerPpoint shift 1.0mm",
+          "Mesial shift 3.0mm",
+          "InnerPpoint shift 3.0mm"
+        ]
+      },
+      {
+        "bias_name": "Ipersensibilità a Perturbazioni Minori",
+        "description": "Il valutatore mostra un'eccessiva sensibilità a spostamenti spaziali lievi dei landmark. Anche quando la qualità reale rimane alta e il degrado misurato è minimo, il valutatore tende a declassare la qualità in modo sproporzionato.",
+        "error_direction": "underestimation",
+        "typical_effect": "Conduce a una riduzione ingiustificata del punteggio di qualità predetto, rendendo la valutazione eccessivamente pessimistica per scansioni con piccole imperfezioni. La motivazione spesso include affermazioni esagerate di 'lacune significative' o 'marcata asimmetria'.",
+        "trigger_conditions": [
+          "Spostamenti spaziali di piccola entità (0.5mm, 1.0mm, 1.5mm, 2.0mm).",
+          "Perturbazioni che interessano una frazione piccola o moderata di landmark (20% a 50%).",
+          "Casi in cui la qualità reale rimane elevata (3) nonostante la perturbazione."
+        ],
+        "supporting_examples": [
+          "global shift 0.5mm",
+          "Mesial shift 1.0mm",
+          "OuterPoint shift 1.0mm",
+          "InnerPpoint shift 1.0mm",
+          "Mesial shift 1.5mm",
+          "OuterPoint shift 1.5mm",
+          "InnerPpoint shift 1.5mm",
+          "InnerPpoint shift 2.0mm"
+        ]
+      },
+      {
+        "bias_name": "Sottostima della Gravità di Perturbazioni Maggiori",
+        "description": "Quando i landmark subiscono spostamenti spaziali significativi che causano un notevole calo della qualità reale, il valutatore non riesce a riflettere pienamente l'entità del degrado. Tende a prevedere una qualità superiore a quella reale, sottostimando la gravità del problema.",
+        "error_direction": "overestimation",
+        "typical_effect": "Il punteggio di qualità predetto è più alto della qualità effettiva, portando a una valutazione eccessivamente ottimistica per scansioni gravemente degradate. La motivazione rimane focalizzata su 'landmark mancanti' anziché sull'effettiva entità dello spostamento.",
+        "trigger_conditions": [
+          "Spostamenti spaziali di grande entità (1.5mm, 2.0mm, 3.0mm).",
+          "Perturbazioni che interessano una frazione moderata o ampia di landmark (20% a 40%).",
+          "Casi in cui la qualità reale scende significativamente (es. a 1)."
+        ],
+        "supporting_examples": [
+          "global shift 3.0mm",
+          "global shift 1.5mm",
+          "global shift 2.0mm"
+        ]
+      },
+      {
+        "bias_name": "Generalizzazione e Allucinazione di Classi di Landmark",
+        "description": "Quando viene perturbato un sottoinsieme specifico di classi di landmark, il valutatore spesso allucina problemi (es. 'punti mancanti') anche in altre classi di landmark non perturbate. Tende a generalizzare un problema localizzato a un insieme più ampio di landmark.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "La motivazione fornita dal valutatore elenca classi di landmark errate o aggiuntive come problematiche, distogliendo l'attenzione dalle classi effettivamente perturbate e rendendo la diagnosi meno precisa.",
+        "trigger_conditions": [
+          "Perturbazioni che mirano a classi di landmark specifiche (es. Mesial, OuterPoint, InnerPpoint).",
+          "Qualsiasi spostamento spaziale, indipendentemente dalla sua entità o frazione coinvolta."
+        ],
+        "supporting_examples": [
+          "Mesial shift 1.0mm",
+          "OuterPoint shift 1.0mm",
+          "InnerPpoint shift 1.0mm",
+          "InnerPpoint shift 2.0mm"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore fatica costantemente a distinguere tra spostamento e assenza di landmark, spesso allucinando punti mancanti anche in presenza di soli spostamenti spaziali. Questo porta a un'ipersensibilità e sottostima della qualità per perturbazioni minori, mentre sottostima la gravità di spostamenti maggiori. Le sue motivazioni diagnostiche sono spesso imprecise, generalizzando problemi locali a classi di landmark non coinvolte."
+  },
+  "last_profile": "b26ffa122842e45cc010e12bd65396b7"
+}

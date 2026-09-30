@@ -628,6 +628,54 @@ def apply_class_flip_perturbation(
         classes_new[idx] = new_class
 
     return (coords.copy(),classes_new)
+def apply_landmark_shift_perturbation(
+    coords,
+    classes,
+    fraction,
+    shift_mm,
+    target_landmark_classes=[],
+    seed=42,
+):
+    rng = random.Random(seed)
+    if len(coords) == 0:
+        return coords.copy(), classes.copy()
+
+    #effetto GLOBAL 
+    if len(target_landmark_classes) == 0:
+        candidate_idx = list(range(len(coords)))
+        #print("### global shift with len(candidate)==>",len(candidate_idx))
+    #LOCALIZED SHIFT
+    else:
+        candidate_idx = [i for i, cls in enumerate(classes) if cls in target_landmark_classes
+        ]
+    if len(candidate_idx) == 0:
+        return (
+            coords.copy(),
+            classes.copy(),
+        )
+    n_shift = max(1,int(len(candidate_idx) * fraction))
+    #print("## num shift==>", n_shift)
+    shift_idx = rng.sample(
+        candidate_idx,
+        min(n_shift, len(candidate_idx))
+    )
+    coords_new = coords.copy()
+    rng_np = np.random.default_rng(seed)
+    for idx in shift_idx:
+
+        direction = rng_np.normal(0,1,size=3)
+
+        norm = np.linalg.norm(direction)
+        if norm < 1e-8:
+            continue
+        direction = direction / norm
+        #modulo pari a  shift_mm
+        magnitude = shift_mm
+        coords_new[idx] = (coords_new[idx]+ direction * magnitude)
+    return (
+        coords_new,
+        classes.copy(),
+    )
 def apply_perturbation(perturbation_type,coords_pred,classes_pred,perturbation_params):
     if perturbation_type == "missing_landmarks":
         return apply_missing_landmark_perturbation(
@@ -643,6 +691,15 @@ def apply_perturbation(perturbation_type,coords_pred,classes_pred,perturbation_p
                 fraction=perturbation_params["fraction"],
                 target_landmark_classes=perturbation_params["target_landmark_classes"],
             )
+    elif perturbation_type == "landmark_shift":
+            return apply_landmark_shift_perturbation(
+                coords_pred,
+                classes_pred,
+                shift_mm=perturbation_params["shift_mm"],
+                fraction=perturbation_params["fraction"],
+                target_landmark_classes=perturbation_params["target_landmark_classes"],
+            )
+    
     return coords_pred,classes_pred
 def build_synthetic_oracle_sample(
     scan_name,

@@ -31,7 +31,8 @@ from src.landmark_eval import (
     build_input_dataset,
     build_synthetic_oracle_dataset, 
     build_missing_landmark_configs,
-    build_class_flip_configs
+    build_class_flip_configs,
+    build_landmark_shift_configs
 
 )
 from src.llm_eval import evaluate_agent
@@ -46,11 +47,12 @@ cred_path = ROOT / os.getenv("SERVICE_ACCOUNT_KEY")
 os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GOOGLE_CLOUD_PROJECT")
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = os.getenv("GOOGLE_GENAI_USE_VERTEXAI")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
-EXPERIMENT_NAME = "multiAgent_Miss+FlipLandMark_wf__v1"
+EXPERIMENT_NAME = "multiAgent_Flip+ShiftLandMark_wf__v1"
 ORACLE_SCANS_CACHE = 'synthetic_oracle_scans'
 MODEL_NAME = "gemini-2.5-flash"
-PERT_MISSING_LANDMARK= True 
+PERT_MISSING_LANDMARK= False 
 PERT_FLIP_LANDMARK = True
+PERT_SHIFT_LANDMARK= True
 ORACLE_CACHE_LOCK = asyncio.Lock()
 PROFILE_CACHE_LOCK = asyncio.Lock()
 
@@ -544,10 +546,24 @@ async def main():
             "InnerPoint",
             "OuterPoint"], 
             'frac':[0.2,0.3,0.5]}}
+    #shift punti 
+    shift_landmark_configs_par={
+    "global_cfg":{
+            "frac": [0.20,0.40],
+            "shift_mm": [0.5,3.0],
+        },
+    "local_cfg":{
+            "cls": [
+                "Mesial",
+                "OuterPoint",
+            ],
+            "frac": [0.2,0.5],
+            "shift_mm": [1.0,  3.0],
+        }}
     #identifica con una label la configurazione scelta
     miss_landmark_config_label = build_perturbation_label(miss_landmark_configs_par)
     flip_landmark_config_label = build_perturbation_label(flip_landmark_configs_par)
-
+    shift_landmark_config_label = build_perturbation_label(shift_landmark_configs_par)
     miss_landmark_configs_list= build_missing_landmark_configs(
         global_config=miss_landmark_configs_par['global_cfg'],
         local_config= miss_landmark_configs_par['local_cfg'])
@@ -555,10 +571,16 @@ async def main():
     class_flip_configs_list=build_class_flip_configs(
     global_config=flip_landmark_configs_par['global_cfg'],
     local_config= flip_landmark_configs_par['local_cfg'])
+    shift_landmark_configs_list = build_landmark_shift_configs(
+        global_config=shift_landmark_configs_par['global_cfg'],
+        local_config= shift_landmark_configs_par['local_cfg'])
+
     if PERT_MISSING_LANDMARK:
         PERTURBATIONS.extend(miss_landmark_configs_list)
     if PERT_FLIP_LANDMARK: 
         PERTURBATIONS.extend(class_flip_configs_list)
+    if PERT_SHIFT_LANDMARK:
+        PERTURBATIONS.extend(shift_landmark_configs_list)
 
     #dataset sintetico a partire dalle scan in oracle_pool 
     oracle_pool_scans= [v[0] for k,v in oracle_pool.items()]
@@ -577,7 +599,7 @@ async def main():
 
         config = {
             "architecture": EXPERIMENT_NAME,
-            "mdifiche_fatte_rispetto_a_versione_precedente": 'prima versione di flip only. si usa già concetto bias nel prompt (v3 di only miss_landmrk)',
+            "mdifiche_fatte_rispetto_a_versione_precedente": 'rispetto a shift, riduciamo le scan oracle a sole 13 più importanti per la stima bias. Uniamo flip + shift',
             "model": MODEL_NAME,
             "primary_examples": primary_examples,
             "oracle_example_len": len(oracle_dataset), 
@@ -585,7 +607,8 @@ async def main():
             "pertubation_used": 
             {
                 "missing_landmarks": [] if PERT_MISSING_LANDMARK==False else miss_landmark_config_label, 
-                "flip_landmarks": [] if PERT_FLIP_LANDMARK==False else flip_landmark_config_label
+                "flip_landmarks": [] if PERT_FLIP_LANDMARK==False else flip_landmark_config_label,
+                "shift_landmarks": [] if PERT_SHIFT_LANDMARK==False else shift_landmark_config_label
             }
         }
 

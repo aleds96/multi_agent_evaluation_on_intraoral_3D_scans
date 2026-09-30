@@ -1,0 +1,91 @@
+{
+  "3f56ba63673a3f0bf3a9d645b7d1ddb0": {
+    "strengths": [
+      "Il valutatore tenta sempre di fornire una motivazione dettagliata per la sua valutazione di qualità.",
+      "È in grado di rilevare la presenza di una qualche forma di degrado, anche se ne fraintende la natura.",
+      "Mantiene una coerenza nella struttura delle sue motivazioni, anche se il contenuto è spesso errato."
+    ],
+    "weaknesses": [
+      "Incapacità di distinguere accuratamente tra spostamento spaziale e assenza di landmark.",
+      "Tendenza a generalizzare problemi localizzati a classi di landmark non perturbate nelle sue spiegazioni.",
+      "Reazione sproporzionata a perturbazioni spaziali minori, portando a declassamenti ingiustificati della qualità."
+    ],
+    "biases": [
+      {
+        "bias_name": "Fraintendimento Spostamento Spaziale come Assenza",
+        "description": "Il valutatore interpreta sistematicamente qualsiasi spostamento spaziale dei landmark, indipendentemente dalla sua entità o dalla frazione interessata, come 'lacune significative' o 'landmark mancanti'. Non riesce a distinguere tra un punto mal posizionato e un punto completamente assente.",
+        "error_direction": "mixed",
+        "typical_effect": "Allucina landmark mancanti, producendo motivazioni diagnostiche errate. Questo può portare sia a sottostime (per spostamenti minori) che a sovrastime (per spostamenti gravi ma mal identificati).",
+        "trigger_conditions": [
+          "Qualsiasi spostamento spaziale di landmark (es. 0.5mm, 1.0mm, 3.0mm)",
+          "Spostamenti che interessano una frazione di landmark (es. 20%, 40%, 50%), sia globalmente che su classi specifiche."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks globalmente di 3.0mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 3.0mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks Mesial di 3.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Reazione Eccessiva a Perturbazioni Minori",
+        "description": "Di fronte a spostamenti spaziali minori (es. 0.5mm o 1.0mm) che causano un degrado minimo della qualità reale (che rimane 3), il valutatore tende a declassare in modo sproporzionato la qualità predetta di un livello.",
+        "error_direction": "underestimation",
+        "typical_effect": "La qualità predetta viene abbassata da 3 a 2, anche quando la qualità reale non è influenzata o è solo marginalmente compromessa.",
+        "trigger_conditions": [
+          "Piccoli spostamenti spaziali (0.5mm, 1.0mm)",
+          "Spostamenti che interessano una frazione di landmark (20%, 40%, 50%)",
+          "Qualità originale della scansione elevata (es. 3)."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Generalizzazione Problemi a Classi Non Correlate",
+        "description": "Il valutatore attribuisce frequentemente problemi a classi di landmark che non sono state perturbate, anche quando la perturbazione era specifica per altre classi. Questo porta a motivazioni che elencano erroneamente landmark non interessati come 'mancanti' o 'problematici'.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "Le motivazioni contengono informazioni imprecise sullo stato di classi di landmark non perturbate, rendendo inaffidabile la spiegazione diagnostica.",
+        "trigger_conditions": [
+          "Perturbazioni che mirano a classi di landmark specifiche (es. Mesial, OuterPoint)",
+          "Spostamenti globali in cui il valutatore si concentra su classi specifiche, potenzialmente non interessate, nella sua spiegazione."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks Mesial di 3.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm",
+          "spostato 40% landmarks globalmente di 0.5mm"
+        ]
+      },
+      {
+        "bias_name": "Sottostima dell'Impatto di Degrado Grave",
+        "description": "Di fronte a spostamenti spaziali significativi (es. 3.0mm) che portano a un sostanziale calo della qualità reale (es. da 3 a 1), il valutatore tende a sovrastimare la qualità, prevedendo un valore più alto (es. 2 invece di 1). Questo è spesso associato al fraintendimento dello spostamento come assenza.",
+        "error_direction": "overestimation",
+        "typical_effect": "La qualità predetta è un livello superiore rispetto al reale degrado grave, non riconoscendo la piena estensione del problema.",
+        "trigger_conditions": [
+          "Grandi spostamenti spaziali (es. 3.0mm)",
+          "Spostamenti che interessano una frazione significativa di landmark (es. 20%, 40%)",
+          "Qualità reale della scansione molto bassa (es. 1)."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 3.0mm",
+          "spostato 40% landmarks globalmente di 3.0mm"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore fatica costantemente a distinguere tra spostamento e assenza di landmark, interpretando erroneamente gli spostamenti spaziali come punti mancanti. Ciò porta a declassamenti sproporzionati della qualità per problemi minori e a una sottostima del degrado grave. Inoltre, le sue motivazioni diagnostiche spesso generalizzano i problemi a classi di landmark non correlate, riducendone l'affidabilità."
+  },
+  "last_profile": "3f56ba63673a3f0bf3a9d645b7d1ddb0"
+}
