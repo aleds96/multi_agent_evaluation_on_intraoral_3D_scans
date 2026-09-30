@@ -1,6 +1,22 @@
 # Multi-Agent Evaluation on Intraoral 3D Scans
 
+## Overview
+
 Questo repository contiene un framework agentico multimodale per la valutazione automatica della qualità dei landmark dentali su scansioni 3D intraorali.
+Il progetto nasce dalla seguente domanda:
+
+> È possibile valutare la qualità delle predizioni di landmark senza avere accesso alla ground truth e, soprattutto, è possibile identificare e correggere automaticamente gli errori sistematici commessi dal valutatore?
+
+L'obiettivo principale non è costruire un nuovo classificatore supervisionato della qualità, ma studiare se un sistema multimodale possa:
+
+- stimare la qualità di predizioni geometriche complesse senza ground truth e con limitato numero di dati;
+- individuare automaticamente i propri errori di valutazione;
+- estrarre pattern ricorrenti di errore (bias);
+- utilizzare tali bias per effettuare una forma di auto-calibrazione delle proprie valutazioni.
+
+Per rispondere a queste domande viene proposto un framework multi-agent basato su perturbazioni sintetiche controllate, analisi automatica dei failure mode ed estrazione strutturata dei bias del valutatore.
+
+---
 
 La pipeline utilizza modelli Gemini tramite Google ADK e combina:
 
@@ -100,8 +116,7 @@ Calibrated Quality Prediction
 - **Class Flip Perturbation**  
   Scambio controllato della classe associata a un landmark mantenendo inalterata la sua posizione spaziale.
 
-- **Landmark Shift Perturbation**  **( ancora da implementare!!!)**
-
+- **Landmark Shift Perturbation**  
   Spostamento controllato delle coordinate di uno o più landmark.
 
 Le perturbazioni possono essere applicate:
@@ -120,7 +135,11 @@ Per ogni scansione vengono generati:
 - analisi dei failure mode;
 - profilo strutturato dei bias del valutatore;
 - valutazione finale calibrata;
-- metriche quantitative (MAE, Accuracy, Accuracy ±1, Quadratic Weighted Kappa).
+- metriche quantitative:
+  - MAE
+  - Accuracy
+  - Accuracy ±1
+  - Quadratic Weighted Kappa (QWK)
 
 Tutti i risultati vengono salvati automaticamente nella directory:
 
