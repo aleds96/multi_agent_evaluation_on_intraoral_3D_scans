@@ -17,6 +17,39 @@ L'obiettivo principale non è costruire un nuovo classificatore supervisionato d
 Per rispondere a queste domande viene proposto un framework multi-agent basato su perturbazioni sintetiche controllate, analisi automatica dei failure mode ed estrazione strutturata dei bias del valutatore.
 
 ---
+## Input Representation
+
+Ogni scansione 3D viene trasformata in una rappresentazione multimodale composta da:
+
+- screenshot della scansione da vista occlusale (top view);
+- segmentazione dentale colorata per gruppo anatomico;
+- landmark colorati in base alla loro classe;
+- statistiche quantitative sul numero di landmark predetti per classe.
+
+L'obiettivo è fornire contemporaneamente:
+
+- informazioni geometriche e anatomiche (immagine);
+- informazioni strutturali sulla distribuzione dei landmark (conteggi per classe).
+
+Esperimenti preliminari hanno mostrato che l'aggiunta delle statistiche quantitative migliora significativamente la capacità del valutatore di identificare landmark mancanti, anomalie di distribuzione e incoerenze anatomiche.
+
+### Esempio di input
+<img width="700" height="500" alt="predicted" src="https://github.com/user-attachments/assets/ce57dc73-5cc3-4ff4-8721-ddf07f4e8f21" />
+
+- Mesial → rosso
+- Distal → verde
+- Cusp → blu
+- InnerPoint → giallo
+- OuterPoint → ciano
+- FacialPoint → magenta
+
+Gruppi dentali:
+
+- Incisivi → grigio
+- Canini → arancione
+- Premolari → rosa
+- Molari → azzurro
+---
 
 La pipeline utilizza modelli Gemini tramite Google ADK e combina:
 
