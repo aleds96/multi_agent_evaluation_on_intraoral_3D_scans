@@ -9,7 +9,8 @@ from src.prompts import (
     instruction_single_agent_prompt,
     instruction_error_description_agent_prompt,
     instruction_profile_builder_agent_prompt,
-    instruction_final_decision_agent_prompt)
+    instruction_final_decision_agent_prompt, 
+    instruction_final_decision_noprofile_agent_prompt)
 
 MODEL_NAME = "gemini-2.5-flash"
 GENERATION_CONFIG = types.GenerateContentConfig(
@@ -45,4 +46,11 @@ final_decision_agent = LlmAgent(
     model=MODEL_NAME,
     output_schema=FinalDecisionOutput,
     instruction=instruction_final_decision_agent_prompt,
+    generate_content_config=GENERATION_CONFIG)
+
+final_decision_noprofile_agent = LlmAgent(
+    name="FinalDecisionNoProfileAgent",
+    model=MODEL_NAME,
+    output_schema=FinalDecisionOutput,
+    instruction=instruction_final_decision_noprofile_agent_prompt,
     generate_content_config=GENERATION_CONFIG)

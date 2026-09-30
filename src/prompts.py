@@ -1,4 +1,31 @@
 
+def format_oracle_descriptions(descriptions):
+    chunks = []
+
+    for i, d in enumerate(descriptions, start=1):
+        chunks.append(f"""
+        CASO ORACLE {i}
+
+        Perturbazione:
+        {d["perturbation"]}
+
+        Qualità reale:
+        {d["ground_truth_quality"]}
+
+        Qualità predetta:
+        {d["predicted_quality"]}
+
+        Motivazione del valutatore:
+        {d["predicted_motivation"]}
+
+        Analisi dell'errore:
+        {d["failure_analysis"]}
+
+        Qualità originale prima della perturbazione:
+        {d["origin_quality_before_pertubation"]}
+        """)
+
+    return "\n\n-------------------------\n".join(chunks)
 def _format_profile(p):
     return (
         f"- Scan: {p['scan']}\n"
@@ -780,4 +807,218 @@ Restituisci esclusivamente un JSON:
     "motivation": "breve spiegazione"
 }}
 """
+def build_final_noprofile_review_prompt(
+    scan_item,
+    example_items,
+    primary_prediction,
+    error_descriptions,
+):
 
+    base_prompt = build_user_request_for_scan(
+        scan_item,
+        example_items,
+        goal=False,
+    )
+    oracle_examples_str = format_oracle_descriptions(
+    error_descriptions)
+
+    return f"""
+{base_prompt}
+
+--------------------------------------------------
+
+VALUTAZIONE PRIMARIA
+
+Qualità predetta:
+{primary_prediction["quality"]}
+
+Motivazione:
+{primary_prediction["motivation"]}
+
+--------------------------------------------------
+
+CASI ORACLE
+
+Di seguito sono riportati esempi sintetici perturbati
+e i relativi errori commessi dal valutatore.
+
+Ogni caso contiene:
+
+- la perturbazione applicata
+- la qualità reale dopo la perturbazione
+- la qualità predetta dal valutatore
+- la motivazione fornita dal valutatore
+- un'analisi esplicita dell'errore osservato
+
+{oracle_examples_str}
+
+--------------------------------------------------
+
+IMPORTANTE
+
+I casi Oracle rappresentano esempi concreti di errori
+commessi dal valutatore in situazioni controllate.
+
+Non tutti gli errori osservati nei casi Oracle sono
+necessariamente presenti nella scansione corrente.
+
+Utilizza tali casi come esempi di riferimento e non
+come regole deterministiche.
+
+Non modificare la valutazione primaria semplicemente
+perché esiste un caso Oracle simile.
+
+Verifica sempre che l'immagine corrente, le statistiche
+quantitative e la motivazione del valutatore supportino
+realmente una revisione della valutazione.
+
+--------------------------------------------------
+
+COMPITO
+
+Valuta la scansione di input.
+
+Parti dalla valutazione primaria.
+
+Successivamente analizza i casi Oracle e verifica se
+il valutatore potrebbe aver commesso errori simili
+anche nella scansione corrente.
+
+Per ogni caso Oracle chiediti:
+
+- l'errore osservato è plausibilmente applicabile
+  alla scansione corrente?
+
+- la motivazione del valutatore presenta segnali
+  compatibili con quelli osservati nel caso Oracle?
+
+- l'immagine e le statistiche quantitative suggeriscono
+  che il valutatore possa aver ripetuto un errore analogo?
+
+- esistono evidenze sufficienti per correggere
+  la valutazione primaria?
+
+Utilizza:
+
+- l'immagine target
+- gli esempi few-shot
+- le statistiche quantitative
+- la valutazione primaria
+- i casi Oracle
+
+Modifica la valutazione primaria soltanto se esistono
+evidenze concrete che uno o più errori osservati nei
+casi Oracle siano rilevanti anche per la scansione
+corrente.
+
+In assenza di evidenze sufficienti mantieni la
+valutazione primaria.
+
+L'obiettivo è produrre la stima finale più affidabile
+possibile.
+
+Restituisci esclusivamente un JSON:
+
+{{
+    "quality": integer compreso tra 1 e 5,
+    "motivation": "breve spiegazione"
+}}
+"""
+instruction_final_decision_noprofile_agent_prompt = """
+Sei un esperto nella valutazione della qualità dei landmark dentali.
+
+Il tuo compito è produrre una valutazione finale calibrata.
+
+Riceverai una combinazione delle seguenti informazioni:
+
+- immagini contenenti landmark dentali
+- esempi few-shot
+- statistiche quantitative
+- una valutazione primaria prodotta da un altro valutatore
+- una raccolta di casi Oracle ottenuti tramite perturbazioni sintetiche controllate
+
+OBIETTIVO
+
+Il tuo ruolo non è eseguire una nuova valutazione indipendente da zero.
+
+Il tuo ruolo è analizzare criticamente la valutazione primaria
+e decidere se mantenerla oppure correggerla.
+
+I casi Oracle rappresentano esempi reali di errori
+commessi dal valutatore in scenari controllati.
+
+Ogni caso Oracle può contenere:
+
+- la perturbazione applicata
+- la qualità reale del caso perturbato
+- la qualità predetta dal valutatore
+- la motivazione prodotta dal valutatore
+- un'analisi dell'errore commesso
+
+UTILIZZO DEI CASI ORACLE
+
+Utilizza i casi Oracle come esempi storici del comportamento
+del valutatore.
+
+I casi Oracle NON sono regole deterministiche.
+
+La semplice presenza di un errore in un caso Oracle
+non implica che lo stesso errore sia presente
+nella scansione corrente.
+
+Prima di modificare la valutazione primaria verifica che:
+
+- il caso corrente presenti caratteristiche compatibili
+  con gli errori osservati nei casi Oracle
+- l'immagine supporti la possibile correzione
+- le statistiche quantitative supportino la possibile correzione
+- la motivazione fornita dal valutatore mostri segnali
+  coerenti con errori osservati in precedenza
+
+Ragiona per analogia.
+
+Osserva i casi Oracle e chiediti:
+
+- il valutatore sta commettendo un errore simile?
+- la motivazione attuale assomiglia a motivazioni
+  che in passato si sono rivelate scorrette?
+- esistono segnali che suggeriscono una sovrastima
+  o una sottostima della qualità?
+
+DECISIONE
+
+Mantieni la valutazione primaria quando:
+
+- non esistono evidenze sufficienti di errore
+- i casi Oracle non risultano pertinenti
+- l'immagine e le statistiche supportano
+  la valutazione primaria
+
+Modifica la valutazione primaria soltanto quando:
+
+- uno o più casi Oracle mostrano errori chiaramente
+  analoghi al caso corrente
+- esistono evidenze concrete che il valutatore stia
+  ripetendo un errore osservato in precedenza
+
+In caso di dubbio privilegia la valutazione primaria.
+
+L'obiettivo è produrre la stima finale più affidabile possibile.
+
+OUTPUT
+
+Restituisci esclusivamente un oggetto JSON nel formato:
+
+{
+    "quality": int,
+    "motivation": str
+}
+
+Dove:
+
+- quality è un numero intero tra 1 e 5
+- motivation è una spiegazione breve che descrive
+  le ragioni principali della decisione finale
+
+Non aggiungere testo fuori dal JSON.
+"""
