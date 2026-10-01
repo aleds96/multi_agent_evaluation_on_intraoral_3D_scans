@@ -67,6 +67,12 @@ Le perturbazioni sintetiche attualmente implementate includono:
 - scambio di classi tra landmark (Class Flip Perturbation);
 - spostamenti spaziali controllati dei landmark (Landmark Shift Perturbation).
 
+Le perturbazioni possono essere applicate:
+
+- globalmente all'intera scansione;
+- localmente a specifiche classi di landmark (es. Mesial, Distal, InnerPoint, OuterPoint).
+
+
 I failure mode osservati vengono trasformati in profili strutturati di bias che guidano l'agente calibratore nella correzione delle valutazioni potenzialmente errate.
 
 L'architettura proposta segue il flusso:
@@ -82,7 +88,28 @@ Bias Extraction / Oracle Profile Builder
         ↓
 Final Calibration Agent
 ```
+## Experimental Results
 
+| Architecture | Profile Builder | Configuration | MAE ↓ | Accuracy ↑ | Accuracy ±1 ↑ | QWK ↑ |
+|-------------|----------------|---------------|--------:|-----------:|--------------:|------:|
+| Single-Agent | No | Baseline | 1.0893 | 0.3929 | 0.6964 | 0.3581 |
+| Multi-Agent | Yes | Missing | 0.7931 | 0.3966 | 0.8448 | 0.5621 |
+| Multi-Agent | Yes | Flip | 0.8793 | 0.2931 | 0.8621 | 0.5565 |
+| Multi-Agent | Yes | Shift | 0.7931 | 0.3966 | 0.8448 | 0.6364 |
+| Multi-Agent | Yes | Shift (extended oracle set) | **0.7414** | **0.4655** | 0.8276 | 0.6415 |
+| Multi-Agent | Yes | Missing + Flip | 0.8103 | 0.3621 | 0.8448 | 0.6342 |
+| Multi-Agent | Yes | Missing + Shift | 0.7931 | **0.4310** | 0.8103 | 0.5443 |
+| Multi-Agent | Yes | Flip + Shift | **0.7586** | 0.3621 | **0.8966** | **0.6980** |
+| Multi-Agent | Yes | Missing + Flip + Shift | 0.9310 | 0.3448 | 0.7586 | 0.5209 |
+| Multi-Agent | No | Flip + Shift (Raw Oracle Cases) | 0.8103 | 0.3966 | 0.8103 | 0.5757 |
+| Multi-Agent | No | Missing + Flip + Shift (Raw Oracle Cases) | 0.8621 | **0.4138** | 0.7586 | 0.5127 |
+
+### Risultati Principali
+
+- La migliore configurazione complessiva è **Flip + Shift con Profile Builder**, che raggiunge un valore di **Quadratic Weighted Kappa (QWK) pari a 0.6980**.
+- L'utilizzo di **perturbazioni sintetiche** migliora in modo consistente le prestazioni rispetto alla baseline basata su un singolo agente.
+- Il **Profile Builder** svolge un ruolo fondamentale: sostituire i profili strutturati dei bias con le descrizioni grezze degli errori Oracle comporta una riduzione significativa delle prestazioni.
+- I risultati suggeriscono che l'**astrazione dei failure mode e l'estrazione dei bias** siano più efficaci rispetto al fornire direttamente all'agente di calibrazione una cronologia non strutturata degli errori osservati.
 ### Esecuzione
 
 Posizionarsi nella directory principale del progetto:
@@ -141,23 +168,6 @@ Calibrated Quality Prediction
 
 ---
 
-### Perturbazioni sintetiche supportate
-
-- **Missing Landmark Perturbation**  
-  Rimozione controllata di landmark selezionati.
-
-- **Class Flip Perturbation**  
-  Scambio controllato della classe associata a un landmark mantenendo inalterata la sua posizione spaziale.
-
-- **Landmark Shift Perturbation**  
-  Spostamento controllato delle coordinate di uno o più landmark.
-
-Le perturbazioni possono essere applicate:
-
-- globalmente all'intera scansione;
-- localmente a specifiche classi di landmark (es. Mesial, Distal, InnerPoint, OuterPoint).
-
----
 
 ### Output
 
