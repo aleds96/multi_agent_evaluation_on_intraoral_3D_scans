@@ -1022,3 +1022,57 @@ Dove:
 
 Non aggiungere testo fuori dal JSON.
 """
+def build_self_reflection_prompt(
+    scan_item,
+    example_items,
+    prediction,
+):
+    base_prompt = build_user_request_for_scan(
+        scan_item,
+        example_items,
+        goal=False,
+    )
+
+    return f"""
+    {base_prompt}
+
+    ----------------------------------------
+
+    VALUTAZIONE ATTUALE
+
+    Quality:
+    {prediction["quality"]}
+
+    Motivation:
+    {prediction["motivation"]}
+
+    ----------------------------------------
+
+    SELF-REFLECTION TASK
+
+    La valutazione sopra rappresenta una tua precedente decisione.
+
+    Analizzala criticamente.
+
+    Verifica se:
+
+    - la qualità assegnata è coerente con l'immagine;
+    - la motivazione è supportata da evidenze visive;
+    - esistono errori di ragionamento;
+    - alcuni landmark potrebbero essere stati interpretati in modo errato;
+    - la qualità potrebbe essere stata sovrastimata;
+    - la qualità potrebbe essere stata sottostimata.
+
+    Non assumere che la valutazione precedente sia errata.
+
+    Mantienila se risulta supportata dalle evidenze disponibili.
+
+    Modificala soltanto se esistono elementi concreti che giustificano una revisione.
+
+    Restituisci esclusivamente un JSON:
+
+    {{
+        "quality": integer compreso tra 1 e 5,
+        "motivation": "breve spiegazione"
+    }}
+    """

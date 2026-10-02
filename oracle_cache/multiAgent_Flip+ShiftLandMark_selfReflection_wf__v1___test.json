@@ -1,0 +1,91 @@
+{
+  "384cddad5f749cda6151f95de10c4de4": {
+    "strengths": [
+      "Il valutatore tenta sempre di fornire una motivazione dettagliata per la sua valutazione, anche quando errata.",
+      "Generalmente identifica la presenza di una degradazione quando una perturbazione è applicata, sebbene possa misdiagnosticarne la natura.",
+      "Riconosce l'asimmetria come un indicatore generale di potenziali problemi nella distribuzione dei landmark."
+    ],
+    "weaknesses": [
+      "Incapacità di distinguere accuratamente tra l'assenza di landmark e il loro spostamento spaziale.",
+      "Tendenza a generalizzare i problemi e ad allucinare errori su classi di landmark non direttamente influenzate dalla perturbazione.",
+      "Mancanza di proporzionalità nella valutazione dell'impatto di degradazioni minori, portando a sottostime eccessive."
+    ],
+    "biases": [
+      {
+        "bias_name": "Misinterpretazione Spostamento-Assenza",
+        "description": "Il valutatore confonde frequentemente gli spostamenti spaziali dei landmark, anche lievi, con la loro completa assenza o con 'lacune significative' nel set di landmark. Questo porta a una spiegazione diagnostica errata.",
+        "error_direction": "mixed",
+        "typical_effect": "La qualità predetta viene spesso abbassata di un livello per spostamenti lievi o alzata di un livello per spostamenti gravi (a causa della misdiagnosi). La motivazione riporta costantemente 'landmark mancanti' o 'lacune significative' per classi che sono solo spostate.",
+        "trigger_conditions": [
+          "Qualsiasi perturbazione che implichi uno spostamento spaziale dei landmark, indipendentemente dalla magnitudine o dalla classe interessata."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks globalmente di 3.0mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 3.0mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks Mesial di 3.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Generalizzazione ed Allucinazione di Errori",
+        "description": "Quando una specifica classe o regione di landmark viene perturbata, il valutatore tende a generalizzare il problema, riportando problemi (mancanza, imprecisione, malposizionamento) su altre classi o aree di landmark che non sono state influenzate dalla perturbazione.",
+        "error_direction": "hallucinated_explanation",
+        "typical_effect": "La motivazione predetta include dettagli errati su classi di landmark non perturbate, rendendo la spiegazione inaffidabile e spesso portando a una valutazione di qualità sproporzionatamente bassa.",
+        "trigger_conditions": [
+          "Perturbazioni localizzate che influenzano un sottoinsieme specifico di landmark (sia 'flip' che 'shift')."
+        ],
+        "supporting_examples": [
+          "flip 20% dei landmarks con classe Mesial",
+          "flip 20% dei landmarks con classe OuterPoint",
+          "flip 30% dei landmarks con classe Mesial",
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Ipersensibilità a Degradazioni Minori",
+        "description": "Il valutatore tende a ridurre significativamente la valutazione della qualità (tipicamente di un livello) anche quando l'impatto effettivo di una perturbazione è minimo, con un calo trascurabile del mAP e nessuna variazione della qualità reale. Sovrastima la gravità di problemi lievi.",
+        "error_direction": "underestimation",
+        "typical_effect": "La qualità predetta è di un livello inferiore rispetto alla qualità reale, nonostante la perturbazione abbia un impatto trascurabile sulle metriche di qualità complessive.",
+        "trigger_conditions": [
+          "Perturbazioni che causano piccoli spostamenti spaziali (es. 0.5mm, 1.0mm).",
+          "Perturbazioni che influenzano una piccola frazione di landmark (es. 20% flip)."
+        ],
+        "supporting_examples": [
+          "flip 20% dei landmarks con classe Mesial",
+          "flip 20% dei landmarks con classe OuterPoint",
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks Mesial di 3.0mm",
+          "spostato 50% landmarks Mesial di 1.0mm",
+          "spostato 20% landmarks OuterPoint di 1.0mm",
+          "spostato 50% landmarks OuterPoint di 1.0mm"
+        ]
+      },
+      {
+        "bias_name": "Valutazione Inconsistente della Gravità degli Spostamenti",
+        "description": "Il valutatore fatica a valutare in modo coerente la gravità degli spostamenti spaziali. Tende a reagire eccessivamente a spostamenti minori (sottostimando la qualità) ma può sottovalutare spostamenti gravi (sovrastimando la qualità) a causa della misidentificazione del problema come 'landmark mancanti' anziché grave dislocazione.",
+        "error_direction": "mixed",
+        "typical_effect": "Le previsioni di qualità per gli spostamenti spaziali sono inaffidabili; spostamenti minori portano a cali di qualità ingiustificati, mentre spostamenti gravi potrebbero non essere penalizzati abbastanza a causa di una diagnosi errata del problema sottostante.",
+        "trigger_conditions": [
+          "Perturbazioni di spostamento spaziale, specialmente quando si confrontano magnitudini di spostamento piccole e grandi."
+        ],
+        "supporting_examples": [
+          "spostato 20% landmarks globalmente di 0.5mm",
+          "spostato 20% landmarks globalmente di 3.0mm",
+          "spostato 40% landmarks globalmente di 0.5mm",
+          "spostato 40% landmarks globalmente di 3.0mm"
+        ]
+      }
+    ],
+    "profile_summary": "Il valutatore mostra una tendenza a confondere gli spostamenti spaziali con l'assenza di landmark e ad allucinare errori su classi non perturbate. Questa ipersensibilità a degradazioni minori porta spesso a sottostime sproporzionate della qualità, mentre la sua capacità di valutare la gravità degli spostamenti spaziali è inconsistente."
+  },
+  "last_profile": "384cddad5f749cda6151f95de10c4de4"
+}

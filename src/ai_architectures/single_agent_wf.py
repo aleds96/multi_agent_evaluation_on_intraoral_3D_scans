@@ -11,8 +11,10 @@ from google.adk.workflow import node
 from src.llm_utils_fun import (
     safe_run_multimodal,
     ensure_session,
+    build_multimodal_prompt,
+    safe_run_node
 )
-from src.prompts import build_user_request_for_scan
+from src.prompts import build_user_request_for_scan,build_self_reflection_prompt
 from src.agents import eval_single_agent
 from src.landmark_eval import (
     compute_all_statistics,
@@ -34,37 +36,40 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
 
 
 
-async def eval_single_scan(scan_item, example_items, runner, app_name):
+async def eval_single_scan(
+    scan_item,
+    WORKFLOW_RESOURCES,
+    runner,
+    app_name):
     session_id = f"session_{scan_item['scan']}"
-    await ensure_session(runner, app_name, session_id)
-   
-    prompt = build_user_request_for_scan(scan_item, example_items)
 
-    #print(f"Prompt for scan {scan_item['scan']}:\n{prompt}")
+    session_init_dict = {
+        "example_items": WORKFLOW_RESOURCES["example_items"],
+        "scan_item": scan_item,
+        "use_self_reflection": WORKFLOW_RESOURCES["use_self_reflection"]
+    }
 
-    image_paths = (
-        [item["image_pred"] for item in example_items["lvl5"]] +
-        [item["image_pred"] for item in example_items["lvl4"]] +
-        [item["image_pred"] for item in example_items["lvl3"]] +
-        [item["image_pred"] for item in example_items["lvl2"]] +
-        [item["image_pred"] for item in example_items["lvl1"]] +
-        [scan_item["image_pred"]]
+    await ensure_session(
+        runner,
+        app_name,
+        session_id,
+        session_init_dict
     )
 
     final_event = await safe_run_multimodal(
         runner,
         session_id,
-        image_paths,
-        prompt,
+        [],
+        "start",
         max_retries=10,
     )
-    
+
     verdict = final_event.output
     return verdict
 
-async def eval_scan_task(scan_item, example_items, runner, app_name, semaphore):
+async def eval_scan_task(scan_item, WORKFLOW_RESOURCES, runner, app_name, semaphore):
     async with semaphore:
-        verdict = await eval_single_scan(scan_item, example_items, runner, app_name)
+        verdict = await eval_single_scan(scan_item, WORKFLOW_RESOURCES, runner, app_name)
 
         pred_quality = verdict["quality"]
         pred_motivation = verdict["motivation"]
@@ -81,10 +86,52 @@ async def evaluation_workflow(
     ctx: Context,
     node_input,
 ):
-    result = await ctx.run_node(
-        eval_single_agent,
-        node_input,
+    example_items = ctx.state["example_items"]
+    scan_item = ctx.state["scan_item"]
+    use_self_reflection = ctx.state["use_self_reflection"]
+    
+    prompt = build_user_request_for_scan(
+        scan_item,
+        example_items
     )
+
+    image_paths = (
+        [item["image_pred"] for item in example_items["lvl5"]]
+        + [item["image_pred"] for item in example_items["lvl4"]]
+        + [item["image_pred"] for item in example_items["lvl3"]]
+        + [item["image_pred"] for item in example_items["lvl2"]]
+        + [item["image_pred"] for item in example_items["lvl1"]]
+        + [scan_item["image_pred"]]
+    )
+    primary_content = build_multimodal_prompt(
+                    text=prompt,
+                    image_paths=image_paths,
+                )
+    result = await safe_run_node(
+        ctx,
+        eval_single_agent,
+        primary_content,
+        max_retries=10,
+        base_delay=10,
+        )
+    if use_self_reflection:
+        self_reflection_prompt = build_self_reflection_prompt(
+            scan_item,
+            example_items,
+            result
+        )
+        self_reflection_content = build_multimodal_prompt(
+            text=self_reflection_prompt,
+            image_paths=image_paths,
+        )
+        
+        result = await safe_run_node(
+                ctx,
+                eval_single_agent,
+                self_reflection_content,
+                max_retries=10,
+                base_delay=10,
+                )
 
     return result
 root_agent = Workflow(
@@ -95,7 +142,7 @@ root_agent = Workflow(
 )
 
 
-async def run_single_agent(dataset_primary, dataset_examples):
+async def run_single_agent(dataset_primary, WORKFLOW_RESOURCES):
 
    
     from google.adk.plugins import LoggingPlugin
@@ -108,7 +155,7 @@ async def run_single_agent(dataset_primary, dataset_examples):
     app = App(
         name="landmark_quality_app_v1",
         root_agent=root_agent,
-        plugins=plugins    
+        #plugins=plugins    
     )
     
     runner = InMemoryRunner(app=app)
@@ -117,7 +164,7 @@ async def run_single_agent(dataset_primary, dataset_examples):
     tasks = []
     for i, item in enumerate(dataset_primary):
         tasks.append(asyncio.create_task(
-            eval_scan_task(item, dataset_examples, runner, app.name, semaphore)
+            eval_scan_task(item, WORKFLOW_RESOURCES, runner, app.name, semaphore)
         ))
         if i % 10 == 0 and i > 0:
             await asyncio.sleep(15)
@@ -150,7 +197,7 @@ async def main():
     exclude_examples = set(sum(primary_examples.values(), []))
     dataset_examples = build_input_dataset(
         stats_over_scan,
-        exclude_scans=set(stats_over_scan["scans"]) - exclude_examples,
+        exclude_scans=set([obs['scan'] for obs in stats_over_scan]) - exclude_examples,
         SCANS=SCANS,
         GT_ROOT=GT_ROOT,
         PRED_CSV=PRED_CSV,
@@ -179,15 +226,21 @@ async def main():
         CATEGORIES=CATEGORIES
     )
     print(f"Dataset primary costruito con {len(dataset_primary)} scans.")
-     
-    outputs = await run_single_agent(dataset_primary, example_items)
+
+    USE_SELF_REFLECTION= True
+    WORKFLOW_RESOURCES = {
+        "example_items": example_items, 
+        "use_self_reflection": USE_SELF_REFLECTION
+    }
+    outputs = await run_single_agent(dataset_primary, WORKFLOW_RESOURCES)
 
     evaluation = evaluate_agent(outputs)
 
     config = {
-        "architecture": "v13b_walllv_onlyinputstat_single_agent_wf",
+        "architecture": "v1_ingle_agent_selfReflection_wf",
         "model": "gemini-2.5-flash",
         "primary_examples": primary_examples,
+        "use_self_reflection": USE_SELF_REFLECTION,
     }
 
     exp_dir = save_experiment(config, outputs, evaluation)

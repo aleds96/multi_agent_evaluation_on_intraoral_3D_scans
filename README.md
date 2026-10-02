@@ -1,4 +1,4 @@
-# Multi-Agent Evaluation on Intraoral 3D Scans
+# Failure Mode Discovery and Bias-Aware Calibration for Multimodal Landmark Quality Assessment on Intraoral 3D Scans
 
 ## Overview
 
@@ -11,8 +11,8 @@ L'obiettivo principale non è costruire un nuovo classificatore supervisionato d
 
 - stimare la qualità di predizioni geometriche complesse senza ground truth e con limitato numero di dati;
 - individuare automaticamente i propri errori di valutazione;
-- estrarre pattern ricorrenti di errore (bias);
-- utilizzare tali bias per effettuare una forma di auto-calibrazione delle proprie valutazioni.
+- estrarre pattern ricorrenti di errore (**structured bias extraction**);
+- utilizzare tali bias per effettuare una forma di auto-calibrazione delle proprie valutazioni (**bias-aware external calibration**).
 
 Per rispondere a queste domande viene proposto un framework multi-agent basato su perturbazioni sintetiche controllate, analisi automatica dei failure mode ed estrazione strutturata dei bias del valutatore.
 

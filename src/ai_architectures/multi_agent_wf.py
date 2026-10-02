@@ -19,7 +19,7 @@ from src.llm_utils_fun import (
 from src.prompts import (
     build_user_request_for_scan,
     build_oracle_error_descriptor_agent_prompt,
-    build_final_review_prompt)
+    build_final_review_prompt,build_self_reflection_prompt)
 from src.agents import (
     eval_single_agent,
     oracle_error_descriptor_agent,
@@ -47,18 +47,20 @@ cred_path = ROOT / os.getenv("SERVICE_ACCOUNT_KEY")
 os.environ["GOOGLE_CLOUD_PROJECT"] = os.getenv("GOOGLE_CLOUD_PROJECT")
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = os.getenv("GOOGLE_GENAI_USE_VERTEXAI")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(cred_path)
-EXPERIMENT_NAME = "multiAgent_Flip+ShiftLandMark_wf__v1"
+EXPERIMENT_NAME = "multiAgent_Flip+ShiftLandMark_selfReflection_wf__v1___test"
 ORACLE_SCANS_CACHE = 'synthetic_oracle_scans'
 MODEL_NAME = "gemini-2.5-flash"
 PERT_MISSING_LANDMARK= False 
 PERT_FLIP_LANDMARK = True
 PERT_SHIFT_LANDMARK= True
+USE_SELF_REFLECTION= True
 ORACLE_CACHE_LOCK = asyncio.Lock()
 PROFILE_CACHE_LOCK = asyncio.Lock()
 
 async def eval_single_scan(scan_item, WORKFLOW_RESOURCES, runner, app_name):
     session_id = f"session_{scan_item['scan']}"
-    session_init_dict = {"example_items":WORKFLOW_RESOURCES['example_items'],
+    session_init_dict = {"use_self_reflection":WORKFLOW_RESOURCES['use_self_reflection'],
+                        "example_items":WORKFLOW_RESOURCES['example_items'],
                          "oracle_dataset": WORKFLOW_RESOURCES['oracle_dataset'],
                          "scan_item": scan_item}
     await ensure_session(runner, app_name, session_id,session_init_dict)
@@ -317,7 +319,7 @@ async def final_node(
     node_input,
 ):
     print("###### final node")
-
+    use_self_reflection = ctx.state["use_self_reflection"]
     example_items = ctx.state["example_items"]
     perturbation_labels = ctx.state['oracle_result']['perturbation_labels']
     oracle_error_descr_per_scan = ctx.state['oracle_result']["oracle_descriptions"]
@@ -359,6 +361,25 @@ async def final_node(
     max_retries=10,
     base_delay=10,
     )
+    if use_self_reflection:
+        print('### invoking self reflection ###')
+        self_reflection_prompt = build_self_reflection_prompt(
+            scan_item,
+            example_items,
+            final_prediction
+        )
+        self_reflection_content = build_multimodal_prompt(
+            text=self_reflection_prompt,
+            image_paths=image_paths,
+        )
+        
+        final_prediction = await safe_run_node(
+                ctx,
+                eval_single_agent,
+                self_reflection_content,
+                max_retries=10,
+                base_delay=10,
+                )
 
     #print("FINAL RESULT =>", final_prediction)
 
@@ -587,11 +608,13 @@ async def main():
     oracle_dataset=build_synthetic_oracle_dataset(oracle_pool_scans, SCANS, GT_ROOT, PRED_CSV,SCREENSHOT_DIR,pertubation_configs=PERTURBATIONS)
     print(f'###### ORACLE DATASET costruito con {len(oracle_dataset)} scansioni')
     EXECUTE_WF = True 
+    
     if EXECUTE_WF:
         #passa risorse che saranno usati per inizializzare lo stato
         WORKFLOW_RESOURCES = {
         "example_items": example_items,
-        "oracle_dataset": oracle_dataset
+        "oracle_dataset": oracle_dataset, 
+        "use_self_reflection": USE_SELF_REFLECTION
         }
         outputs = await run_agentic_workflow(dataset_primary, WORKFLOW_RESOURCES)
 
@@ -604,6 +627,7 @@ async def main():
             "primary_examples": primary_examples,
             "oracle_example_len": len(oracle_dataset), 
             "oracle_example_scans": oracle_pool_scans,
+            "use_self_reflection": USE_SELF_REFLECTION,
             "pertubation_used": 
             {
                 "missing_landmarks": [] if PERT_MISSING_LANDMARK==False else miss_landmark_config_label, 
