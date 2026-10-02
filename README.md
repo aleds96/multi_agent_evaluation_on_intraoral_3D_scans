@@ -106,19 +106,13 @@ Final Calibration Agent
 | Multi-Agent | No | No | Flip + Shift (Raw Oracle Cases) | 0.8103 | 0.3966 | 0.8103 | 0.5757 |
 | Multi-Agent | No | No | Missing + Flip + Shift (Raw Oracle Cases) | 0.8621 | 0.4138 | 0.7586 | 0.5127 |
 
-### Main Findings
-
-- The best overall configuration is **Flip + Shift with Profile Builder**, achieving a **Quadratic Weighted Kappa (QWK) of 0.6980**.
-- Synthetic perturbations consistently improve performance compared to the single-agent baseline.
-- The **Profile Builder** plays a critical role: replacing structured bias profiles with raw Oracle error descriptions leads to a substantial performance drop.
-- Results suggest that **failure-mode abstraction and structured bias extraction** are 
-
 ### Risultati Principali
 
 - La migliore configurazione complessiva è **Flip + Shift con Profile Builder**, che raggiunge un valore di **Quadratic Weighted Kappa (QWK) pari a 0.6980**.
 - L'utilizzo di **perturbazioni sintetiche** migliora in modo consistente le prestazioni rispetto alla baseline basata su un singolo agente.
 - Il **Profile Builder** svolge un ruolo fondamentale: sostituire i profili strutturati dei bias con le descrizioni grezze degli errori Oracle comporta una riduzione significativa delle prestazioni.
 - I risultati suggeriscono che l'**astrazione dei failure mode e l'estrazione dei bias** siano più efficaci rispetto al fornire direttamente all'agente di calibrazione una cronologia non strutturata degli errori osservati.
+- Una semplice fase di self-reflection migliora moderatamente il valutatore singolo (QWK: 0.358 → 0.407), ma peggiora significativamente le prestazioni del sistema già calibrato (QWK: 0.698 → 0.432), suggerendo che la calibrazione guidata dai bias sia più efficace della sola auto-riflessione.
 ### Esecuzione
 
 Posizionarsi nella directory principale del progetto:
