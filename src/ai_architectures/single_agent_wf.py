@@ -237,7 +237,7 @@ async def main():
     evaluation = evaluate_agent(outputs)
 
     config = {
-        "architecture": "v1_ingle_agent_selfReflection_wf",
+        "architecture": "v1_single_agent_selfReflection_wf",
         "model": "gemini-2.5-flash",
         "primary_examples": primary_examples,
         "use_self_reflection": USE_SELF_REFLECTION,
